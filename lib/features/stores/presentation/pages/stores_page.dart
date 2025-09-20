@@ -205,6 +205,9 @@ class _StoresPageState extends State<StoresPage> {
 
   Widget _buildStoreItem(StoreModel store) {
     return ListTile(
+      onTap: () {
+        context.go('${RouteNames.storeDetail}?id=${store.id}');
+      },
       contentPadding: EdgeInsets.symmetric(
         horizontal: AppSizes.md,
         vertical: AppSizes.sm,
@@ -222,20 +225,13 @@ class _StoresPageState extends State<StoresPage> {
           color: AppColors.secondary,
         ),
       ),
-      title: Row(
-        children: [
-          Expanded(
-            child: Text(
-              store.storeName,
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ),
-          _buildStatusChip(store.status),
-        ],
+      title: Text(
+        store.storeName,
+        style: TextStyle(
+          fontSize: 16.sp,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textPrimary,
+        ),
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -300,45 +296,20 @@ class _StoresPageState extends State<StoresPage> {
                   ),
                 ),
               ],
-              const Spacer(),
-              if (store.menuCount != null)
-                Text(
-                  '메뉴 ${store.menuCount}개',
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: AppColors.textTertiary,
-                  ),
-                ),
             ],
           ),
         ],
       ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          IconButton(
-            onPressed: () {
-              context.go('/store/${store.id}/menu');
-            },
-            icon: Icon(
-              MdiIcons.silverware,
-              size: AppSizes.iconSm,
-              color: AppColors.warning,
-            ),
-            tooltip: '메뉴 관리',
-          ),
-          IconButton(
-            onPressed: () {
-              context.go('${RouteNames.storeDetail}?id=${store.id}');
-            },
-            icon: Icon(
-              MdiIcons.eye,
-              size: AppSizes.iconSm,
-              color: AppColors.primary,
-            ),
-            tooltip: '상세보기',
-          ),
-        ],
+      trailing: IconButton(
+        onPressed: () {
+          context.go('/store/${store.id}/menu');
+        },
+        icon: Icon(
+          MdiIcons.silverware,
+          size: AppSizes.iconSm,
+          color: AppColors.warning,
+        ),
+        tooltip: '메뉴 관리',
       ),
     );
   }

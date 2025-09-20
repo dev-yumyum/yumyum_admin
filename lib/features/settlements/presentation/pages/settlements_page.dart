@@ -41,16 +41,16 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
     return CrmLayout(
       currentRoute: RouteNames.settlement,
       child: Padding(
-        padding: EdgeInsets.all(AppSizes.lg),
+        padding: EdgeInsets.all(AppSizes.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildHeader(),
-            SizedBox(height: AppSizes.lg),
+            SizedBox(height: AppSizes.md),
             _buildTodayStatus(),
-            SizedBox(height: AppSizes.lg),
+            SizedBox(height: AppSizes.md),
             _buildFilters(),
-            SizedBox(height: AppSizes.lg),
+            SizedBox(height: AppSizes.md),
             Expanded(
               child: _buildSettlementTable(),
             ),
@@ -256,7 +256,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
     
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(AppSizes.lg),
+        padding: EdgeInsets.all(AppSizes.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -299,6 +299,9 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
+                  columnSpacing: 15.w,
+                  dataRowMinHeight: 48.h,
+                  dataRowMaxHeight: 56.h,
                   columns: [
                     DataColumn(
                       label: Text(

@@ -72,16 +72,16 @@ class _MembersPageState extends State<MembersPage> {
     return CrmLayout(
       currentRoute: RouteNames.member,
       child: Padding(
-        padding: EdgeInsets.all(AppSizes.lg),
+        padding: EdgeInsets.all(AppSizes.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildHeader(),
-            SizedBox(height: AppSizes.lg),
+            SizedBox(height: AppSizes.md),
             _buildStatsCards(),
-            SizedBox(height: AppSizes.lg),
+            SizedBox(height: AppSizes.md),
             _buildSearchAndFilters(),
-            SizedBox(height: AppSizes.lg),
+            SizedBox(height: AppSizes.md),
             Expanded(
               child: _buildMemberTable(),
             ),
@@ -268,7 +268,7 @@ class _MembersPageState extends State<MembersPage> {
     
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(AppSizes.lg),
+        padding: EdgeInsets.all(AppSizes.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -304,7 +304,9 @@ class _MembersPageState extends State<MembersPage> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
-                  columnSpacing: 20.w,
+                  columnSpacing: 15.w,
+                  dataRowMinHeight: 48.h,
+                  dataRowMaxHeight: 56.h,
                   columns: [
                     DataColumn(
                       label: Text(
@@ -394,7 +396,7 @@ class _MembersPageState extends State<MembersPage> {
   DataRow _buildDataRow(MemberModel member) {
     return DataRow(
       onSelectChanged: (_) {
-        context.go('${RouteNames.member}/${member.id}');
+        context.go('${RouteNames.memberDetail}?id=${member.id}');
       },
       cells: [
         DataCell(
