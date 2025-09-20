@@ -400,32 +400,19 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
   Widget _buildContent() {
     if (_business == null) return const SizedBox.shrink();
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
       children: [
-        Expanded(
-          child: Column(
-            children: [
-              _buildBasicInfoCard(),
-              SizedBox(height: AppSizes.lg),
-              _buildBusinessInfoCard(),
-              SizedBox(height: AppSizes.lg),
-              _buildConnectedStoresCard(),
-            ],
-          ),
-        ),
-        SizedBox(width: AppSizes.lg),
-        Expanded(
-          child: Column(
-            children: [
-              _buildContactInfoCard(),
-              SizedBox(height: AppSizes.lg),
-              _buildAccountInfoCard(),
-              SizedBox(height: AppSizes.lg),
-              _buildChangeHistoryCard(),
-            ],
-          ),
-        ),
+        _buildBasicInfoCard(),
+        SizedBox(height: AppSizes.lg),
+        _buildBusinessInfoCard(),
+        SizedBox(height: AppSizes.lg),
+        _buildContactInfoCard(),
+        SizedBox(height: AppSizes.lg),
+        _buildAccountInfoCard(),
+        SizedBox(height: AppSizes.lg),
+        _buildConnectedStoresCard(),
+        SizedBox(height: AppSizes.lg),
+        _buildChangeHistoryCard(),
       ],
     );
   }

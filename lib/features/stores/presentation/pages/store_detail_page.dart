@@ -175,28 +175,15 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
   Widget _buildContent() {
     if (_store == null) return const SizedBox.shrink();
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
       children: [
-        Expanded(
-          child: Column(
-            children: [
-              _buildBasicInfoCard(),
-              SizedBox(height: AppSizes.lg),
-              _buildBusinessInfoCard(),
-            ],
-          ),
-        ),
-        SizedBox(width: AppSizes.lg),
-        Expanded(
-          child: Column(
-            children: [
-              _buildDeliveryInfoCard(),
-              SizedBox(height: AppSizes.lg),
-              _buildOperationInfoCard(),
-            ],
-          ),
-        ),
+        _buildBasicInfoCard(),
+        SizedBox(height: AppSizes.lg),
+        _buildBusinessInfoCard(),
+        SizedBox(height: AppSizes.lg),
+        _buildDeliveryInfoCard(),
+        SizedBox(height: AppSizes.lg),
+        _buildOperationInfoCard(),
       ],
     );
   }
