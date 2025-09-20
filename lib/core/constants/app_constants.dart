@@ -146,7 +146,7 @@ class AppStrings {
   static const String approvalManagement = '승인 관리';
   static const String salesManagement = '매출 관리';
   static const String settlementManagement = '정산 관리';
-  static const String memberManagement = '회원 관리';
+  static const String memberManagement = '고객관리';
   static const String managerManagement = '관리자 관리';
   
   // 상태

@@ -71,21 +71,30 @@ class _MembersPageState extends State<MembersPage> {
   Widget build(BuildContext context) {
     return CrmLayout(
       currentRoute: RouteNames.member,
-      child: Padding(
-        padding: EdgeInsets.all(AppSizes.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            SizedBox(height: AppSizes.md),
-            _buildStatsCards(),
-            SizedBox(height: AppSizes.md),
-            _buildSearchAndFilters(),
-            SizedBox(height: AppSizes.md),
-            Expanded(
-              child: _buildMemberTable(),
-            ),
-          ],
+      child: Center(
+        child: Container(
+          width: double.infinity,
+          constraints: BoxConstraints(
+            maxWidth: 1400.w, // 최대 폭 제한으로 너무 넓어지지 않도록
+          ),
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSizes.xl, // 좌우 여백을 더 넓게
+            vertical: AppSizes.md,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(),
+              SizedBox(height: AppSizes.md),
+              _buildStatsCards(),
+              SizedBox(height: AppSizes.md),
+              _buildSearchAndFilters(),
+              SizedBox(height: AppSizes.md),
+              Expanded(
+                child: _buildMemberTable(),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -303,10 +312,14 @@ class _MembersPageState extends State<MembersPage> {
             Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columnSpacing: 15.w,
-                  dataRowMinHeight: 48.h,
-                  dataRowMaxHeight: 56.h,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: MediaQuery.of(context).size.width - 140.w, // 화면 폭에서 여백 제외
+                  ),
+                  child: DataTable(
+                    columnSpacing: 25.w, // 컬럼 간격을 더 넓게
+                    dataRowMinHeight: 52.h,
+                    dataRowMaxHeight: 60.h,
                   columns: [
                     DataColumn(
                       label: Text(
@@ -382,6 +395,7 @@ class _MembersPageState extends State<MembersPage> {
                     ),
                   ],
                   rows: currentPageMembers.map((member) => _buildDataRow(member)).toList(),
+                  ),
                 ),
               ),
             ),
