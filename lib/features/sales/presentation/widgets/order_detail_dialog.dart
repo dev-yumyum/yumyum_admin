@@ -64,7 +64,7 @@ class OrderDetailDialog extends StatelessWidget {
           Text(
             '주문 상세정보',
             style: TextStyle(
-              fontSize: 20.sp,
+              fontSize: 24.sp,
               fontWeight: FontWeight.bold,
               color: AppColors.textPrimary,
             ),
@@ -90,7 +90,7 @@ class OrderDetailDialog extends StatelessWidget {
         Text(
           '기본 정보',
           style: TextStyle(
-            fontSize: 18.sp,
+            fontSize: 22.sp,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
           ),
@@ -116,7 +116,7 @@ class OrderDetailDialog extends StatelessWidget {
         Text(
           '주문 정보',
           style: TextStyle(
-            fontSize: 18.sp,
+            fontSize: 22.sp,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
           ),
@@ -142,7 +142,7 @@ class OrderDetailDialog extends StatelessWidget {
         Text(
           '주문 진행 상황',
           style: TextStyle(
-            fontSize: 18.sp,
+            fontSize: 22.sp,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
           ),
@@ -184,7 +184,7 @@ class OrderDetailDialog extends StatelessWidget {
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: 16.sp,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w600,
                     color: isCompleted ? AppColors.textPrimary : AppColors.textSecondary,
                   ),
@@ -193,7 +193,7 @@ class OrderDetailDialog extends StatelessWidget {
                   Text(
                     time,
                     style: TextStyle(
-                      fontSize: 14.sp,
+                      fontSize: 18.sp,
                       color: AppColors.textSecondary,
                     ),
                   ),
@@ -216,7 +216,7 @@ class OrderDetailDialog extends StatelessWidget {
             child: Text(
               label,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 18.sp,
                 color: AppColors.textSecondary,
                 fontWeight: isHighlight ? FontWeight.w600 : FontWeight.normal,
               ),
@@ -226,7 +226,7 @@ class OrderDetailDialog extends StatelessWidget {
             child: Text(
               value,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 18.sp,
                 color: color ?? (isHighlight ? AppColors.textPrimary : AppColors.textPrimary),
                 fontWeight: isHighlight ? FontWeight.w600 : FontWeight.normal,
               ),
@@ -259,7 +259,7 @@ class OrderDetailDialog extends StatelessWidget {
             ),
             child: Text(
               '닫기',
-              style: TextStyle(fontSize: 14.sp),
+              style: TextStyle(fontSize: 18.sp),
             ),
           ),
         ],

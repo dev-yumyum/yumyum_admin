@@ -78,7 +78,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
         Text(
           '매장 메뉴 관리',
           style: TextStyle(
-            fontSize: 24.sp,
+            fontSize: 28.sp,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
           ),
@@ -100,7 +100,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
             child: Text(
               '메뉴 관리',
               style: TextStyle(
-                fontSize: 16.sp,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -109,7 +109,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
             child: Text(
               '옵션 관리',
               style: TextStyle(
-                fontSize: 16.sp,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -137,7 +137,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                 Text(
                   '피자',
                   style: TextStyle(
-                    fontSize: 18.sp,
+                    fontSize: 22.sp,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -197,7 +197,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                 Text(
                   '밤바피자',
                   style: TextStyle(
-                    fontSize: 14.sp,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary,
                   ),
@@ -208,7 +208,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                     Text(
                       'L: ',
                       style: TextStyle(
-                        fontSize: 12.sp,
+                        fontSize: 16.sp,
                         color: AppColors.info,
                         fontWeight: FontWeight.bold,
                       ),
@@ -216,7 +216,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                     Text(
                       '24,900원',
                       style: TextStyle(
-                        fontSize: 12.sp,
+                        fontSize: 16.sp,
                         color: AppColors.info,
                         fontWeight: FontWeight.bold,
                       ),
@@ -225,14 +225,14 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                     Text(
                       'M: ',
                       style: TextStyle(
-                        fontSize: 12.sp,
+                        fontSize: 16.sp,
                         color: AppColors.textSecondary,
                       ),
                     ),
                     Text(
                       '22,900원',
                       style: TextStyle(
-                        fontSize: 12.sp,
+                        fontSize: 16.sp,
                         color: AppColors.textSecondary,
                       ),
                     ),
@@ -242,7 +242,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                 Text(
                   '[음식메뉴] 랩컨다이트피자 나주혁신',
                   style: TextStyle(
-                    fontSize: 11.sp,
+                    fontSize: 15.sp,
                     color: AppColors.textTertiary,
                   ),
                   maxLines: 1,
@@ -296,7 +296,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                     Text(
                       '포토리뷰&할 이벤트',
                       style: TextStyle(
-                        fontSize: 16.sp,
+                        fontSize: 20.sp,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textPrimary,
                       ),
@@ -305,7 +305,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                     Text(
                       '선택 최대 1개',
                       style: TextStyle(
-                        fontSize: 12.sp,
+                        fontSize: 16.sp,
                         color: AppColors.textTertiary,
                       ),
                     ),
@@ -355,7 +355,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                 Text(
                   optionName,
                   style: TextStyle(
-                    fontSize: 14.sp,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textPrimary,
                   ),
@@ -364,7 +364,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                 Text(
                   '0원',
                   style: TextStyle(
-                    fontSize: 14.sp,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textSecondary,
                   ),

@@ -66,7 +66,7 @@ class _StoresPageState extends State<StoresPage> {
             Text(
               '등록된 매장을 관리하고 운영 상태를 확인할 수 있습니다.',
               style: TextStyle(
-                fontSize: 16.sp,
+                fontSize: 20.sp,
                 color: AppColors.textSecondary,
               ),
             ),
@@ -178,7 +178,7 @@ class _StoresPageState extends State<StoresPage> {
             Text(
               '매장 목록 (${filteredStores.length}개)',
               style: TextStyle(
-                fontSize: 18.sp,
+                fontSize: 22.sp,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
@@ -228,7 +228,7 @@ class _StoresPageState extends State<StoresPage> {
       title: Text(
         store.storeName,
         style: TextStyle(
-          fontSize: 16.sp,
+          fontSize: 20.sp,
           fontWeight: FontWeight.w600,
           color: AppColors.textPrimary,
         ),
@@ -241,14 +241,14 @@ class _StoresPageState extends State<StoresPage> {
             Text(
               '사업자: ${store.businessName}',
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 18.sp,
                 color: AppColors.textSecondary,
               ),
             ),
           Text(
             '주소: ${store.storeAddress}',
             style: TextStyle(
-              fontSize: 14.sp,
+              fontSize: 18.sp,
               color: AppColors.textSecondary,
             ),
             overflow: TextOverflow.ellipsis,
@@ -269,7 +269,7 @@ class _StoresPageState extends State<StoresPage> {
                   child: Text(
                     '포장',
                     style: TextStyle(
-                      fontSize: 10.sp,
+                      fontSize: 14.sp,
                       color: AppColors.info,
                       fontWeight: FontWeight.w500,
                     ),
@@ -289,7 +289,7 @@ class _StoresPageState extends State<StoresPage> {
                   child: Text(
                     '포장',
                     style: TextStyle(
-                      fontSize: 10.sp,
+                      fontSize: 14.sp,
                       color: AppColors.secondary,
                       fontWeight: FontWeight.w500,
                     ),
@@ -349,7 +349,7 @@ class _StoresPageState extends State<StoresPage> {
       child: Text(
         statusText,
         style: TextStyle(
-          fontSize: 10.sp,
+          fontSize: 14.sp,
           fontWeight: FontWeight.w600,
           color: chipColor,
         ),

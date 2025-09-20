@@ -118,7 +118,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
               Text(
                 '수수료 세부 내역',
                 style: TextStyle(
-                  fontSize: 14.sp,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
                 ),
@@ -146,7 +146,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
         Text(
           label,
           style: TextStyle(
-            fontSize: 12.sp,
+            fontSize: 16.sp,
             color: AppColors.textSecondary,
           ),
         ),
@@ -154,7 +154,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
         Text(
           '${_formatCurrency(amount.toString())}원',
           style: TextStyle(
-            fontSize: 14.sp,
+            fontSize: 18.sp,
             fontWeight: FontWeight.bold,
             color: color,
           ),
@@ -177,7 +177,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: 16.sp,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textSecondary,
                   ),
@@ -188,7 +188,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
             Text(
               value,
               style: TextStyle(
-                fontSize: 24.sp,
+                fontSize: 28.sp,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
@@ -197,7 +197,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
             Text(
               subtitle,
               style: TextStyle(
-                fontSize: 12.sp,
+                fontSize: 16.sp,
                 color: AppColors.textSecondary,
               ),
             ),
@@ -228,7 +228,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
         Text(
           '조회 기간:',
           style: TextStyle(
-            fontSize: 14.sp,
+            fontSize: 18.sp,
             color: AppColors.textSecondary,
           ),
         ),
@@ -266,7 +266,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                 Text(
                   '정산 요청 목록',
                   style: TextStyle(
-                    fontSize: 18.sp,
+                    fontSize: 22.sp,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -276,7 +276,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                     Text(
                       '정산건 검',
                       style: TextStyle(
-                        fontSize: 14.sp,
+                        fontSize: 18.sp,
                         color: AppColors.textSecondary,
                       ),
                     ),
@@ -308,7 +308,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                         '사업자명',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                         ),
                       ),
                     ),
@@ -317,7 +317,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                         '사업자번호',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                         ),
                       ),
                     ),
@@ -326,7 +326,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                         '요청금액',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                         ),
                       ),
                     ),
@@ -335,7 +335,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                         '요청일',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                         ),
                       ),
                     ),
@@ -344,7 +344,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                         '상태',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                         ),
                       ),
                     ),
@@ -353,7 +353,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                         '관리',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                         ),
                       ),
                     ),

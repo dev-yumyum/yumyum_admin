@@ -173,7 +173,7 @@ class _MembersPageState extends State<MembersPage> {
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: 16.sp,
+                    fontSize: 20.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textSecondary,
                   ),
@@ -187,7 +187,7 @@ class _MembersPageState extends State<MembersPage> {
                 (Match m) => '${m[1]},',
               ),
               style: TextStyle(
-                fontSize: 32.sp,
+                fontSize: 36.sp,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
@@ -196,7 +196,7 @@ class _MembersPageState extends State<MembersPage> {
             Text(
               subtitle,
               style: TextStyle(
-                fontSize: 12.sp,
+                fontSize: 16.sp,
                 color: AppColors.textSecondary,
               ),
             ),
@@ -233,7 +233,7 @@ class _MembersPageState extends State<MembersPage> {
                     '검색',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 12.sp,
+                      fontSize: 16.sp,
                     ),
                   ),
                 ),
@@ -278,7 +278,7 @@ class _MembersPageState extends State<MembersPage> {
                 Text(
                   '회원 목록',
                   style: TextStyle(
-                    fontSize: 18.sp,
+                    fontSize: 22.sp,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -313,7 +313,7 @@ class _MembersPageState extends State<MembersPage> {
                         '고유번호',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                         ),
                       ),
                     ),
@@ -322,7 +322,7 @@ class _MembersPageState extends State<MembersPage> {
                         '회원명',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                         ),
                       ),
                     ),
@@ -331,7 +331,7 @@ class _MembersPageState extends State<MembersPage> {
                         '연락처',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                         ),
                       ),
                     ),
@@ -340,7 +340,7 @@ class _MembersPageState extends State<MembersPage> {
                         '이메일',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                         ),
                       ),
                     ),
@@ -349,7 +349,7 @@ class _MembersPageState extends State<MembersPage> {
                         '가입일',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                         ),
                       ),
                     ),
@@ -358,7 +358,7 @@ class _MembersPageState extends State<MembersPage> {
                         '상태',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                         ),
                       ),
                     ),
@@ -367,7 +367,7 @@ class _MembersPageState extends State<MembersPage> {
                         '가입형식',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                         ),
                       ),
                     ),
@@ -376,7 +376,7 @@ class _MembersPageState extends State<MembersPage> {
                         '최근접속',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                         ),
                       ),
                     ),
@@ -538,7 +538,7 @@ class _MembersPageState extends State<MembersPage> {
         Text(
           '총 ${_filteredMembers.length}명 중 $startItem-${endItem}명 표시',
           style: TextStyle(
-            fontSize: 12.sp,
+                      fontSize: 16.sp,
             color: AppColors.textSecondary,
           ),
         ),
@@ -575,7 +575,7 @@ class _MembersPageState extends State<MembersPage> {
                     child: Text(
                       pageNumber.toString(),
                       style: TextStyle(
-                        fontSize: 12.sp,
+                        fontSize: 16.sp,
                         color: _currentPage == pageNumber ? Colors.white : AppColors.textPrimary,
                         fontWeight: _currentPage == pageNumber ? FontWeight.bold : FontWeight.normal,
                       ),

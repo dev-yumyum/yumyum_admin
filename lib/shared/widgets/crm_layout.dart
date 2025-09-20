@@ -175,7 +175,7 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
               child: Text(
                 AppStrings.appName,
                 style: TextStyle(
-                  fontSize: 20.sp,
+                  fontSize: 24.sp,
                   fontWeight: FontWeight.bold,
                   color: AppColors.primary,
                 ),
@@ -309,7 +309,7 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
                     child: AnimatedDefaultTextStyle(
                       duration: const Duration(milliseconds: 200),
                       style: TextStyle(
-                        fontSize: 14.sp,
+                        fontSize: 18.sp,
                         fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
                         color: isActive ? AppColors.primary : AppColors.textPrimary,
                       ),
@@ -364,7 +364,7 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
                   Text(
                     '김관리자',
                     style: TextStyle(
-                      fontSize: 14.sp,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimary,
                     ),
@@ -372,7 +372,7 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
                   Text(
                     '시스템관리팀',
                     style: TextStyle(
-                      fontSize: 12.sp,
+                      fontSize: 16.sp,
                       color: AppColors.textSecondary,
                     ),
                   ),
@@ -425,7 +425,7 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
             child: Text(
               _getPageTitle(),
               style: TextStyle(
-                fontSize: _isMobile ? 20.sp : 24.sp,
+                fontSize: _isMobile ? 24.sp : 28.sp,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
@@ -551,7 +551,7 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
                       Text(
                         '김관리자',
                         style: TextStyle(
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.w500,
                           color: AppColors.textPrimary,
                         ),

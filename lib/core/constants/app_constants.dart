@@ -45,24 +45,24 @@ class AppColors {
 /// 앱 전체에서 사용되는 크기 정의
 class AppSizes {
   // 패딩 및 마진
-  static double xs = 4.0.w;
-  static double sm = 8.0.w;
-  static double md = 16.0.w;
-  static double lg = 24.0.w;
-  static double xl = 32.0.w;
-  static double xxl = 48.0.w;
+  static double xs = 5.0.w;
+  static double sm = 10.0.w;
+  static double md = 18.0.w;
+  static double lg = 28.0.w;
+  static double xl = 36.0.w;
+  static double xxl = 52.0.w;
   
   // 아이콘 크기
-  static double iconXs = 12.0.w;
-  static double iconSm = 16.0.w;
-  static double iconMd = 24.0.w;
-  static double iconLg = 32.0.w;
-  static double iconXl = 48.0.w;
+  static double iconXs = 14.0.w;
+  static double iconSm = 18.0.w;
+  static double iconMd = 28.0.w;
+  static double iconLg = 36.0.w;
+  static double iconXl = 52.0.w;
   
   // 버튼 크기
-  static double buttonHeight = 48.0.h;
-  static double buttonSmall = 36.0.h;
-  static double buttonLarge = 56.0.h;
+  static double buttonHeight = 52.0.h;
+  static double buttonSmall = 40.0.h;
+  static double buttonLarge = 60.0.h;
   
   // 카드 및 컨테이너
   static double borderRadius = 8.0.r;
