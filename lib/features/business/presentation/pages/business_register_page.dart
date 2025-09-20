@@ -104,7 +104,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
               Text(
                 '새로운 사업자 정보를 등록합니다.',
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 20.sp,
                   color: AppColors.textSecondary,
                 ),
               ),
@@ -132,28 +132,15 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
   Widget _buildForm() {
     return Form(
       key: _formKey,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
         children: [
-          Expanded(
-            child: Column(
-              children: [
-                _buildBasicInfoCard(),
-                SizedBox(height: AppSizes.lg),
-                _buildBusinessInfoCard(),
-              ],
-            ),
-          ),
-          SizedBox(width: AppSizes.lg),
-          Expanded(
-            child: Column(
-              children: [
-                _buildContactInfoCard(),
-                SizedBox(height: AppSizes.lg),
-                _buildAccountInfoCard(),
-              ],
-            ),
-          ),
+          _buildBasicInfoCard(),
+          SizedBox(height: AppSizes.lg),
+          _buildBusinessInfoCard(),
+          SizedBox(height: AppSizes.lg),
+          _buildContactInfoCard(),
+          SizedBox(height: AppSizes.lg),
+          _buildAccountInfoCard(),
         ],
       ),
     );
@@ -169,7 +156,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
             Text(
               '기본 정보',
               style: TextStyle(
-                fontSize: 18.sp,
+                fontSize: 22.sp,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
@@ -242,7 +229,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
             Text(
               '사업 정보',
               style: TextStyle(
-                fontSize: 18.sp,
+                fontSize: 22.sp,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
@@ -298,7 +285,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
             Text(
               '연락처 정보',
               style: TextStyle(
-                fontSize: 18.sp,
+                fontSize: 22.sp,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
@@ -346,7 +333,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
             Text(
               '정산 계좌',
               style: TextStyle(
-                fontSize: 18.sp,
+                fontSize: 22.sp,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
@@ -401,7 +388,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
             Text(
               '사업자등록증',
               style: TextStyle(
-                fontSize: 16.sp,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
               ),
@@ -410,7 +397,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
             Text(
               '(선택사항)',
               style: TextStyle(
-                fontSize: 12.sp,
+                fontSize: 20.sp,
                 color: AppColors.textSecondary,
               ),
             ),
@@ -420,7 +407,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
         Text(
           '사업자등록증 이미지를 첨부해주세요. (JPG, PNG, GIF 파일만 가능)',
           style: TextStyle(
-            fontSize: 12.sp,
+            fontSize: 16.sp,
             color: AppColors.textSecondary,
           ),
         ),
@@ -458,7 +445,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
                       Text(
                         '파일이 선택되었습니다',
                         style: TextStyle(
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.w500,
                           color: AppColors.success,
                         ),
@@ -467,7 +454,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
                       Text(
                         _businessLicenseImageName ?? '이미지 파일',
                         style: TextStyle(
-                          fontSize: 12.sp,
+                          fontSize: 20.sp,
                           color: AppColors.textSecondary,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -518,7 +505,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
             Text(
               '통장 이미지',
               style: TextStyle(
-                fontSize: 16.sp,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
               ),
@@ -527,7 +514,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
             Text(
               '(선택사항)',
               style: TextStyle(
-                fontSize: 12.sp,
+                fontSize: 20.sp,
                 color: AppColors.textSecondary,
               ),
             ),
@@ -537,7 +524,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
         Text(
           '통장 사본 이미지를 첨부해주세요. (JPG, PNG, GIF 파일만 가능)',
           style: TextStyle(
-            fontSize: 12.sp,
+            fontSize: 16.sp,
             color: AppColors.textSecondary,
           ),
         ),
@@ -575,7 +562,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
                       Text(
                         '파일이 선택되었습니다',
                         style: TextStyle(
-                          fontSize: 14.sp,
+                          fontSize: 18.sp,
                           fontWeight: FontWeight.w500,
                           color: AppColors.success,
                         ),
@@ -584,7 +571,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
                       Text(
                         _bankBookImageName ?? '이미지 파일',
                         style: TextStyle(
-                          fontSize: 12.sp,
+                          fontSize: 20.sp,
                           color: AppColors.textSecondary,
                         ),
                         overflow: TextOverflow.ellipsis,

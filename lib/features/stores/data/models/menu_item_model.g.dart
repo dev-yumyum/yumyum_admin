@@ -15,7 +15,7 @@ MenuItemModel _$MenuItemModelFromJson(Map<String, dynamic> json) =>
       price: (json['price'] as num).toInt(),
       description: json['description'] as String?,
       imageUrl: json['imageUrl'] as String?,
-      status: json['status'] as String? ?? statusSelling,
+      status: json['status'] as String? ?? 'SELLING',
       sortOrder: (json['sortOrder'] as num).toInt(),
       createdDate: json['createdDate'] as String,
       lastModifiedDate: json['lastModifiedDate'] as String?,

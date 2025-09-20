@@ -29,7 +29,7 @@ class MenuItemModel {
     required this.price,
     this.description,
     this.imageUrl,
-    this.status = statusSelling,
+    this.status = 'SELLING',
     required this.sortOrder,
     required this.createdDate,
     this.lastModifiedDate,
