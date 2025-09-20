@@ -66,21 +66,30 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     return CrmLayout(
       currentRoute: RouteNames.sales,
-      child: Padding(
-        padding: EdgeInsets.all(AppSizes.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            SizedBox(height: AppSizes.lg),
-            _buildTodayStatus(),
-            SizedBox(height: AppSizes.lg),
-            _buildFilters(),
-            SizedBox(height: AppSizes.lg),
-            Expanded(
-              child: _buildSalesTable(),
-            ),
-          ],
+      child: Center(
+        child: Container(
+          width: double.infinity,
+          constraints: BoxConstraints(
+            maxWidth: 1400.w, // 최대 폭 제한으로 너무 넓어지지 않도록
+          ),
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSizes.xl, // 좌우 여백을 더 넓게
+            vertical: AppSizes.lg,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(),
+              SizedBox(height: AppSizes.lg),
+              _buildTodayStatus(),
+              SizedBox(height: AppSizes.lg),
+              _buildFilters(),
+              SizedBox(height: AppSizes.lg),
+              Expanded(
+                child: _buildSalesTable(),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -445,10 +454,17 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
             Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  headingRowColor: MaterialStateProperty.all(
-                    AppColors.backgroundSecondary,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: MediaQuery.of(context).size.width - 140.w, // 화면 폭에서 여백 제외
                   ),
+                  child: DataTable(
+                    headingRowColor: MaterialStateProperty.all(
+                      AppColors.backgroundSecondary,
+                    ),
+                    columnSpacing: 25.w, // 컬럼 간격을 더 넓게
+                    dataRowMinHeight: 52.h,
+                    dataRowMaxHeight: 60.h,
                   columns: [
                     DataColumn(
                       label: Text(
@@ -512,6 +528,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
                     ),
                   ],
                   rows: sales.map((sale) => _buildDataRow(sale)).toList(),
+                  ),
                 ),
               ),
             ),

@@ -40,21 +40,30 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
   Widget build(BuildContext context) {
     return CrmLayout(
       currentRoute: RouteNames.settlement,
-      child: Padding(
-        padding: EdgeInsets.all(AppSizes.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(),
-            SizedBox(height: AppSizes.md),
-            _buildTodayStatus(),
-            SizedBox(height: AppSizes.md),
-            _buildFilters(),
-            SizedBox(height: AppSizes.md),
-            Expanded(
-              child: _buildSettlementTable(),
-            ),
-          ],
+      child: Center(
+        child: Container(
+          width: double.infinity,
+          constraints: BoxConstraints(
+            maxWidth: 1400.w, // 최대 폭 제한으로 너무 넓어지지 않도록
+          ),
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSizes.xl, // 좌우 여백을 더 넓게
+            vertical: AppSizes.md,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(),
+              SizedBox(height: AppSizes.md),
+              _buildTodayStatus(),
+              SizedBox(height: AppSizes.md),
+              _buildFilters(),
+              SizedBox(height: AppSizes.md),
+              Expanded(
+                child: _buildSettlementTable(),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -298,10 +307,14 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
             Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columnSpacing: 15.w,
-                  dataRowMinHeight: 48.h,
-                  dataRowMaxHeight: 56.h,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: MediaQuery.of(context).size.width - 140.w, // 화면 폭에서 여백 제외
+                  ),
+                  child: DataTable(
+                    columnSpacing: 25.w, // 컬럼 간격을 더 넓게
+                    dataRowMinHeight: 52.h,
+                    dataRowMaxHeight: 60.h,
                   columns: [
                     DataColumn(
                       label: Text(
@@ -359,6 +372,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                     ),
                   ],
                   rows: filteredSettlements.map((settlement) => _buildDataRow(settlement)).toList(),
+                  ),
                 ),
               ),
             ),
