@@ -22,6 +22,62 @@ class StoreMenuPage extends StatefulWidget {
 
 class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateMixin {
   late TabController _tabController;
+  
+  // 샘플 메뉴 그룹 데이터
+  final List<Map<String, dynamic>> _menuGroups = [
+    {
+      'name': '피자',
+      'items': [
+        {'name': '밤바피자', 'priceL': '24,900원', 'priceM': '22,900원', 'description': '[음식메뉴] 랩컨다이트피자 나주혁신'},
+        {'name': '페퍼로니 피자', 'priceL': '26,900원', 'priceM': '24,900원', 'description': '[음식메뉴] 클래식 페퍼로니 피자'},
+      ]
+    },
+    {
+      'name': '파스타',
+      'items': [
+        {'name': '크림 파스타', 'priceL': '16,900원', 'priceM': '14,900원', 'description': '[음식메뉴] 부드러운 크림 파스타'},
+        {'name': '토마토 파스타', 'priceL': '15,900원', 'priceM': '13,900원', 'description': '[음식메뉴] 신선한 토마토 파스타'},
+      ]
+    },
+    {
+      'name': '치킨',
+      'items': [
+        {'name': '후라이드 치킨', 'priceL': '19,900원', 'priceM': '17,900원', 'description': '[음식메뉴] 바삭한 후라이드 치킨'},
+        {'name': '양념 치킨', 'priceL': '21,900원', 'priceM': '19,900원', 'description': '[음식메뉴] 달콤매콤 양념 치킨'},
+      ]
+    },
+  ];
+  
+  // 샘플 옵션 그룹 데이터
+  final List<Map<String, dynamic>> _optionGroups = [
+    {
+      'name': '포토리뷰&할인 이벤트',
+      'maxSelection': '선택 최대 1개',
+      'items': [
+        {'name': '포토리뷰: X 이벤트 안함께요', 'price': '0원'},
+        {'name': '포토리뷰: 갈릭딥핑 2개 (5점 후기 부탁드려요)', 'price': '0원'},
+        {'name': '포토리뷰: 모짜렐라 100g (5점 후기 부탁드려요)', 'price': '0원'},
+      ]
+    },
+    {
+      'name': '사이드 메뉴',
+      'maxSelection': '선택 최대 3개',
+      'items': [
+        {'name': '갈릭 브레드', 'price': '3,000원'},
+        {'name': '치즈 스틱', 'price': '4,500원'},
+        {'name': '감자튀김', 'price': '2,500원'},
+      ]
+    },
+    {
+      'name': '음료',
+      'maxSelection': '선택 최대 2개',
+      'items': [
+        {'name': '콜라', 'price': '2,000원'},
+        {'name': '사이다', 'price': '2,000원'},
+        {'name': '오렌지 주스', 'price': '3,000원'},
+      ]
+    },
+  ];
 
   @override
   void initState() {
@@ -126,6 +182,58 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
   }
 
   Widget _buildMenuManagementTab() {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          // 메뉴 그룹 추가 버튼
+          Card(
+            child: Padding(
+              padding: EdgeInsets.all(AppSizes.md),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '메뉴 그룹 관리',
+                    style: TextStyle(
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('메뉴 그룹 추가 기능 준비중입니다.')),
+                      );
+                    },
+                    icon: Icon(MdiIcons.plus, size: AppSizes.iconSm),
+                    label: Text('메뉴 그룹 추가'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: AppSizes.md),
+          // 메뉴 그룹 리스트
+          ...List.generate(_menuGroups.length, (index) {
+            final group = _menuGroups[index];
+            return Column(
+              children: [
+                _buildMenuGroupCard(group),
+                SizedBox(height: AppSizes.md),
+              ],
+            );
+          }),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildMenuGroupCard(Map<String, dynamic> group) {
     return Card(
       child: Padding(
         padding: EdgeInsets.all(AppSizes.lg),
@@ -134,22 +242,52 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  '피자',
-                  style: TextStyle(
-                    fontSize: 22.sp,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      group['name'],
+                      style: TextStyle(
+                        fontSize: 22.sp,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    SizedBox(width: AppSizes.sm),
+                    PopupMenuButton(
+                      icon: Icon(MdiIcons.dotsVertical, color: AppColors.textSecondary),
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: 'edit',
+                          child: Row(
+                            children: [
+                              Icon(MdiIcons.pencil, size: AppSizes.iconSm),
+                              SizedBox(width: AppSizes.xs),
+                              Text('그룹 수정'),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: Row(
+                            children: [
+                              Icon(MdiIcons.delete, size: AppSizes.iconSm, color: AppColors.error),
+                              SizedBox(width: AppSizes.xs),
+                              Text('그룹 삭제', style: TextStyle(color: AppColors.error)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
                 OutlinedButton.icon(
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('메뉴 추가 기능 준비중입니다.')),
+                      SnackBar(content: Text('${group['name']} 메뉴 추가 기능 준비중입니다.')),
                     );
                   },
                   icon: Icon(MdiIcons.plus, size: AppSizes.iconSm),
-                  label: Text('메뉴추가'),
+                  label: Text('메뉴 추가'),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.primary,
                     side: BorderSide(color: AppColors.primary),
@@ -158,16 +296,22 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
               ],
             ),
             SizedBox(height: AppSizes.md),
-            _buildMenuItemCard(),
-            SizedBox(height: AppSizes.sm),
-            _buildMenuItemCard(),
+            ...List.generate(group['items'].length, (index) {
+              final item = group['items'][index];
+              return Column(
+                children: [
+                  _buildMenuItemCard(item),
+                  if (index < group['items'].length - 1) SizedBox(height: AppSizes.sm),
+                ],
+              );
+            }),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildMenuItemCard() {
+  Widget _buildMenuItemCard(Map<String, dynamic> item) {
     return Container(
       padding: EdgeInsets.all(AppSizes.sm),
       decoration: BoxDecoration(
@@ -195,7 +339,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '밤바피자',
+                  item['name'],
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
@@ -214,7 +358,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                       ),
                     ),
                     Text(
-                      '24,900원',
+                      item['priceL'],
                       style: TextStyle(
                         fontSize: 16.sp,
                         color: AppColors.info,
@@ -230,7 +374,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                       ),
                     ),
                     Text(
-                      '22,900원',
+                      item['priceM'],
                       style: TextStyle(
                         fontSize: 16.sp,
                         color: AppColors.textSecondary,
@@ -240,7 +384,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                 ),
                 SizedBox(height: AppSizes.xs),
                 Text(
-                  '[음식메뉴] 랩컨다이트피자 나주혁신',
+                  item['description'],
                   style: TextStyle(
                     fontSize: 15.sp,
                     color: AppColors.textTertiary,
@@ -282,6 +426,58 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
   }
 
   Widget _buildOptionManagementTab() {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          // 옵션 그룹 추가 버튼
+          Card(
+            child: Padding(
+              padding: EdgeInsets.all(AppSizes.md),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '옵션 그룹 관리',
+                    style: TextStyle(
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('옵션 그룹 추가 기능 준비중입니다.')),
+                      );
+                    },
+                    icon: Icon(MdiIcons.plus, size: AppSizes.iconSm),
+                    label: Text('옵션 그룹 추가'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.secondary,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: AppSizes.md),
+          // 옵션 그룹 리스트
+          ...List.generate(_optionGroups.length, (index) {
+            final group = _optionGroups[index];
+            return Column(
+              children: [
+                _buildOptionGroupCard(group),
+                SizedBox(height: AppSizes.md),
+              ],
+            );
+          }),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildOptionGroupCard(Map<String, dynamic> group) {
     return Card(
       child: Padding(
         padding: EdgeInsets.all(AppSizes.lg),
@@ -290,35 +486,65 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
                   children: [
-                    Text(
-                      '포토리뷰&할 이벤트',
-                      style: TextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          group['name'],
+                          style: TextStyle(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        SizedBox(height: AppSizes.xs),
+                        Text(
+                          group['maxSelection'],
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: AppColors.textTertiary,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: AppSizes.xs),
-                    Text(
-                      '선택 최대 1개',
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        color: AppColors.textTertiary,
-                      ),
+                    SizedBox(width: AppSizes.sm),
+                    PopupMenuButton(
+                      icon: Icon(MdiIcons.dotsVertical, color: AppColors.textSecondary),
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: 'edit',
+                          child: Row(
+                            children: [
+                              Icon(MdiIcons.pencil, size: AppSizes.iconSm),
+                              SizedBox(width: AppSizes.xs),
+                              Text('그룹 수정'),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: Row(
+                            children: [
+                              Icon(MdiIcons.delete, size: AppSizes.iconSm, color: AppColors.error),
+                              SizedBox(width: AppSizes.xs),
+                              Text('그룹 삭제', style: TextStyle(color: AppColors.error)),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
                 OutlinedButton.icon(
                   onPressed: () {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('옵션 추가 기능 준비중입니다.')),
+                      SnackBar(content: Text('${group['name']} 옵션 추가 기능 준비중입니다.')),
                     );
                   },
                   icon: Icon(MdiIcons.plus, size: AppSizes.iconSm),
-                  label: Text('옵션추가'),
+                  label: Text('옵션 추가'),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.secondary,
                     side: BorderSide(color: AppColors.secondary),
@@ -327,18 +553,22 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
               ],
             ),
             SizedBox(height: AppSizes.md),
-            _buildOptionItemCard('포토리뷰: X 이벤트 안함께요'),
-            SizedBox(height: AppSizes.sm),
-            _buildOptionItemCard('포토리뷰: 갈릭딥핑 2개 (5점 후기 부탁드려요)'),
-            SizedBox(height: AppSizes.sm),
-            _buildOptionItemCard('포토리뷰: 모짜렐라 100g (5점 후기 부탁드려요)'),
+            ...List.generate(group['items'].length, (index) {
+              final item = group['items'][index];
+              return Column(
+                children: [
+                  _buildOptionItemCard(item),
+                  if (index < group['items'].length - 1) SizedBox(height: AppSizes.sm),
+                ],
+              );
+            }),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildOptionItemCard(String optionName) {
+  Widget _buildOptionItemCard(Map<String, dynamic> item) {
     return Container(
       padding: EdgeInsets.all(AppSizes.sm),
       decoration: BoxDecoration(
@@ -353,7 +583,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  optionName,
+                  item['name'],
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
@@ -362,7 +592,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                 ),
                 SizedBox(height: AppSizes.xs),
                 Text(
-                  '0원',
+                  item['price'],
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
