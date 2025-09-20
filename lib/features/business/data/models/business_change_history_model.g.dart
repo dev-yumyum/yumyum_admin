@@ -1,0 +1,35 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'business_change_history_model.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+BusinessChangeHistoryModel _$BusinessChangeHistoryModelFromJson(
+        Map<String, dynamic> json) =>
+    BusinessChangeHistoryModel(
+      id: json['id'] as String,
+      businessId: json['businessId'] as String,
+      changeType: json['changeType'] as String,
+      changeField: json['changeField'] as String,
+      asIsValue: json['asIsValue'] as String?,
+      toBeValue: json['toBeValue'] as String?,
+      changedBy: json['changedBy'] as String,
+      changeDate: DateTime.parse(json['changeDate'] as String),
+      description: json['description'] as String?,
+    );
+
+Map<String, dynamic> _$BusinessChangeHistoryModelToJson(
+        BusinessChangeHistoryModel instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'businessId': instance.businessId,
+      'changeType': instance.changeType,
+      'changeField': instance.changeField,
+      'asIsValue': instance.asIsValue,
+      'toBeValue': instance.toBeValue,
+      'changedBy': instance.changedBy,
+      'changeDate': instance.changeDate.toIso8601String(),
+      'description': instance.description,
+    };

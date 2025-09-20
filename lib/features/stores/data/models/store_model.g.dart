@@ -1,0 +1,58 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'store_model.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+StoreModel _$StoreModelFromJson(Map<String, dynamic> json) => StoreModel(
+      id: json['id'] as String,
+      businessId: json['businessId'] as String,
+      storeName: json['storeName'] as String,
+      storeAddress: json['storeAddress'] as String,
+      storeAddressDetail: json['storeAddressDetail'] as String?,
+      storePhone: json['storePhone'] as String?,
+      storeDescription: json['storeDescription'] as String?,
+      registrationDate: json['registrationDate'] as String,
+      status: json['status'] as String,
+      operatingHours: json['operatingHours'] as String?,
+      deliveryRadius: json['deliveryRadius'] as String?,
+      isDeliveryAvailable: json['isDeliveryAvailable'] as bool,
+      isPickupAvailable: json['isPickupAvailable'] as bool,
+      minimumOrderAmount: json['minimumOrderAmount'] as String?,
+      deliveryFee: json['deliveryFee'] as String?,
+      storeImages: (json['storeImages'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      latitude: (json['latitude'] as num?)?.toDouble(),
+      longitude: (json['longitude'] as num?)?.toDouble(),
+      businessName: json['businessName'] as String?,
+      menuCount: (json['menuCount'] as num?)?.toInt(),
+      lastOrderDate: json['lastOrderDate'] as String?,
+    );
+
+Map<String, dynamic> _$StoreModelToJson(StoreModel instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'businessId': instance.businessId,
+      'storeName': instance.storeName,
+      'storeAddress': instance.storeAddress,
+      'storeAddressDetail': instance.storeAddressDetail,
+      'storePhone': instance.storePhone,
+      'storeDescription': instance.storeDescription,
+      'registrationDate': instance.registrationDate,
+      'status': instance.status,
+      'operatingHours': instance.operatingHours,
+      'deliveryRadius': instance.deliveryRadius,
+      'isDeliveryAvailable': instance.isDeliveryAvailable,
+      'isPickupAvailable': instance.isPickupAvailable,
+      'minimumOrderAmount': instance.minimumOrderAmount,
+      'deliveryFee': instance.deliveryFee,
+      'storeImages': instance.storeImages,
+      'latitude': instance.latitude,
+      'longitude': instance.longitude,
+      'businessName': instance.businessName,
+      'menuCount': instance.menuCount,
+      'lastOrderDate': instance.lastOrderDate,
+    };

@@ -1,0 +1,69 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'business_model.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+BusinessModel _$BusinessModelFromJson(Map<String, dynamic> json) =>
+    BusinessModel(
+      id: json['id'] as String,
+      businessName: json['businessName'] as String,
+      businessNumber: json['businessNumber'] as String,
+      businessType: json['businessType'] as String,
+      ownerName: json['ownerName'] as String,
+      businessLocation: json['businessLocation'] as String?,
+      businessLocationDetail: json['businessLocationDetail'] as String?,
+      businessAddress: json['businessAddress'] as String?,
+      businessAddressDetail: json['businessAddressDetail'] as String?,
+      businessCategory: json['businessCategory'] as String?,
+      businessItem: json['businessItem'] as String?,
+      ownerPhone: json['ownerPhone'] as String?,
+      ownerEmail: json['ownerEmail'] as String?,
+      registrationDate: json['registrationDate'] as String,
+      status: json['status'] as String,
+      businessLicenseUrl: json['businessLicenseUrl'] as String?,
+      businessLicenseFileName: json['businessLicenseFileName'] as String?,
+      bankName: json['bankName'] as String?,
+      accountNumber: json['accountNumber'] as String?,
+      accountHolder: json['accountHolder'] as String?,
+      accountVerified: json['accountVerified'] as bool?,
+      bankBookUrl: json['bankBookUrl'] as String?,
+      bankBookFileName: json['bankBookFileName'] as String?,
+      loginId: json['loginId'] as String?,
+      password: json['password'] as String?,
+      connectedStoreIds: (json['connectedStoreIds'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+    );
+
+Map<String, dynamic> _$BusinessModelToJson(BusinessModel instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'businessName': instance.businessName,
+      'businessNumber': instance.businessNumber,
+      'businessType': instance.businessType,
+      'ownerName': instance.ownerName,
+      'businessLocation': instance.businessLocation,
+      'businessLocationDetail': instance.businessLocationDetail,
+      'businessAddress': instance.businessAddress,
+      'businessAddressDetail': instance.businessAddressDetail,
+      'businessCategory': instance.businessCategory,
+      'businessItem': instance.businessItem,
+      'ownerPhone': instance.ownerPhone,
+      'ownerEmail': instance.ownerEmail,
+      'registrationDate': instance.registrationDate,
+      'status': instance.status,
+      'businessLicenseUrl': instance.businessLicenseUrl,
+      'businessLicenseFileName': instance.businessLicenseFileName,
+      'bankName': instance.bankName,
+      'accountNumber': instance.accountNumber,
+      'accountHolder': instance.accountHolder,
+      'accountVerified': instance.accountVerified,
+      'bankBookUrl': instance.bankBookUrl,
+      'bankBookFileName': instance.bankBookFileName,
+      'loginId': instance.loginId,
+      'password': instance.password,
+      'connectedStoreIds': instance.connectedStoreIds,
+    };
