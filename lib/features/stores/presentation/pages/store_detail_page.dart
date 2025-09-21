@@ -19,11 +19,51 @@ class StoreDetailPage extends StatefulWidget {
 class _StoreDetailPageState extends State<StoreDetailPage> {
   StoreModel? _store;
   bool _isLoading = true;
+  bool _isEditMode = false;
+  
+  // Form controllers
+  final _formKey = GlobalKey<FormState>();
+  late TextEditingController _storeNameController;
+  late TextEditingController _storeAddressController;
+  late TextEditingController _storeAddressDetailController;
+  late TextEditingController _storePhoneController;
+  late TextEditingController _storeDescriptionController;
+  late TextEditingController _operatingHoursController;
+  late TextEditingController _deliveryRadiusController;
+  late TextEditingController _minimumOrderAmountController;
+  late TextEditingController _deliveryFeeController;
 
   @override
   void initState() {
     super.initState();
+    _initializeControllers();
     _loadStoreData();
+  }
+
+  @override
+  void dispose() {
+    _storeNameController.dispose();
+    _storeAddressController.dispose();
+    _storeAddressDetailController.dispose();
+    _storePhoneController.dispose();
+    _storeDescriptionController.dispose();
+    _operatingHoursController.dispose();
+    _deliveryRadiusController.dispose();
+    _minimumOrderAmountController.dispose();
+    _deliveryFeeController.dispose();
+    super.dispose();
+  }
+
+  void _initializeControllers() {
+    _storeNameController = TextEditingController();
+    _storeAddressController = TextEditingController();
+    _storeAddressDetailController = TextEditingController();
+    _storePhoneController = TextEditingController();
+    _storeDescriptionController = TextEditingController();
+    _operatingHoursController = TextEditingController();
+    _deliveryRadiusController = TextEditingController();
+    _minimumOrderAmountController = TextEditingController();
+    _deliveryFeeController = TextEditingController();
   }
 
   Future<void> _loadStoreData() async {
@@ -42,6 +82,66 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
         _store = store;
         _isLoading = false;
       });
+      _updateControllers();
+    }
+  }
+
+  void _updateControllers() {
+    if (_store == null) return;
+    
+    _storeNameController.text = _store!.storeName;
+    _storeAddressController.text = _store!.storeAddress;
+    _storeAddressDetailController.text = _store!.storeAddressDetail ?? '';
+    _storePhoneController.text = _store!.storePhone ?? '';
+    _storeDescriptionController.text = _store!.storeDescription ?? '';
+    _operatingHoursController.text = _store!.operatingHours ?? '';
+    _deliveryRadiusController.text = _store!.deliveryRadius ?? '';
+    _minimumOrderAmountController.text = _store!.minimumOrderAmount ?? '';
+    _deliveryFeeController.text = _store!.deliveryFee ?? '';
+  }
+
+  void _toggleEditMode() {
+    setState(() {
+      _isEditMode = !_isEditMode;
+      if (!_isEditMode) {
+        // 수정 모드 종료시 원래 데이터로 복원
+        _updateControllers();
+      }
+    });
+  }
+
+  Future<void> _saveChanges() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    // TODO: 실제 API 호출로 데이터 저장
+    await Future.delayed(const Duration(seconds: 1));
+
+    if (_store != null) {
+      final updatedStore = _store!.copyWith(
+        storeName: _storeNameController.text,
+        storeAddress: _storeAddressController.text,
+        storeAddressDetail: _storeAddressDetailController.text.isEmpty ? null : _storeAddressDetailController.text,
+        storePhone: _storePhoneController.text.isEmpty ? null : _storePhoneController.text,
+        storeDescription: _storeDescriptionController.text.isEmpty ? null : _storeDescriptionController.text,
+        operatingHours: _operatingHoursController.text.isEmpty ? null : _operatingHoursController.text,
+        deliveryRadius: _deliveryRadiusController.text.isEmpty ? null : _deliveryRadiusController.text,
+        minimumOrderAmount: _minimumOrderAmountController.text.isEmpty ? null : _minimumOrderAmountController.text,
+        deliveryFee: _deliveryFeeController.text.isEmpty ? null : _deliveryFeeController.text,
+      );
+
+      setState(() {
+        _store = updatedStore;
+        _isEditMode = false;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('매장 정보가 성공적으로 수정되었습니다.'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
     }
   }
 
@@ -51,15 +151,18 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
       currentRoute: RouteNames.store,
       child: _isLoading 
           ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              padding: EdgeInsets.all(AppSizes.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeader(),
-                  SizedBox(height: AppSizes.lg),
-                  _buildContent(),
-                ],
+          : Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(AppSizes.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildHeader(),
+                    SizedBox(height: AppSizes.lg),
+                    _buildContent(),
+                  ],
+                ),
               ),
             ),
     );
@@ -80,7 +183,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               Text(
                 '매장 상세정보',
                 style: TextStyle(
-                  fontSize: 28.sp,
+                  fontSize: 30.sp, // 28.sp -> 30.sp
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
                 ),
@@ -89,7 +192,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               Text(
                 '${_store?.storeName ?? '매장'} 정보',
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 18.sp, // 16.sp -> 18.sp
                   color: AppColors.textSecondary,
                 ),
               ),
@@ -98,31 +201,45 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
         ),
         _buildStatusChip(),
         SizedBox(width: AppSizes.md),
-        ElevatedButton.icon(
-          onPressed: () {
-            // TODO: 수정 페이지로 이동
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('수정 기능 구현 예정'),
-                backgroundColor: AppColors.info,
-              ),
-            );
-          },
-          icon: Icon(MdiIcons.pencil, size: AppSizes.iconSm),
-          label: const Text('수정'),
-        ),
-        SizedBox(width: AppSizes.sm),
-        ElevatedButton.icon(
-          onPressed: () {
-            context.go('/store/${widget.storeId}/menu');
-          },
-          icon: Icon(MdiIcons.silverware, size: AppSizes.iconSm),
-          label: const Text('메뉴 관리'),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.warning,
-            foregroundColor: Colors.white,
+        if (_isEditMode) ...[
+          ElevatedButton.icon(
+            onPressed: _saveChanges,
+            icon: Icon(MdiIcons.check, size: AppSizes.iconSm),
+            label: const Text('저장'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.success,
+              foregroundColor: Colors.white,
+            ),
           ),
-        ),
+          SizedBox(width: AppSizes.sm),
+          OutlinedButton.icon(
+            onPressed: _toggleEditMode,
+            icon: Icon(MdiIcons.close, size: AppSizes.iconSm),
+            label: const Text('취소'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.error,
+              side: const BorderSide(color: AppColors.error),
+            ),
+          ),
+        ] else ...[
+          ElevatedButton.icon(
+            onPressed: _toggleEditMode,
+            icon: Icon(MdiIcons.pencil, size: AppSizes.iconSm),
+            label: const Text('수정'),
+          ),
+          SizedBox(width: AppSizes.sm),
+          ElevatedButton.icon(
+            onPressed: () {
+              context.go('/store/${widget.storeId}/menu');
+            },
+            icon: Icon(MdiIcons.silverware, size: AppSizes.iconSm),
+            label: const Text('메뉴 관리'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.warning,
+              foregroundColor: Colors.white,
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -164,7 +281,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
       child: Text(
         statusText,
         style: TextStyle(
-          fontSize: 12.sp,
+          fontSize: 14.sp, // 12.sp -> 14.sp
           fontWeight: FontWeight.w600,
           color: chipColor,
         ),
@@ -206,7 +323,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                 Text(
                   '기본 정보',
                   style: TextStyle(
-                    fontSize: 18.sp,
+                    fontSize: 20.sp, // 18.sp -> 20.sp
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -214,13 +331,44 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               ],
             ),
             SizedBox(height: AppSizes.lg),
-            _buildInfoRow('매장명', _store!.storeName),
+            _buildInfoRow(
+              '매장명', 
+              _store!.storeName,
+              controller: _storeNameController,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return '매장명은 필수입니다.';
+                }
+                return null;
+              },
+            ),
             _buildInfoRow('사업자', _store!.businessName ?? '-'),
-            _buildInfoRow('매장 주소', _store!.storeAddress),
-            if (_store!.storeAddressDetail != null)
-              _buildInfoRow('상세주소', _store!.storeAddressDetail!),
-            _buildInfoRow('매장 전화번호', _store!.storePhone ?? '-'),
-            _buildInfoRow('매장 설명', _store!.storeDescription ?? '-'),
+            _buildInfoRow(
+              '매장 주소', 
+              _store!.storeAddress,
+              controller: _storeAddressController,
+              validator: (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return '매장 주소는 필수입니다.';
+                }
+                return null;
+              },
+            ),
+            _buildInfoRow(
+              '상세주소', 
+              _store!.storeAddressDetail ?? '',
+              controller: _storeAddressDetailController,
+            ),
+            _buildInfoRow(
+              '매장 전화번호', 
+              _store!.storePhone ?? '',
+              controller: _storePhoneController,
+            ),
+            _buildInfoRow(
+              '매장 설명', 
+              _store!.storeDescription ?? '',
+              controller: _storeDescriptionController,
+            ),
             _buildInfoRow('등록일', _store!.registrationDate),
           ],
         ),
@@ -246,7 +394,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                 Text(
                   '사업 정보',
                   style: TextStyle(
-                    fontSize: 18.sp,
+                    fontSize: 20.sp, // 18.sp -> 20.sp
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -254,7 +402,11 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               ],
             ),
             SizedBox(height: AppSizes.lg),
-            _buildInfoRow('운영시간', _store!.operatingHours ?? '-'),
+            _buildInfoRow(
+              '운영시간', 
+              _store!.operatingHours ?? '',
+              controller: _operatingHoursController,
+            ),
             _buildInfoRow('서비스 타입', _buildServiceTypeText()),
             _buildInfoRow('메뉴 개수', _store!.menuCount != null ? '${_store!.menuCount}개' : '-'),
             if (_store!.lastOrderDate != null)
@@ -283,7 +435,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                 Text(
                   '포장 정보',
                   style: TextStyle(
-                    fontSize: 18.sp,
+                    fontSize: 20.sp, // 18.sp -> 20.sp
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -291,13 +443,52 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               ],
             ),
             SizedBox(height: AppSizes.lg),
-            _buildInfoRow('포장 가능', _store!.isDeliveryAvailable ? '가능' : '불가능'),
+            _buildInfoRow('배달 가능', _store!.isDeliveryAvailable ? '가능' : '불가능'),
             if (_store!.isDeliveryAvailable) ...[
-              _buildInfoRow('포장 범위', _store!.deliveryRadius != null ? '${_store!.deliveryRadius}km' : '-'),
-              _buildInfoRow('포장 수수료', _store!.deliveryFee != null ? '${_formatCurrency(_store!.deliveryFee!)}원' : '-'),
+              _buildInfoRow(
+                '배달 범위', 
+                _store!.deliveryRadius != null ? '${_store!.deliveryRadius}km' : '',
+                controller: _deliveryRadiusController,
+                validator: (value) {
+                  if (value != null && value.isNotEmpty) {
+                    final radius = double.tryParse(value);
+                    if (radius == null || radius <= 0) {
+                      return '올바른 숫자를 입력하세요.';
+                    }
+                  }
+                  return null;
+                },
+              ),
+              _buildInfoRow(
+                '배달 수수료', 
+                _store!.deliveryFee != null ? '${_formatCurrency(_store!.deliveryFee!)}원' : '',
+                controller: _deliveryFeeController,
+                validator: (value) {
+                  if (value != null && value.isNotEmpty) {
+                    final fee = int.tryParse(value.replaceAll(',', ''));
+                    if (fee == null || fee < 0) {
+                      return '올바른 금액을 입력하세요.';
+                    }
+                  }
+                  return null;
+                },
+              ),
             ],
             _buildInfoRow('포장 가능', _store!.isPickupAvailable ? '가능' : '불가능'),
-            _buildInfoRow('최소 주문금액', _store!.minimumOrderAmount != null ? '${_formatCurrency(_store!.minimumOrderAmount!)}원' : '-'),
+            _buildInfoRow(
+              '최소 주문금액', 
+              _store!.minimumOrderAmount != null ? '${_formatCurrency(_store!.minimumOrderAmount!)}원' : '',
+              controller: _minimumOrderAmountController,
+              validator: (value) {
+                if (value != null && value.isNotEmpty) {
+                  final amount = int.tryParse(value.replaceAll(',', ''));
+                  if (amount == null || amount < 0) {
+                    return '올바른 금액을 입력하세요.';
+                  }
+                }
+                return null;
+              },
+            ),
           ],
         ),
       ),
@@ -322,7 +513,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                 Text(
                   '운영 현황',
                   style: TextStyle(
-                    fontSize: 18.sp,
+                    fontSize: 20.sp, // 18.sp -> 20.sp
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -343,7 +534,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(String label, String value, {TextEditingController? controller, String? Function(String?)? validator}) {
     return Padding(
       padding: EdgeInsets.only(bottom: AppSizes.md),
       child: Row(
@@ -351,24 +542,43 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
         children: [
           SizedBox(
             width: 100.w,
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-                color: AppColors.textSecondary,
+            child: Padding(
+              padding: EdgeInsets.only(top: _isEditMode ? 14.h : 0),
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 16.sp, // 14.sp -> 16.sp
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textSecondary,
+                ),
               ),
             ),
           ),
           SizedBox(width: AppSizes.md),
           Expanded(
-            child: Text(
-              value,
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: AppColors.textPrimary,
-              ),
-            ),
+            child: _isEditMode && controller != null
+                ? TextFormField(
+                    controller: controller,
+                    validator: validator,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: AppSizes.sm,
+                        vertical: AppSizes.sm,
+                      ),
+                    ),
+                    style: TextStyle(
+                      fontSize: 16.sp, // 14.sp -> 16.sp
+                      color: AppColors.textPrimary,
+                    ),
+                  )
+                : Text(
+                    value,
+                    style: TextStyle(
+                      fontSize: 16.sp, // 14.sp -> 16.sp
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
           ),
         ],
       ),
@@ -392,7 +602,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                 Text(
                   label,
                   style: TextStyle(
-                    fontSize: 12.sp,
+                    fontSize: 14.sp, // 12.sp -> 14.sp
                     color: AppColors.textSecondary,
                   ),
                 ),
@@ -403,7 +613,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                     Text(
                       value,
                       style: TextStyle(
-                        fontSize: 18.sp,
+                        fontSize: 20.sp, // 18.sp -> 20.sp
                         fontWeight: FontWeight.bold,
                         color: color,
                       ),
@@ -412,7 +622,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                     Text(
                       unit,
                       style: TextStyle(
-                        fontSize: 12.sp,
+                        fontSize: 14.sp, // 12.sp -> 14.sp
                         color: AppColors.textSecondary,
                       ),
                     ),

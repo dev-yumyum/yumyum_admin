@@ -83,7 +83,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
     return Text(
       '승인관리',
       style: TextStyle(
-        fontSize: 28.sp,
+        fontSize: 30.sp, // 28.sp -> 30.sp
         fontWeight: FontWeight.bold,
         color: AppColors.textPrimary,
       ),
@@ -156,7 +156,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                     Text(
                       title,
                       style: TextStyle(
-                        fontSize: 18.sp,
+                        fontSize: 20.sp, // 18.sp -> 20.sp
                         fontWeight: FontWeight.w600,
                         color: AppColors.textSecondary,
                       ),
@@ -165,7 +165,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                     Text(
                       value,
                       style: TextStyle(
-                        fontSize: 32.sp,
+                        fontSize: 34.sp, // 32.sp -> 34.sp
                         fontWeight: FontWeight.bold,
                         color: color,
                       ),
@@ -174,7 +174,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                     Text(
                       subtitle,
                       style: TextStyle(
-                        fontSize: 16.sp,
+                        fontSize: 18.sp, // 16.sp -> 18.sp
                         color: AppColors.textTertiary,
                       ),
                     ),
@@ -203,40 +203,40 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
         controller: _tabController,
         tabs: [
           Tab(
-            child: Text(
-              '사업자 승인',
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
+            child:               Text(
+                '사업자 승인',
+                style: TextStyle(
+                  fontSize: 18.sp, // 16.sp -> 18.sp
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
           ),
           Tab(
-            child: Text(
-              '통장 승인',
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
+            child:               Text(
+                '통장 승인',
+                style: TextStyle(
+                  fontSize: 18.sp, // 16.sp -> 18.sp
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
           ),
           Tab(
-            child: Text(
-              '매장 승인',
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
+            child:               Text(
+                '매장 승인',
+                style: TextStyle(
+                  fontSize: 18.sp, // 16.sp -> 18.sp
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
           ),
           Tab(
-            child: Text(
-              '메뉴 승인',
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
+            child:               Text(
+                '메뉴 승인',
+                style: TextStyle(
+                  fontSize: 18.sp, // 16.sp -> 18.sp
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
           ),
         ],
         indicator: BoxDecoration(
@@ -265,7 +265,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                 Text(
                   '승인 요청 목록',
                   style: TextStyle(
-                    fontSize: 22.sp,
+                    fontSize: 24.sp, // 22.sp -> 24.sp
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -273,7 +273,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                 Text(
                   '총 ${filteredRequests.length}건',
                   style: TextStyle(
-                    fontSize: 18.sp,
+                    fontSize: 20.sp, // 18.sp -> 20.sp
                     color: AppColors.textSecondary,
                   ),
                 ),
@@ -297,7 +297,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                           '요청번호',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 18.sp,
+                            fontSize: 20.sp, // 18.sp -> 20.sp
                           ),
                         ),
                       ),
@@ -306,7 +306,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                           '요청유형',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 18.sp,
+                            fontSize: 20.sp, // 18.sp -> 20.sp
                           ),
                         ),
                       ),
@@ -315,7 +315,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                           '요청자',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 18.sp,
+                            fontSize: 20.sp, // 18.sp -> 20.sp
                           ),
                         ),
                       ),
@@ -324,7 +324,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                           '요청내용',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 18.sp,
+                            fontSize: 20.sp, // 18.sp -> 20.sp
                           ),
                         ),
                       ),
@@ -333,7 +333,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                           '요청일',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 18.sp,
+                            fontSize: 20.sp, // 18.sp -> 20.sp
                           ),
                         ),
                       ),
@@ -342,7 +342,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                           '상태',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 18.sp,
+                            fontSize: 20.sp, // 18.sp -> 20.sp
                           ),
                         ),
                       ),
@@ -351,7 +351,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                           '작업',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 18.sp,
+                            fontSize: 20.sp, // 18.sp -> 20.sp
                           ),
                         ),
                       ),
@@ -369,58 +369,81 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
 
   DataRow _buildDataRow(ApprovalRequestModel request) {
     return DataRow(
+      onSelectChanged: (_) => _showApprovalDetailDialog(request),
       cells: [
         DataCell(
-          Text(
-            request.requestNumber,
-            style: TextStyle(fontSize: 16.sp),
-          ),
-        ),
-        DataCell(
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppSizes.sm,
-              vertical: AppSizes.xs,
-            ),
-            decoration: BoxDecoration(
-              color: _getTypeColor(request.requestType).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-            ),
-            child: Text(
-              request.displayRequestType,
+          InkWell(
+            onTap: () => _showApprovalDetailDialog(request),
+            child:             Text(
+              request.requestNumber,
               style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: _getTypeColor(request.requestType),
+                fontSize: 18.sp, // 16.sp -> 18.sp
+                color: AppColors.primary,
+                decoration: TextDecoration.underline,
               ),
             ),
           ),
         ),
         DataCell(
-          Text(
-            request.requester,
-            style: TextStyle(fontSize: 16.sp),
-          ),
-        ),
-        DataCell(
-          SizedBox(
-            width: 200.w,
-            child: Text(
-              request.requestContent,
-              style: TextStyle(fontSize: 16.sp),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+          InkWell(
+            onTap: () => _showApprovalDetailDialog(request),
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSizes.sm,
+                vertical: AppSizes.xs,
+              ),
+              decoration: BoxDecoration(
+                color: _getTypeColor(request.requestType).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+              ),
+              child:               Text(
+                request.displayRequestType,
+                style: TextStyle(
+                  fontSize: 16.sp, // 14.sp -> 16.sp
+                  fontWeight: FontWeight.w600,
+                  color: _getTypeColor(request.requestType),
+                ),
+              ),
             ),
           ),
         ),
         DataCell(
-          Text(
-            request.requestDate,
-            style: TextStyle(fontSize: 16.sp),
+          InkWell(
+            onTap: () => _showApprovalDetailDialog(request),
+            child:             Text(
+              request.requester,
+              style: TextStyle(fontSize: 18.sp), // 16.sp -> 18.sp
+            ),
           ),
         ),
         DataCell(
-          _buildStatusChip(request.status),
+          InkWell(
+            onTap: () => _showApprovalDetailDialog(request),
+            child: SizedBox(
+              width: 200.w,
+              child:               Text(
+                request.requestContent,
+                style: TextStyle(fontSize: 18.sp), // 16.sp -> 18.sp
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+        ),
+        DataCell(
+          InkWell(
+            onTap: () => _showApprovalDetailDialog(request),
+            child:             Text(
+              request.requestDate,
+              style: TextStyle(fontSize: 18.sp), // 16.sp -> 18.sp
+            ),
+          ),
+        ),
+        DataCell(
+          InkWell(
+            onTap: () => _showApprovalDetailDialog(request),
+            child: _buildStatusChip(request.status),
+          ),
         ),
         DataCell(
           ElevatedButton(
@@ -433,9 +456,9 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                 vertical: AppSizes.xs,
               ),
             ),
-            child: Text(
-              '요청리스트',
-              style: TextStyle(fontSize: 14.sp),
+            child:             Text(
+              '상세보기',
+              style: TextStyle(fontSize: 16.sp), // 14.sp -> 16.sp
             ),
           ),
         ),
@@ -477,7 +500,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
       child: Text(
         statusText,
         style: TextStyle(
-          fontSize: 14.sp,
+          fontSize: 16.sp, // 14.sp -> 16.sp
           fontWeight: FontWeight.w600,
           color: chipColor,
         ),
@@ -526,7 +549,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                     Text(
                       '승인 요청 상세',
                       style: TextStyle(
-                        fontSize: 24.sp,
+                        fontSize: 26.sp, // 24.sp -> 26.sp
                         fontWeight: FontWeight.bold,
                         color: AppColors.textPrimary,
                       ),
@@ -567,7 +590,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
             Text(
               '요청 정보',
               style: TextStyle(
-                fontSize: 18.sp,
+                fontSize: 20.sp, // 18.sp -> 20.sp
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
@@ -643,7 +666,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
             Text(
               '변경 내용 비교',
               style: TextStyle(
-                fontSize: 18.sp,
+                fontSize: 20.sp, // 18.sp -> 20.sp
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
@@ -668,7 +691,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                           child: Text(
                             'AS-IS (기존)',
                             style: TextStyle(
-                              fontSize: 16.sp,
+                              fontSize: 18.sp, // 16.sp -> 18.sp
                               fontWeight: FontWeight.bold,
                               color: Colors.red[700],
                             ),
@@ -710,7 +733,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                           child: Text(
                             'TO-BE (변경)',
                             style: TextStyle(
-                              fontSize: 16.sp,
+                              fontSize: 18.sp, // 16.sp -> 18.sp
                               fontWeight: FontWeight.bold,
                               color: Colors.green[700],
                             ),
@@ -793,7 +816,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ElevatedButton.icon(
-          onPressed: () => _rejectRequest(request),
+          onPressed: () => _showRejectConfirmDialog(request),
           icon: Icon(MdiIcons.close, size: AppSizes.iconSm),
           label: Text('반려'),
           style: ElevatedButton.styleFrom(
@@ -807,7 +830,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
         ),
         SizedBox(width: AppSizes.lg),
         ElevatedButton.icon(
-          onPressed: () => _approveRequest(request),
+          onPressed: () => _showApproveConfirmDialog(request),
           icon: Icon(MdiIcons.check, size: AppSizes.iconSm),
           label: Text('승인'),
           style: ElevatedButton.styleFrom(
@@ -824,6 +847,9 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
   }
 
   void _approveRequest(ApprovalRequestModel request) {
+    // 실제 데이터 변경 처리
+    _applyDataChanges(request);
+    
     setState(() {
       final index = _approvalRequests.indexWhere((r) => r.id == request.id);
       if (index != -1) {
@@ -838,8 +864,9 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
     Navigator.of(context).pop();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${request.displayRequestType} 요청이 승인되었습니다.'),
+        content: Text('${request.displayRequestType} 요청이 승인되어 데이터가 변경되었습니다.'),
         backgroundColor: AppColors.success,
+        duration: Duration(seconds: 3),
       ),
     );
   }
@@ -862,6 +889,280 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
       SnackBar(
         content: Text('${request.displayRequestType} 요청이 반려되었습니다.'),
         backgroundColor: AppColors.error,
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+
+  // 승인 시 실제 데이터 변경 처리
+  void _applyDataChanges(ApprovalRequestModel request) {
+    if (request.toBeData == null) return;
+    
+    switch (request.requestType) {
+      case 'BUSINESS_INFO':
+        _applyBusinessInfoChanges(request);
+        break;
+      case 'STORE_INFO':
+        _applyStoreInfoChanges(request);
+        break;
+      case 'BANK_ACCOUNT':
+        _applyBankAccountChanges(request);
+        break;
+      case 'MENU_ITEM':
+        _applyMenuItemChanges(request);
+        break;
+    }
+  }
+
+  void _applyBusinessInfoChanges(ApprovalRequestModel request) {
+    // 실제 프로젝트에서는 비즈니스 데이터베이스에서 해당 데이터를 업데이트
+    print('사업자 정보 변경 적용: ${request.toBeData}');
+    // 예시: 주소 변경, 사업자번호 변경 등
+    // BusinessService.updateBusinessInfo(request.businessId, request.toBeData);
+  }
+
+  void _applyStoreInfoChanges(ApprovalRequestModel request) {
+    // 실제 프로젝트에서는 매장 데이터베이스에서 해당 데이터를 업데이트
+    print('매장 정보 변경 적용: ${request.toBeData}');
+    // 예시: 운영시간 변경, 전화번호 변경 등
+    // StoreService.updateStoreInfo(request.storeId, request.toBeData);
+  }
+
+  void _applyBankAccountChanges(ApprovalRequestModel request) {
+    // 실제 프로젝트에서는 계좌 정보를 업데이트
+    print('계좌 정보 변경 적용: ${request.toBeData}');
+    // 예시: 정산 계좌 변경
+    // BankAccountService.updateAccount(request.businessId, request.toBeData);
+  }
+
+  void _applyMenuItemChanges(ApprovalRequestModel request) {
+    // 실제 프로젝트에서는 메뉴 데이터베이스에서 해당 데이터를 업데이트
+    print('메뉴 정보 변경 적용: ${request.toBeData}');
+    // 예시: 신메뉴 추가, 메뉴 가격 변경 등
+    // MenuService.updateMenuItem(request.storeId, request.toBeData);
+  }
+
+  // 승인 확인 다이얼로그
+  void _showApproveConfirmDialog(ApprovalRequestModel request) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                MdiIcons.checkCircle,
+                color: AppColors.success,
+                size: AppSizes.iconMd,
+              ),
+              SizedBox(width: AppSizes.sm),
+              Text(
+                '승인 확인',
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '다음 요청을 승인하시겠습니까?',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              SizedBox(height: AppSizes.md),
+              Container(
+                padding: EdgeInsets.all(AppSizes.sm),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildConfirmRow('요청번호', request.requestNumber),
+                    _buildConfirmRow('요청유형', request.displayRequestType),
+                    _buildConfirmRow('요청자', request.requester),
+                    _buildConfirmRow('요청내용', request.requestContent),
+                  ],
+                ),
+              ),
+              SizedBox(height: AppSizes.sm),
+              Text(
+                '승인 시 해당 데이터가 변경됩니다.',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: AppColors.warning,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                '취소',
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 16.sp,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _approveRequest(request);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.success,
+                foregroundColor: Colors.white,
+              ),
+              child: Text(
+                '승인',
+                style: TextStyle(fontSize: 16.sp),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // 반려 확인 다이얼로그
+  void _showRejectConfirmDialog(ApprovalRequestModel request) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                MdiIcons.closeCircle,
+                color: AppColors.error,
+                size: AppSizes.iconMd,
+              ),
+              SizedBox(width: AppSizes.sm),
+              Text(
+                '반려 확인',
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '다음 요청을 반려하시겠습니까?',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              SizedBox(height: AppSizes.md),
+              Container(
+                padding: EdgeInsets.all(AppSizes.sm),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildConfirmRow('요청번호', request.requestNumber),
+                    _buildConfirmRow('요청유형', request.displayRequestType),
+                    _buildConfirmRow('요청자', request.requester),
+                    _buildConfirmRow('요청내용', request.requestContent),
+                  ],
+                ),
+              ),
+              SizedBox(height: AppSizes.sm),
+              Text(
+                '반려 시 요청된 변경사항이 적용되지 않습니다.',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: AppColors.error,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                '취소',
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 16.sp,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _rejectRequest(request);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                foregroundColor: Colors.white,
+              ),
+              child: Text(
+                '반려',
+                style: TextStyle(fontSize: 16.sp),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildConfirmRow(String label, String value) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 2.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 80.w,
+            child: Text(
+              '$label:',
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
