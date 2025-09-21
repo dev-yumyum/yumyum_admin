@@ -4,6 +4,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../shared/widgets/crm_layout.dart';
+import '../../../../shared/widgets/searchable_dropdown.dart';
 import '../../data/models/sales_model.dart';
 import '../widgets/order_detail_dialog.dart';
 
@@ -16,9 +17,20 @@ class SalesPage extends StatefulWidget {
 
 class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  String _selectedStore = 'ALL';
+  String? _selectedStore;
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now();
+  List<SalesModel> _sales = [];
+  List<SalesModel> _filteredSales = [];
+  
+  // 상점 목록
+  final List<DropdownItem> _storeItems = [
+    DropdownItem(value: 'ALL', label: '전체'),
+    DropdownItem(value: '1', label: '맛있는집 강남점'),
+    DropdownItem(value: '2', label: '치킨왕 홍대점'),
+    DropdownItem(value: '3', label: '피자마을 신촌점'),
+    DropdownItem(value: '4', label: '맛있는집 서초점'),
+  ];
 
   @override
   void initState() {
@@ -31,6 +43,8 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
         });
       }
     });
+    _sales = _getSampleSales();
+    _filteredSales = _sales;
   }
 
   @override
@@ -60,6 +74,23 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
         _endDate = now;
         break;
     }
+  }
+
+  void _filterSales() {
+    setState(() {
+      if (_selectedStore == null || _selectedStore == 'ALL') {
+        _filteredSales = _sales;
+      } else {
+        _filteredSales = _sales.where((sale) => sale.storeId == _selectedStore).toList();
+      }
+    });
+  }
+
+  void _onStoreChanged(String? storeId) {
+    setState(() {
+      _selectedStore = storeId;
+    });
+    _filterSales();
   }
 
   @override
@@ -316,26 +347,14 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
                   child: const Text('조회'),
                 ),
                 SizedBox(width: AppSizes.lg),
-                // 상점명 드롭다운
-                SizedBox(
+                // 상점명 검색 드롭다운
+                SearchableDropdown(
+                  labelText: '상점명',
+                  value: _selectedStore,
+                  items: _storeItems,
                   width: 200.w,
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedStore,
-                    decoration: const InputDecoration(
-                      labelText: '상점명',
-                    ),
-                    items: const [
-                      DropdownMenuItem(value: 'ALL', child: Text('전체')),
-                      DropdownMenuItem(value: '1', child: Text('맛있는집 강남점')),
-                      DropdownMenuItem(value: '2', child: Text('치킨왕 홍대점')),
-                      DropdownMenuItem(value: '3', child: Text('피자마을 신촌점')),
-                    ],
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedStore = value!;
-                      });
-                    },
-                  ),
+                  hintText: '매장을 검색하세요',
+                  onChanged: _onStoreChanged,
                 ),
                 SizedBox(width: AppSizes.md),
                 ElevatedButton.icon(
@@ -527,7 +546,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
                       ),
                     ),
                   ],
-                  rows: sales.map((sale) => _buildDataRow(sale)).toList(),
+                  rows: _filteredSales.map((sale) => _buildDataRow(sale)).toList(),
                   ),
                 ),
               ),

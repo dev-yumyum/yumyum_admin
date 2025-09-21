@@ -6,6 +6,7 @@ import 'dart:convert';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../shared/widgets/crm_layout.dart';
+import '../../../../shared/widgets/searchable_dropdown.dart';
 import '../../data/models/settlement_model.dart';
 
 class SettlementsPage extends StatefulWidget {
@@ -19,15 +20,47 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
   late TabController _tabController;
   String _selectedPeriod = '오늘';
   List<SettlementModel> _settlements = [];
+  List<SettlementModel> _filteredSettlements = [];
+  String? _selectedBusiness;
   
   int _todayAmount = 1250000;
   int _todayCount = 8;
+  
+  // 사업자 목록
+  final List<DropdownItem> _businessItems = [
+    DropdownItem(value: 'ALL', label: '전체'),
+    DropdownItem(value: '1', label: '㈜맛있는집'),
+    DropdownItem(value: '2', label: '치킨왕 프랜차이즈'),
+    DropdownItem(value: '3', label: '피자마을'),
+    DropdownItem(value: '4', label: '햄버거킹'),
+    DropdownItem(value: '5', label: '스타벅스'),
+  ];
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        setState(() {}); // 탭 변경 시 UI 업데이트
+      }
+    });
     _settlements = _getSampleSettlements();
+    _filteredSettlements = _settlements;
+  }
+
+  String _getBusinessNameById(String id) {
+    final business = _businessItems.firstWhere(
+      (item) => item.value == id,
+      orElse: () => DropdownItem(value: '', label: ''),
+    );
+    return business.label;
+  }
+
+  void _onBusinessChanged(String? businessId) {
+    setState(() {
+      _selectedBusiness = businessId;
+    });
   }
 
   @override
@@ -255,6 +288,16 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
               _selectedPeriod = value!;
             });
           },
+        ),
+        SizedBox(width: AppSizes.lg),
+        // 사업자명 검색 드롭다운
+        SearchableDropdown(
+          labelText: '사업자명',
+          value: _selectedBusiness,
+          items: _businessItems,
+          width: 200.w,
+          hintText: '사업자를 검색하세요',
+          onChanged: _onBusinessChanged,
         ),
       ],
     );
@@ -718,16 +761,32 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
     int currentTabIndex = _tabController.index;
     
     return _settlements.where((settlement) {
+      // 탭 필터링
+      bool passesTabFilter;
       switch (currentTabIndex) {
         case 0: // 전체
-          return true;
+          passesTabFilter = true;
+          break;
         case 1: // 정산전
-          return settlement.status == 'PENDING';
+          passesTabFilter = settlement.status == 'PENDING';
+          break;
         case 2: // 정산완료
-          return settlement.status == 'PAID';
+          passesTabFilter = settlement.status == 'PAID';
+          break;
         default:
-          return true;
+          passesTabFilter = true;
       }
+      
+      // 사업자명 필터링
+      bool passesBusinessFilter;
+      if (_selectedBusiness == null || _selectedBusiness == 'ALL') {
+        passesBusinessFilter = true;
+      } else {
+        final selectedBusinessName = _getBusinessNameById(_selectedBusiness!);
+        passesBusinessFilter = settlement.businessName?.contains(selectedBusinessName) == true;
+      }
+      
+      return passesTabFilter && passesBusinessFilter;
     }).toList()..sort((a, b) {
       // 정산전을 위로, 정산완료를 아래로
       if (a.status == 'PENDING' && b.status == 'PAID') return -1;
