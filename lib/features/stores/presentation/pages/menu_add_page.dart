@@ -39,8 +39,15 @@ class _MenuAddPageState extends State<MenuAddPage> {
   @override
   void initState() {
     super.initState();
-    _selectedGroupId = widget.groupId;
     _loadData();
+    // groupId가 그룹 이름인 경우 해당하는 id를 찾기
+    if (widget.groupId != null) {
+      final group = _availableGroups.firstWhere(
+        (group) => group['name'] == widget.groupId,
+        orElse: () => {'id': widget.groupId, 'name': widget.groupId},
+      );
+      _selectedGroupId = group['id'];
+    }
   }
 
   void _loadData() {
