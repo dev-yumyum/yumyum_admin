@@ -431,145 +431,105 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
               ),
             ),
           ),
-          // 검색 버튼 (웹에서만)
+          // 사용자 정보와 로그아웃 (웹에서만)
           if (kIsWeb && !_isMobile) ...[
-            Container(
-              width: 300.w,
-              height: 40.h,
-              decoration: BoxDecoration(
-                color: AppColors.background,
-                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-                border: Border.all(color: AppColors.border),
-              ),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: '검색...',
-                  prefixIcon: Icon(
-                    MdiIcons.magnify,
-                    size: AppSizes.iconSm,
-                    color: AppColors.textSecondary,
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: AppSizes.md,
-                    vertical: AppSizes.sm,
-                  ),
-                ),
+            Text(
+              '김관리자',
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary,
               ),
             ),
             SizedBox(width: AppSizes.md),
-          ],
-          // 알림 버튼
-          Material(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-            child: InkWell(
-              onTap: () {
-                // TODO: 알림 기능
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('알림 기능 준비 중입니다.'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
+            ElevatedButton.icon(
+              onPressed: () {
+                _showLogoutDialog();
               },
-              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-              hoverColor: kIsWeb ? AppColors.primary.withOpacity(0.1) : null,
-              child: Padding(
-                padding: EdgeInsets.all(AppSizes.sm),
-                child: Badge(
-                  isLabelVisible: true,
-                  label: const Text('3'),
-                  backgroundColor: AppColors.error,
-                  textColor: Colors.white,
-                  child: Icon(
-                    MdiIcons.bell,
-                    size: AppSizes.iconMd,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
+              icon: Icon(
+                MdiIcons.logout,
+                size: AppSizes.iconSm,
               ),
-            ),
-          ),
-          SizedBox(width: AppSizes.sm),
-          // 설정 버튼
-          Material(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-            child: InkWell(
-              onTap: () {
-                // TODO: 설정 기능
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('설정 기능 준비 중입니다.'),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              },
-              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-              hoverColor: kIsWeb ? AppColors.primary.withOpacity(0.1) : null,
-              child: Padding(
-                padding: EdgeInsets.all(AppSizes.sm),
-                child: Icon(
-                  MdiIcons.cog,
-                  size: AppSizes.iconMd,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-            ),
-          ),
-          // 사용자 프로필 (웹에서만)
-          if (kIsWeb && !_isMobile) ...[
-            SizedBox(width: AppSizes.sm),
-            Material(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-              child: InkWell(
-                onTap: () {
-                  // TODO: 프로필 메뉴
-                },
-                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-                hoverColor: AppColors.primary.withOpacity(0.1),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: AppSizes.sm,
-                    vertical: AppSizes.xs,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CircleAvatar(
-                        radius: 16.r,
-                        backgroundColor: AppColors.primary,
-                        child: Icon(
-                          MdiIcons.account,
-                          size: AppSizes.iconSm,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(width: AppSizes.xs),
-                      Text(
-                        '김관리자',
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                      SizedBox(width: AppSizes.xs),
-                      Icon(
-                        MdiIcons.chevronDown,
-                        size: AppSizes.iconXs,
-                        color: AppColors.textSecondary,
-                      ),
-                    ],
-                  ),
+              label: Text('로그아웃'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSizes.md,
+                  vertical: AppSizes.sm,
                 ),
               ),
             ),
           ],
         ],
       ),
+    );
+  }
+
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                MdiIcons.logout,
+                color: AppColors.error,
+                size: AppSizes.iconMd,
+              ),
+              SizedBox(width: AppSizes.sm),
+              Text(
+                '로그아웃',
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            '정말로 로그아웃하시겠습니까?',
+            style: TextStyle(
+              fontSize: 16.sp,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          actions: [
+            OutlinedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: OutlinedButton.styleFrom(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSizes.lg,
+                  vertical: AppSizes.sm,
+                ),
+              ),
+              child: Text('취소'),
+            ),
+            SizedBox(width: AppSizes.sm),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // 로그인 페이지로 이동
+                context.go(RouteNames.login);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSizes.lg,
+                  vertical: AppSizes.sm,
+                ),
+              ),
+              child: Text('로그아웃'),
+            ),
+          ],
+        );
+      },
     );
   }
 

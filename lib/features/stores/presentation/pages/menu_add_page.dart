@@ -208,7 +208,7 @@ class _MenuAddPageState extends State<MenuAddPage> {
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton.icon(
                     onPressed: _selectImage,
-                    icon: Icon(MdiIcons.imageAdd, size: AppSizes.iconSm),
+                    icon: Icon(MdiIcons.image, size: AppSizes.iconSm),
                     label: Text(_menuImagePath != null ? '변경' : '등록'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
