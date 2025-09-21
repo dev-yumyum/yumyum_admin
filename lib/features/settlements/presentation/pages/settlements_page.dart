@@ -293,7 +293,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                     ElevatedButton.icon(
                       onPressed: _exportToExcel,
                       icon: Icon(MdiIcons.fileExcel, size: AppSizes.iconSm),
-                      label: const Text('정산완료'),
+                      label: const Text('엑셀다운로드'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.grey[800],
                         foregroundColor: Colors.white,
@@ -327,7 +327,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                     ),
                     DataColumn(
                       label: Text(
-                        '사업자번호',
+                        '계좌번호',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18.sp,
@@ -386,45 +386,50 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
     return DataRow(
       cells: [
         DataCell(
+          Text(
+            settlement.businessName ?? settlement.storeName ?? '-',
+            style: TextStyle(fontSize: 16.sp),
+          ),
+        ),
+        DataCell(
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                settlement.businessName ?? settlement.storeName ?? '-',
-                style: TextStyle(fontSize: 12.sp),
-              ),
               if (settlement.bankName != null) ...[
-                SizedBox(height: 2.h),
                 Text(
                   '${settlement.bankName}',
                   style: TextStyle(
-                    fontSize: 10.sp,
-                    color: AppColors.textSecondary,
+                    fontSize: 14.sp,
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
+                SizedBox(height: 2.h),
                 Text(
                   '${settlement.accountNumber}',
                   style: TextStyle(
-                    fontSize: 10.sp,
+                    fontSize: 13.sp,
                     color: AppColors.textSecondary,
                   ),
                 ),
                 Text(
                   '${settlement.accountHolder}',
                   style: TextStyle(
-                    fontSize: 10.sp,
+                    fontSize: 13.sp,
                     color: AppColors.textSecondary,
+                  ),
+                ),
+              ] else ...[
+                Text(
+                  '-',
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: AppColors.textTertiary,
                   ),
                 ),
               ],
             ],
-          ),
-        ),
-        DataCell(
-          Text(
-            settlement.businessId,
-            style: TextStyle(fontSize: 12.sp),
           ),
         ),
         DataCell(
@@ -443,9 +448,9 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
         DataCell(
           settlement.status == 'PENDING' 
             ? ElevatedButton(
-                onPressed: () => _completeSettlement(settlement),
+                onPressed: () => _showSettlementConfirmDialog(settlement),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[800],
+                  backgroundColor: AppColors.success,
                   foregroundColor: Colors.white,
                   minimumSize: Size(80.w, 30.h),
                 ),
@@ -495,6 +500,139 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
           color: chipColor,
         ),
       ),
+    );
+  }
+
+  void _showSettlementConfirmDialog(SettlementModel settlement) {
+    final grossAmount = int.tryParse(settlement.settlementAmount) ?? 0;
+    final paymentFee = (grossAmount * 0.033).round();
+    final brokerageFee = (grossAmount * 0.01).round();
+    final netAmount = grossAmount - paymentFee - brokerageFee;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+          ),
+          title: Row(
+            children: [
+              Icon(
+                MdiIcons.checkCircle,
+                color: AppColors.success,
+                size: AppSizes.iconMd,
+              ),
+              SizedBox(width: AppSizes.sm),
+              Text(
+                '정산 완료 확인',
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+          content: Container(
+            width: 400.w,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '다음 정산을 완료 처리하시겠습니까?',
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                SizedBox(height: AppSizes.md),
+                Container(
+                  padding: EdgeInsets.all(AppSizes.md),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildConfirmRow('상호명', settlement.businessName ?? settlement.storeName ?? '-'),
+                      SizedBox(height: AppSizes.xs),
+                      _buildConfirmRow('계좌정보', '${settlement.bankName} ${settlement.accountNumber}'),
+                      SizedBox(height: AppSizes.xs),
+                      _buildConfirmRow('예금주', settlement.accountHolder ?? '-'),
+                      SizedBox(height: AppSizes.xs),
+                      Divider(),
+                      SizedBox(height: AppSizes.xs),
+                      _buildConfirmRow('총 매출액', '${_formatCurrency(grossAmount.toString())}원'),
+                      _buildConfirmRow('결제수수료 (3.3%)', '-${_formatCurrency(paymentFee.toString())}원'),
+                      _buildConfirmRow('중개수수료 (1.0%)', '-${_formatCurrency(brokerageFee.toString())}원'),
+                      SizedBox(height: AppSizes.xs),
+                      Divider(thickness: 2),
+                      SizedBox(height: AppSizes.xs),
+                      _buildConfirmRow('실제 정산액', '${_formatCurrency(netAmount.toString())}원', isHighlight: true),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            OutlinedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: OutlinedButton.styleFrom(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSizes.lg,
+                  vertical: AppSizes.sm,
+                ),
+              ),
+              child: Text('아니오'),
+            ),
+            SizedBox(width: AppSizes.sm),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _completeSettlement(settlement);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.success,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSizes.lg,
+                  vertical: AppSizes.sm,
+                ),
+              ),
+              child: Text('예'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildConfirmRow(String label, String value, {bool isHighlight = false}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 14.sp,
+            color: AppColors.textSecondary,
+            fontWeight: isHighlight ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 14.sp,
+            color: isHighlight ? AppColors.success : AppColors.textPrimary,
+            fontWeight: isHighlight ? FontWeight.bold : FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 

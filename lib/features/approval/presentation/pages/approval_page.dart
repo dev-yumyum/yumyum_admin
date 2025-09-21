@@ -59,10 +59,18 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
               SizedBox(height: AppSizes.md),
               _buildStatsCards(),
               SizedBox(height: AppSizes.md),
-              _buildFilters(),
+              _buildTabBar(),
               SizedBox(height: AppSizes.md),
               Expanded(
-                child: _buildApprovalTable(),
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    _buildApprovalTable('BUSINESS_INFO'),
+                    _buildApprovalTable('BANK_ACCOUNT'),
+                    _buildApprovalTable('STORE_INFO'),
+                    _buildApprovalTable('MENU_ITEM'),
+                  ],
+                ),
               ),
             ],
           ),
@@ -185,47 +193,65 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
     );
   }
 
-  Widget _buildFilters() {
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(AppSizes.md),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              '필터',
+  Widget _buildTabBar() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+      ),
+      child: TabBar(
+        controller: _tabController,
+        tabs: [
+          Tab(
+            child: Text(
+              '사업자 승인',
               style: TextStyle(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            Row(
-              children: [
-                DropdownButton<String>(
-                  value: _selectedStatus,
-                  items: const [
-                    DropdownMenuItem(value: 'ALL', child: Text('전체 상태')),
-                    DropdownMenuItem(value: 'PENDING', child: Text('승인대기')),
-                    DropdownMenuItem(value: 'APPROVED', child: Text('승인완료')),
-                    DropdownMenuItem(value: 'REJECTED', child: Text('반려')),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedStatus = value!;
-                    });
-                  },
-                ),
-              ],
+          ),
+          Tab(
+            child: Text(
+              '통장 승인',
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ],
+          ),
+          Tab(
+            child: Text(
+              '매장 승인',
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          Tab(
+            child: Text(
+              '메뉴 승인',
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+        indicator: BoxDecoration(
+          color: AppColors.primary,
+          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
         ),
+        labelColor: Colors.white,
+        unselectedLabelColor: AppColors.textSecondary,
+        isScrollable: false,
       ),
     );
   }
 
-  Widget _buildApprovalTable() {
-    final filteredRequests = _getFilteredRequests();
+  Widget _buildApprovalTable(String requestType) {
+    final filteredRequests = _getFilteredRequestsByType(requestType);
     
     return Card(
       child: Padding(
@@ -398,9 +424,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
         ),
         DataCell(
           ElevatedButton(
-            onPressed: () {
-              context.go('/approval/detail?id=${request.id}');
-            },
+            onPressed: () => _showApprovalDetailDialog(request),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
@@ -410,7 +434,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
               ),
             ),
             child: Text(
-              '상세보기',
+              '요청리스트',
               style: TextStyle(fontSize: 14.sp),
             ),
           ),
@@ -476,11 +500,370 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
     }
   }
 
-  List<ApprovalRequestModel> _getFilteredRequests() {
-    if (_selectedStatus == 'ALL') {
-      return _approvalRequests;
+  List<ApprovalRequestModel> _getFilteredRequestsByType(String requestType) {
+    return _approvalRequests.where((req) => req.requestType == requestType).toList();
+  }
+
+  void _showApprovalDetailDialog(ApprovalRequestModel request) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+          ),
+          child: Container(
+            width: 800.w,
+            height: 600.h,
+            padding: EdgeInsets.all(AppSizes.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 헤더
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '승인 요청 상세',
+                      style: TextStyle(
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: Icon(MdiIcons.close),
+                    ),
+                  ],
+                ),
+                SizedBox(height: AppSizes.lg),
+                
+                // 요청 정보
+                _buildRequestInfo(request),
+                SizedBox(height: AppSizes.lg),
+                
+                // AS-IS / TO-BE 비교
+                Expanded(child: _buildComparisonSection(request)),
+                SizedBox(height: AppSizes.lg),
+                
+                // 승인/반려 버튼
+                if (request.status == 'PENDING') _buildApprovalActions(request),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildRequestInfo(ApprovalRequestModel request) {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppSizes.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '요청 정보',
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            SizedBox(height: AppSizes.sm),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildInfoRow('요청번호', request.requestNumber),
+                ),
+                Expanded(
+                  child: _buildInfoRow('요청유형', request.displayRequestType),
+                ),
+              ],
+            ),
+            SizedBox(height: AppSizes.xs),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildInfoRow('요청자', request.requester),
+                ),
+                Expanded(
+                  child: _buildInfoRow('요청일', request.requestDate),
+                ),
+              ],
+            ),
+            SizedBox(height: AppSizes.xs),
+            _buildInfoRow('요청내용', request.requestContent),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 4.h),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 80.w,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildComparisonSection(ApprovalRequestModel request) {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppSizes.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '변경 내용 비교',
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            SizedBox(height: AppSizes.md),
+            Expanded(
+              child: Row(
+                children: [
+                  // AS-IS
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(AppSizes.sm),
+                          decoration: BoxDecoration(
+                            color: Colors.red[50],
+                            border: Border.all(color: Colors.red[300]!),
+                            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                          ),
+                          child: Text(
+                            'AS-IS (기존)',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red[700],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(height: AppSizes.sm),
+                        Expanded(
+                          child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(AppSizes.sm),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[50],
+                              border: Border.all(color: AppColors.border),
+                              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                            ),
+                            child: SingleChildScrollView(
+                              child: _buildDataDisplay(request.asIsData),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: AppSizes.md),
+                  // TO-BE
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(AppSizes.sm),
+                          decoration: BoxDecoration(
+                            color: Colors.green[50],
+                            border: Border.all(color: Colors.green[300]!),
+                            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                          ),
+                          child: Text(
+                            'TO-BE (변경)',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.green[700],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        SizedBox(height: AppSizes.sm),
+                        Expanded(
+                          child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(AppSizes.sm),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[50],
+                              border: Border.all(color: AppColors.border),
+                              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                            ),
+                            child: SingleChildScrollView(
+                              child: _buildDataDisplay(request.toBeData),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDataDisplay(Map<String, dynamic>? data) {
+    if (data == null || data.isEmpty) {
+      return Text(
+        '변경 사항 없음',
+        style: TextStyle(
+          fontSize: 14.sp,
+          color: AppColors.textTertiary,
+          fontStyle: FontStyle.italic,
+        ),
+      );
     }
-    return _approvalRequests.where((req) => req.status == _selectedStatus).toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: data.entries.map((entry) {
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: 4.h),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                entry.key,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              SizedBox(height: 2.h),
+              Text(
+                entry.value.toString(),
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              SizedBox(height: AppSizes.xs),
+            ],
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildApprovalActions(ApprovalRequestModel request) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton.icon(
+          onPressed: () => _rejectRequest(request),
+          icon: Icon(MdiIcons.close, size: AppSizes.iconSm),
+          label: Text('반려'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.error,
+            foregroundColor: Colors.white,
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSizes.lg,
+              vertical: AppSizes.md,
+            ),
+          ),
+        ),
+        SizedBox(width: AppSizes.lg),
+        ElevatedButton.icon(
+          onPressed: () => _approveRequest(request),
+          icon: Icon(MdiIcons.check, size: AppSizes.iconSm),
+          label: Text('승인'),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.success,
+            foregroundColor: Colors.white,
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSizes.lg,
+              vertical: AppSizes.md,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _approveRequest(ApprovalRequestModel request) {
+    setState(() {
+      final index = _approvalRequests.indexWhere((r) => r.id == request.id);
+      if (index != -1) {
+        _approvalRequests[index] = request.copyWith(
+          status: 'APPROVED',
+          processedDate: DateTime.now().toString().substring(0, 10),
+          processedBy: '관리자',
+        );
+      }
+    });
+    
+    Navigator.of(context).pop();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${request.displayRequestType} 요청이 승인되었습니다.'),
+        backgroundColor: AppColors.success,
+      ),
+    );
+  }
+
+  void _rejectRequest(ApprovalRequestModel request) {
+    setState(() {
+      final index = _approvalRequests.indexWhere((r) => r.id == request.id);
+      if (index != -1) {
+        _approvalRequests[index] = request.copyWith(
+          status: 'REJECTED',
+          processedDate: DateTime.now().toString().substring(0, 10),
+          processedBy: '관리자',
+          rejectionReason: '관리자에 의해 반려되었습니다.',
+        );
+      }
+    });
+    
+    Navigator.of(context).pop();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${request.displayRequestType} 요청이 반려되었습니다.'),
+        backgroundColor: AppColors.error,
+      ),
+    );
   }
 
   List<ApprovalRequestModel> _getSampleApprovalRequests() {
@@ -608,3 +991,4 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
     ];
   }
 }
+

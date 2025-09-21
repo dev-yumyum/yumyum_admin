@@ -9,6 +9,8 @@ import '../../data/models/menu_group_model.dart';
 import '../../data/models/menu_item_model.dart';
 import '../../data/models/option_group_model.dart';
 import '../../data/models/option_item_model.dart';
+import '../widgets/menu_group_add_dialog.dart';
+import 'menu_add_page.dart';
 
 class StoreMenuPage extends StatefulWidget {
   final String storeId;
@@ -201,11 +203,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                     ),
                   ),
                   ElevatedButton.icon(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('메뉴 그룹 추가 기능 준비중입니다.')),
-                      );
-                    },
+                    onPressed: _showMenuGroupAddDialog,
                     icon: Icon(MdiIcons.plus, size: AppSizes.iconSm),
                     label: Text('메뉴 그룹 추가'),
                     style: ElevatedButton.styleFrom(
@@ -281,11 +279,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                   ],
                 ),
                 OutlinedButton.icon(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('${group['name']} 메뉴 추가 기능 준비중입니다.')),
-                    );
-                  },
+                  onPressed: () => _navigateToMenuAdd(group['name']),
                   icon: Icon(MdiIcons.plus, size: AppSizes.iconSm),
                   label: Text('메뉴 추가'),
                   style: OutlinedButton.styleFrom(
@@ -628,6 +622,43 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  void _showMenuGroupAddDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return MenuGroupAddDialog(
+          onAdd: (String name, String description) {
+            setState(() {
+              _menuGroups.add({
+                'name': name,
+                'description': description,
+                'items': [],
+              });
+            });
+            
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('메뉴 그룹 "$name"이 추가되었습니다.'),
+                backgroundColor: AppColors.success,
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _navigateToMenuAdd(String groupName) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => MenuAddPage(
+          storeId: widget.storeId,
+          groupId: groupName,
+        ),
       ),
     );
   }
