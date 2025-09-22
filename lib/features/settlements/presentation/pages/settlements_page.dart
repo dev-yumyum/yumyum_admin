@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'dart:html' as html;
 import 'dart:convert';
 
@@ -364,7 +365,16 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                         '사업자명',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 20.sp, // 18.sp -> 20.sp
+                          fontSize: 22.sp, // 20.sp -> 22.sp (가독성 개선)
+                        ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        '은행명',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22.sp, // 가독성 개선
                         ),
                       ),
                     ),
@@ -373,7 +383,16 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                         '계좌번호',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 20.sp, // 18.sp -> 20.sp
+                          fontSize: 22.sp, // 가독성 개선
+                        ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        '예금주',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22.sp, // 가독성 개선
                         ),
                       ),
                     ),
@@ -382,7 +401,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                         '요청금액',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 20.sp, // 18.sp -> 20.sp
+                          fontSize: 22.sp, // 20.sp -> 22.sp (가독성 개선)
                         ),
                       ),
                     ),
@@ -391,7 +410,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                         '요청일',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 20.sp, // 18.sp -> 20.sp
+                          fontSize: 22.sp, // 20.sp -> 22.sp (가독성 개선)
                         ),
                       ),
                     ),
@@ -400,16 +419,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                         '상태',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 20.sp, // 18.sp -> 20.sp
-                        ),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        '관리',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.sp, // 18.sp -> 20.sp
+                          fontSize: 22.sp, // 20.sp -> 22.sp (가독성 개선)
                         ),
                       ),
                     ),
@@ -427,83 +437,49 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
 
   DataRow _buildDataRow(SettlementModel settlement) {
     return DataRow(
+      onSelectChanged: (selected) {
+        if (selected == true) {
+          context.go('/settlement/detail/${settlement.id}');
+        }
+      },
       cells: [
         DataCell(
           Text(
             settlement.businessName ?? settlement.storeName ?? '-',
-            style: TextStyle(fontSize: 18.sp), // 16.sp -> 18.sp
+            style: TextStyle(fontSize: 20.sp), // 18.sp -> 20.sp (가독성 개선)
           ),
         ),
         DataCell(
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (settlement.bankName != null) ...[
-                Text(
-                  '${settlement.bankName}',
-                  style: TextStyle(
-                    fontSize: 16.sp, // 14.sp -> 16.sp
-                    color: AppColors.textPrimary,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                SizedBox(height: 2.h),
-                Text(
-                  '${settlement.accountNumber}',
-                  style: TextStyle(
-                    fontSize: 15.sp, // 13.sp -> 15.sp
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                Text(
-                  '${settlement.accountHolder}',
-                  style: TextStyle(
-                    fontSize: 15.sp, // 13.sp -> 15.sp
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ] else ...[
-                Text(
-                  '-',
-                  style: TextStyle(
-                    fontSize: 16.sp, // 14.sp -> 16.sp
-                    color: AppColors.textTertiary,
-                  ),
-                ),
-              ],
-            ],
+          Text(
+            settlement.bankName ?? '-',
+            style: TextStyle(fontSize: 20.sp), // 가독성 개선
+          ),
+        ),
+        DataCell(
+          Text(
+            settlement.accountNumber ?? '-',
+            style: TextStyle(fontSize: 20.sp), // 가독성 개선
+          ),
+        ),
+        DataCell(
+          Text(
+            settlement.accountHolder ?? '-',
+            style: TextStyle(fontSize: 20.sp), // 가독성 개선
           ),
         ),
         DataCell(
           Text(
             '${_formatCurrency(settlement.settlementAmount)}원',
-            style: TextStyle(fontSize: 14.sp), // 12.sp -> 14.sp
+            style: TextStyle(fontSize: 20.sp), // 14.sp -> 20.sp (가독성 개선)
           ),
         ),
         DataCell(
           Text(
             settlement.settlementDate,
-            style: TextStyle(fontSize: 14.sp), // 12.sp -> 14.sp
+            style: TextStyle(fontSize: 20.sp), // 14.sp -> 20.sp (가독성 개선)
           ),
         ),
         DataCell(_buildStatusChip(settlement.status)),
-        DataCell(
-          settlement.status == 'PENDING' 
-            ? ElevatedButton(
-                onPressed: () => _showSettlementConfirmDialog(settlement),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.success,
-                  foregroundColor: Colors.white,
-                  minimumSize: Size(80.w, 30.h),
-                ),
-                child: Text(
-                  '정산완료',
-                  style: TextStyle(fontSize: 13.sp), // 11.sp -> 13.sp
-                ),
-              )
-            : Container(),
-        ),
       ],
     );
   }

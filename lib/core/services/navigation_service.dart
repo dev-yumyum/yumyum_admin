@@ -14,6 +14,7 @@ import '../../features/approval/presentation/pages/approval_page.dart';
 import '../../features/approval/presentation/pages/approval_detail_page.dart';
 import '../../features/sales/presentation/pages/sales_page.dart';
 import '../../features/settlements/presentation/pages/settlements_page.dart';
+import '../../features/settlements/presentation/pages/settlement_detail_page.dart';
 import '../../features/members/presentation/pages/members_page.dart';
 import '../../features/members/presentation/pages/member_detail_page.dart';
 import '../../features/managers/presentation/pages/managers_page.dart';
@@ -111,6 +112,13 @@ GoRouter createRouter() {
       GoRoute(
         path: RouteNames.settlement,
         builder: (context, state) => const SettlementsPage(),
+      ),
+      GoRoute(
+        path: '/settlement/detail/:settlementId',
+        builder: (context, state) {
+          final settlementId = state.pathParameters['settlementId']!;
+          return SettlementDetailPage(settlementId: settlementId);
+        },
       ),
       
       // 회원 관리
