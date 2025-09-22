@@ -56,7 +56,7 @@ class _BusinessPageState extends State<BusinessPage> {
             Text(
               '사업자 관리',
               style: TextStyle(
-                fontSize: 28.sp,
+                fontSize: 36.sp, // 28.sp -> 36.sp (가독성 개선)
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
@@ -65,7 +65,7 @@ class _BusinessPageState extends State<BusinessPage> {
             Text(
               '등록된 사업자를 관리하고 승인 상태를 확인할 수 있습니다.',
               style: TextStyle(
-                fontSize: 16.sp,
+                fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
                 color: AppColors.textSecondary,
               ),
             ),
@@ -152,23 +152,23 @@ class _BusinessPageState extends State<BusinessPage> {
             Text(
               '사업자 목록 (${filteredBusinesses.length}개)',
               style: TextStyle(
-                fontSize: 18.sp,
+                fontSize: 24.sp, // 18.sp -> 24.sp (가독성 개선)
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
             ),
             SizedBox(height: AppSizes.md),
             Expanded(
-              child: ListView.separated(
-                itemCount: filteredBusinesses.length,
-                separatorBuilder: (context, index) => Divider(
-                  color: AppColors.border,
-                  height: 1,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: MediaQuery.of(context).size.width - 64,
+                  ),
+                  child: SingleChildScrollView(
+                    child: _buildBusinessTable(filteredBusinesses),
+                  ),
                 ),
-                itemBuilder: (context, index) {
-                  final business = filteredBusinesses[index];
-                  return _buildBusinessItem(business);
-                },
               ),
             ),
           ],
@@ -177,78 +177,116 @@ class _BusinessPageState extends State<BusinessPage> {
     );
   }
 
-  Widget _buildBusinessItem(BusinessModel business) {
-    return ListTile(
-      contentPadding: EdgeInsets.symmetric(
-        horizontal: AppSizes.md,
-        vertical: AppSizes.sm,
+  Widget _buildBusinessTable(List<BusinessModel> businesses) {
+    return DataTable(
+      headingRowHeight: 60.h,
+      dataRowHeight: 80.h,
+      columnSpacing: 40.w,
+      horizontalMargin: 20.w,
+      headingTextStyle: TextStyle(
+        fontSize: 22.sp, // 가독성 개선
+        fontWeight: FontWeight.bold,
+        color: AppColors.textPrimary,
       ),
-      leading: Container(
-        width: 48.w,
-        height: 48.h,
-        decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-        ),
-        child: Icon(
-          MdiIcons.domain,
-          size: AppSizes.iconMd,
-          color: AppColors.primary,
-        ),
+      dataTextStyle: TextStyle(
+        fontSize: 20.sp, // 가독성 개선
+        color: AppColors.textPrimary,
       ),
-      title: Text(
-        business.businessName,
-        style: TextStyle(
-          fontSize: 16.sp,
-          fontWeight: FontWeight.w600,
-          color: AppColors.textPrimary,
+      columns: [
+        DataColumn(
+          label: Text('사업자명'),
         ),
-      ),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: AppSizes.xs),
-          Text(
-            '사업자번호: ${business.businessNumber}',
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: AppColors.textSecondary,
-            ),
-          ),
-          Text(
-            '대표자: ${business.ownerName}',
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: AppColors.textSecondary,
-            ),
-          ),
-          if (business.businessLocation != null)
-            Text(
-              '소재지: ${business.businessLocation}',
+        DataColumn(
+          label: Text('사업자번호'),
+        ),
+        DataColumn(
+          label: Text('대표자'),
+        ),
+        DataColumn(
+          label: Text('소재지'),
+        ),
+        DataColumn(
+          label: Text('등록일'),
+        ),
+      ],
+      rows: businesses.map((business) => _buildDataRow(business)).toList(),
+    );
+  }
+
+  DataRow _buildDataRow(BusinessModel business) {
+    return DataRow(
+      onSelectChanged: (selected) {
+        if (selected == true) {
+          context.go('${RouteNames.businessDetail}?id=${business.id}');
+        }
+      },
+      cells: [
+        DataCell(
+          Container(
+            width: 200.w,
+            child: Text(
+              business.businessName,
               style: TextStyle(
-                fontSize: 12.sp,
-                color: AppColors.textTertiary,
+                fontSize: 20.sp, // 가독성 개선
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
               ),
               overflow: TextOverflow.ellipsis,
             ),
-          SizedBox(height: AppSizes.xs),
-          Text(
-            '등록일: ${business.registrationDate}',
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: AppColors.textTertiary,
+          ),
+        ),
+        DataCell(
+          Container(
+            width: 180.w,
+            child: Text(
+              business.businessNumber,
+              style: TextStyle(
+                fontSize: 20.sp, // 가독성 개선
+                color: AppColors.textPrimary,
+              ),
             ),
           ),
-        ],
-      ),
-      trailing: Icon(
-        MdiIcons.chevronRight,
-        size: AppSizes.iconSm,
-        color: AppColors.textSecondary,
-      ),
-      onTap: () {
-        context.go('${RouteNames.businessDetail}?id=${business.id}');
-      },
+        ),
+        DataCell(
+          Container(
+            width: 120.w,
+            child: Text(
+              business.ownerName,
+              style: TextStyle(
+                fontSize: 20.sp, // 가독성 개선
+                color: AppColors.textPrimary,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ),
+        DataCell(
+          Container(
+            width: 300.w,
+            child: Text(
+              business.businessLocation ?? '-',
+              style: TextStyle(
+                fontSize: 20.sp, // 가독성 개선
+                color: AppColors.textPrimary,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+            ),
+          ),
+        ),
+        DataCell(
+          Container(
+            width: 120.w,
+            child: Text(
+              business.registrationDate,
+              style: TextStyle(
+                fontSize: 20.sp, // 가독성 개선
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
