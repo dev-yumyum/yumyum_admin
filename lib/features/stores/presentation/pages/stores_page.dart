@@ -205,6 +205,7 @@ class _StoresPageState extends State<StoresPage> {
 
   Widget _buildStoreTable(List<StoreModel> stores) {
     return DataTable(
+      showCheckboxColumn: false, // 체크박스 제거
       headingRowHeight: 60.h,
       dataRowHeight: 80.h,
       columnSpacing: 40.w,
