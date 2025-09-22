@@ -288,6 +288,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                     minWidth: MediaQuery.of(context).size.width - 140.w, // 화면 폭에서 여백 제외
                   ),
                   child: DataTable(
+                    showCheckboxColumn: false, // 체크박스 제거
                     columnSpacing: 25.w, // 컬럼 간격을 더 넓게
                     dataRowMinHeight: 52.h,
                     dataRowMaxHeight: 60.h,

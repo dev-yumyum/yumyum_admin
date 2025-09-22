@@ -478,6 +478,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
                     minWidth: MediaQuery.of(context).size.width - 140.w, // 화면 폭에서 여백 제외
                   ),
                   child: DataTable(
+                    showCheckboxColumn: false, // 체크박스 제거
                     headingRowColor: MaterialStateProperty.all(
                       AppColors.backgroundSecondary,
                     ),
