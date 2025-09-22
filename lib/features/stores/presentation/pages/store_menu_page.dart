@@ -31,23 +31,82 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
   final List<Map<String, dynamic>> _menuGroups = [
     {
       'name': '피자',
+      'description': '수제 도우로 만든 신선한 피자',
       'items': [
-        {'name': '밤바피자', 'priceL': '24,900원', 'priceM': '22,900원', 'description': '[음식메뉴] 랩컨다이트피자 나주혁신'},
-        {'name': '페퍼로니 피자', 'priceL': '26,900원', 'priceM': '24,900원', 'description': '[음식메뉴] 클래식 페퍼로니 피자'},
+        {'name': '밤바피자', 'priceL': '24,900원', 'priceM': '22,900원', 'description': '[음식메뉴] 랩컨다이트피자 나주혁신', 'status': '판매중'},
+        {'name': '페퍼로니 피자', 'priceL': '26,900원', 'priceM': '24,900원', 'description': '[음식메뉴] 클래식 페퍼로니 피자', 'status': '판매중'},
+        {'name': '마르게리타 피자', 'priceL': '23,900원', 'priceM': '21,900원', 'description': '[음식메뉴] 신선한 바질과 모짜렐라 치즈', 'status': '판매중'},
+        {'name': '콰트로 치즈 피자', 'priceL': '28,900원', 'priceM': '26,900원', 'description': '[음식메뉴] 4가지 치즈의 진한 맛', 'status': '판매중'},
+        {'name': '불고기 피자', 'priceL': '27,900원', 'priceM': '25,900원', 'description': '[음식메뉴] 한국식 불고기가 올라간 피자', 'status': '판매중'},
+        {'name': '하와이안 피자', 'priceL': '25,900원', 'priceM': '23,900원', 'description': '[음식메뉴] 파인애플과 햄의 조화', 'status': '오늘만 품절'},
       ]
     },
     {
       'name': '파스타',
+      'description': '이탈리아 정통 파스타 요리',
       'items': [
-        {'name': '크림 파스타', 'priceL': '16,900원', 'priceM': '14,900원', 'description': '[음식메뉴] 부드러운 크림 파스타'},
-        {'name': '토마토 파스타', 'priceL': '15,900원', 'priceM': '13,900원', 'description': '[음식메뉴] 신선한 토마토 파스타'},
+        {'name': '크림 파스타', 'priceL': '16,900원', 'priceM': '14,900원', 'description': '[음식메뉴] 부드러운 크림 파스타', 'status': '판매중'},
+        {'name': '토마토 파스타', 'priceL': '15,900원', 'priceM': '13,900원', 'description': '[음식메뉴] 신선한 토마토 파스타', 'status': '판매중'},
+        {'name': '알리오 올리오', 'priceL': '14,900원', 'priceM': '12,900원', 'description': '[음식메뉴] 마늘과 올리브오일의 심플한 맛', 'status': '판매중'},
+        {'name': '까르보나라', 'priceL': '17,900원', 'priceM': '15,900원', 'description': '[음식메뉴] 진짜 이탈리아식 까르보나라', 'status': '판매중'},
+        {'name': '볼로네제', 'priceL': '18,900원', 'priceM': '16,900원', 'description': '[음식메뉴] 정통 이탈리아 미트소스', 'status': '판매중'},
+        {'name': '페스토 파스타', 'priceL': '16,900원', 'priceM': '14,900원', 'description': '[음식메뉴] 바질 페스토의 향긋한 맛', 'status': '판매중'},
       ]
     },
     {
       'name': '치킨',
+      'description': '바삭하고 맛있는 치킨 요리',
       'items': [
-        {'name': '후라이드 치킨', 'priceL': '19,900원', 'priceM': '17,900원', 'description': '[음식메뉴] 바삭한 후라이드 치킨'},
-        {'name': '양념 치킨', 'priceL': '21,900원', 'priceM': '19,900원', 'description': '[음식메뉴] 달콤매콤 양념 치킨'},
+        {'name': '후라이드 치킨', 'priceL': '19,900원', 'priceM': '17,900원', 'description': '[음식메뉴] 바삭한 후라이드 치킨', 'status': '판매중'},
+        {'name': '양념 치킨', 'priceL': '21,900원', 'priceM': '19,900원', 'description': '[음식메뉴] 달콤매콤 양념 치킨', 'status': '판매중'},
+        {'name': '간장 치킨', 'priceL': '20,900원', 'priceM': '18,900원', 'description': '[음식메뉴] 고소한 간장 양념 치킨', 'status': '판매중'},
+        {'name': '허니 머스타드 치킨', 'priceL': '22,900원', 'priceM': '20,900원', 'description': '[음식메뉴] 달콤한 허니머스타드 소스', 'status': '판매중'},
+        {'name': '마늘 치킨', 'priceL': '21,900원', 'priceM': '19,900원', 'description': '[음식메뉴] 마늘의 진한 풍미', 'status': '판매중'},
+        {'name': '매운 치킨', 'priceL': '22,900원', 'priceM': '20,900원', 'description': '[음식메뉴] 불타는 매운맛', 'status': '판매중'},
+      ]
+    },
+    {
+      'name': '한식',
+      'description': '정통 한국 요리',
+      'items': [
+        {'name': '김치찌개', 'priceL': '8,900원', 'priceM': '7,900원', 'description': '[음식메뉴] 진짜 맛있는 김치찌개', 'status': '판매중'},
+        {'name': '된장찌개', 'priceL': '8,900원', 'priceM': '7,900원', 'description': '[음식메뉴] 구수한 된장찌개', 'status': '판매중'},
+        {'name': '불고기', 'priceL': '15,900원', 'priceM': '13,900원', 'description': '[음식메뉴] 양념에 재운 불고기', 'status': '판매중'},
+        {'name': '비빔밥', 'priceL': '9,900원', 'priceM': '8,900원', 'description': '[음식메뉴] 영양만점 비빔밥', 'status': '판매중'},
+        {'name': '냉면', 'priceL': '11,900원', 'priceM': '10,900원', 'description': '[음식메뉴] 시원한 물냉면/비빔냉면', 'status': '판매중'},
+      ]
+    },
+    {
+      'name': '중식',
+      'description': '정통 중국 요리',
+      'items': [
+        {'name': '짜장면', 'priceL': '7,900원', 'priceM': '6,900원', 'description': '[음식메뉴] 정통 짜장면', 'status': '판매중'},
+        {'name': '짬뽕', 'priceL': '8,900원', 'priceM': '7,900원', 'description': '[음식메뉴] 얼큰한 짬뽕', 'status': '판매중'},
+        {'name': '탕수육', 'priceL': '22,900원', 'priceM': '19,900원', 'description': '[음식메뉴] 바삭한 탕수육', 'status': '판매중'},
+        {'name': '볶음밥', 'priceL': '8,900원', 'priceM': '7,900원', 'description': '[음식메뉴] 고슬고슬 볶음밥', 'status': '판매중'},
+        {'name': '마파두부', 'priceL': '12,900원', 'priceM': '10,900원', 'description': '[음식메뉴] 마라맛 마파두부', 'status': '판매중'},
+      ]
+    },
+    {
+      'name': '일식',
+      'description': '신선한 일본 요리',
+      'items': [
+        {'name': '초밥 세트', 'priceL': '25,900원', 'priceM': '22,900원', 'description': '[음식메뉴] 신선한 초밥 10개 세트', 'status': '판매중'},
+        {'name': '연어 사시미', 'priceL': '18,900원', 'priceM': '15,900원', 'description': '[음식메뉴] 노르웨이산 연어 사시미', 'status': '판매중'},
+        {'name': '장어 구이', 'priceL': '28,900원', 'priceM': '25,900원', 'description': '[음식메뉴] 부드러운 장어 구이', 'status': '판매중'},
+        {'name': '라멘', 'priceL': '12,900원', 'priceM': '10,900원', 'description': '[음식메뉴] 진짜 일본식 라멘', 'status': '판매중'},
+        {'name': '돈까스', 'priceL': '14,900원', 'priceM': '12,900원', 'description': '[음식메뉴] 바삭한 돈까스', 'status': '판매중'},
+      ]
+    },
+    {
+      'name': '음료 & 디저트',
+      'description': '시원한 음료와 달콤한 디저트',
+      'items': [
+        {'name': '아메리카노', 'priceL': '4,500원', 'priceM': '3,500원', 'description': '[음료] 깊고 진한 아메리카노', 'status': '판매중'},
+        {'name': '카페라떼', 'priceL': '5,500원', 'priceM': '4,500원', 'description': '[음료] 부드러운 카페라떼', 'status': '판매중'},
+        {'name': '아이스크림', 'priceL': '6,900원', 'priceM': '5,900원', 'description': '[디저트] 바닐라/초콜릿/딸기', 'status': '판매중'},
+        {'name': '케이크', 'priceL': '8,900원', 'priceM': '7,900원', 'description': '[디저트] 수제 초콜릿 케이크', 'status': '판매중'},
+        {'name': '생과일 주스', 'priceL': '6,500원', 'priceM': '5,500원', 'description': '[음료] 신선한 과일 주스', 'status': '판매중'},
       ]
     },
   ];
@@ -63,6 +122,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
         {'id': '1-1', 'name': '포토리뷰: X 이벤트 안함께요', 'price': 0},
         {'id': '1-2', 'name': '포토리뷰: 갈릭딥핑 2개 (5점 후기 부탁드려요)', 'price': 0},
         {'id': '1-3', 'name': '포토리뷰: 모짜렐라 100g (5점 후기 부탁드려요)', 'price': 0},
+        {'id': '1-4', 'name': '포토리뷰: 콜라 1캔 (5점 후기 부탁드려요)', 'price': 0},
       ]
     },
     {
@@ -74,6 +134,9 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
         {'id': '2-1', 'name': '갈릭 브레드', 'price': 3000},
         {'id': '2-2', 'name': '치즈 스틱', 'price': 4500},
         {'id': '2-3', 'name': '감자튀김', 'price': 2500},
+        {'id': '2-4', 'name': '양파링', 'price': 3500},
+        {'id': '2-5', 'name': '치킨 너겟', 'price': 5000},
+        {'id': '2-6', 'name': '모짜렐라 스틱', 'price': 4000},
       ]
     },
     {
@@ -85,6 +148,77 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
         {'id': '3-1', 'name': '콜라', 'price': 2000},
         {'id': '3-2', 'name': '사이다', 'price': 2000},
         {'id': '3-3', 'name': '오렌지 주스', 'price': 3000},
+        {'id': '3-4', 'name': '아이스티', 'price': 2500},
+        {'id': '3-5', 'name': '생수', 'price': 1500},
+        {'id': '3-6', 'name': '탄산수', 'price': 2000},
+      ]
+    },
+    {
+      'id': '4',
+      'name': '매운맛 선택',
+      'maxSelection': 1,
+      'description': '요리의 매운 정도를 선택해주세요',
+      'items': [
+        {'id': '4-1', 'name': '순한맛', 'price': 0},
+        {'id': '4-2', 'name': '보통맛', 'price': 0},
+        {'id': '4-3', 'name': '매운맛', 'price': 0},
+        {'id': '4-4', 'name': '아주 매운맛', 'price': 500},
+        {'id': '4-5', 'name': '극도로 매운맛', 'price': 1000},
+      ]
+    },
+    {
+      'id': '5',
+      'name': '토핑 추가',
+      'maxSelection': 5,
+      'description': '피자나 파스타에 추가할 토핑을 선택해주세요',
+      'items': [
+        {'id': '5-1', 'name': '체다 치즈', 'price': 2000},
+        {'id': '5-2', 'name': '모짜렐라 치즈', 'price': 2500},
+        {'id': '5-3', 'name': '페퍼로니', 'price': 3000},
+        {'id': '5-4', 'name': '베이컨', 'price': 3500},
+        {'id': '5-5', 'name': '불고기', 'price': 4000},
+        {'id': '5-6', 'name': '새우', 'price': 4500},
+        {'id': '5-7', 'name': '파인애플', 'price': 1500},
+        {'id': '5-8', 'name': '양파', 'price': 1000},
+        {'id': '5-9', 'name': '피망', 'price': 1000},
+        {'id': '5-10', 'name': '버섯', 'price': 1500},
+      ]
+    },
+    {
+      'id': '6',
+      'name': '면 종류 선택',
+      'maxSelection': 1,
+      'description': '파스타 면의 종류를 선택해주세요',
+      'items': [
+        {'id': '6-1', 'name': '스파게티', 'price': 0},
+        {'id': '6-2', 'name': '펜네', 'price': 0},
+        {'id': '6-3', 'name': '푸실리', 'price': 0},
+        {'id': '6-4', 'name': '페투치니', 'price': 500},
+        {'id': '6-5', 'name': '링귀니', 'price': 500},
+      ]
+    },
+    {
+      'id': '7',
+      'name': '밥 종류 선택',
+      'maxSelection': 1,
+      'description': '한식 메뉴의 밥 종류를 선택해주세요',
+      'items': [
+        {'id': '7-1', 'name': '백미밥', 'price': 0},
+        {'id': '7-2', 'name': '현미밥', 'price': 500},
+        {'id': '7-3', 'name': '잡곡밥', 'price': 1000},
+        {'id': '7-4', 'name': '밥 없음', 'price': -1000},
+      ]
+    },
+    {
+      'id': '8',
+      'name': '포장 옵션',
+      'maxSelection': 1,
+      'description': '포장 방식을 선택해주세요',
+      'items': [
+        {'id': '8-1', 'name': '일반 포장', 'price': 0},
+        {'id': '8-2', 'name': '친환경 포장', 'price': 500},
+        {'id': '8-3', 'name': '보온 포장', 'price': 1000},
+        {'id': '8-4', 'name': '선물 포장', 'price': 1500},
       ]
     },
   ];
@@ -314,12 +448,30 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
   }
 
   Widget _buildMenuItemCard(Map<String, dynamic> item) {
+    final status = item['status'] ?? '판매중';
+    Color statusColor = AppColors.success;
+    Color cardColor = Colors.grey[50]!;
+    
+    switch (status) {
+      case '오늘만 품절':
+        statusColor = AppColors.warning;
+        cardColor = Colors.orange[50]!;
+        break;
+      case '메뉴 숨김':
+        statusColor = AppColors.inactive;
+        cardColor = Colors.grey[100]!;
+        break;
+      default:
+        statusColor = AppColors.success;
+        cardColor = Colors.grey[50]!;
+    }
+    
     return Container(
       padding: EdgeInsets.all(AppSizes.sm),
       decoration: BoxDecoration(
-        color: Colors.grey[50],
+        color: cardColor,
         borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: statusColor.withOpacity(0.3)),
       ),
       child: Row(
         children: [
@@ -340,13 +492,38 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  item['name'],
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        item['name'],
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: AppSizes.xs,
+                        vertical: 2.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: statusColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(4.r),
+                        border: Border.all(color: statusColor.withOpacity(0.3)),
+                      ),
+                      child: Text(
+                        status,
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w600,
+                          color: statusColor,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: AppSizes.xs),
                 Row(
@@ -407,6 +584,16 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                     Icon(MdiIcons.pencil, size: AppSizes.iconSm),
                     SizedBox(width: AppSizes.xs),
                     Text('수정'),
+                  ],
+                ),
+              ),
+              PopupMenuItem(
+                value: 'status',
+                child: Row(
+                  children: [
+                    Icon(MdiIcons.checkCircle, size: AppSizes.iconSm, color: AppColors.info),
+                    SizedBox(width: AppSizes.xs),
+                    Text('상태 변경'),
                   ],
                 ),
               ),
@@ -586,11 +773,11 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                 ),
                 SizedBox(height: AppSizes.xs),
                 Text(
-                  item['price'] == 0 ? '무료' : '${item['price'].toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원',
+                  _formatPrice(item['price']),
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
-                    color: item['price'] == 0 ? AppColors.success : AppColors.textSecondary,
+                    color: _getPriceColor(item['price']),
                   ),
                 ),
               ],
@@ -721,5 +908,25 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
         );
       },
     );
+  }
+
+  String _formatPrice(int price) {
+    if (price == 0) {
+      return '무료';
+    } else if (price < 0) {
+      return '-${(-price).toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원';
+    } else {
+      return '+${price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원';
+    }
+  }
+
+  Color _getPriceColor(int price) {
+    if (price == 0) {
+      return AppColors.success;
+    } else if (price < 0) {
+      return AppColors.info; // 할인은 파란색
+    } else {
+      return AppColors.textSecondary; // 추가 요금은 회색
+    }
   }
 }
