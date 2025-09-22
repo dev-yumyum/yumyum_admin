@@ -293,7 +293,22 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
         ),
         _buildStatusChip(),
         SizedBox(width: AppSizes.md),
-        if (!_isEditMode)
+        if (!_isEditMode) ...[
+          OutlinedButton.icon(
+            onPressed: () {
+              context.go('/store/${_store!.id}/menu');
+            },
+            icon: Icon(MdiIcons.silverware, size: AppSizes.iconSm),
+            label: Text(
+              '메뉴 관리',
+              style: TextStyle(fontSize: 18.sp),
+            ),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: AppColors.primary,
+              side: BorderSide(color: AppColors.primary),
+            ),
+          ),
+          SizedBox(width: AppSizes.md),
           ElevatedButton.icon(
             onPressed: _toggleEditMode,
             icon: Icon(MdiIcons.pencil, size: AppSizes.iconSm),
@@ -302,6 +317,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               style: TextStyle(fontSize: 18.sp),
             ),
           ),
+        ],
       ],
     );
   }

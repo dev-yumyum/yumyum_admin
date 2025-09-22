@@ -10,6 +10,8 @@ import '../../data/models/menu_item_model.dart';
 import '../../data/models/option_group_model.dart';
 import '../../data/models/option_item_model.dart';
 import '../widgets/menu_group_add_dialog.dart';
+import '../widgets/option_group_add_dialog.dart';
+import '../widgets/option_item_add_dialog.dart';
 import 'menu_add_page.dart';
 
 class StoreMenuPage extends StatefulWidget {
@@ -53,30 +55,36 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
   // 샘플 옵션 그룹 데이터
   final List<Map<String, dynamic>> _optionGroups = [
     {
+      'id': '1',
       'name': '포토리뷰&할인 이벤트',
-      'maxSelection': '선택 최대 1개',
+      'maxSelection': 1,
+      'description': '리뷰 작성 시 혜택을 받을 수 있는 이벤트 옵션',
       'items': [
-        {'name': '포토리뷰: X 이벤트 안함께요', 'price': '0원'},
-        {'name': '포토리뷰: 갈릭딥핑 2개 (5점 후기 부탁드려요)', 'price': '0원'},
-        {'name': '포토리뷰: 모짜렐라 100g (5점 후기 부탁드려요)', 'price': '0원'},
+        {'id': '1-1', 'name': '포토리뷰: X 이벤트 안함께요', 'price': 0},
+        {'id': '1-2', 'name': '포토리뷰: 갈릭딥핑 2개 (5점 후기 부탁드려요)', 'price': 0},
+        {'id': '1-3', 'name': '포토리뷰: 모짜렐라 100g (5점 후기 부탁드려요)', 'price': 0},
       ]
     },
     {
+      'id': '2',
       'name': '사이드 메뉴',
-      'maxSelection': '선택 최대 3개',
+      'maxSelection': 3,
+      'description': '메인 메뉴와 함께 즐길 수 있는 사이드 메뉴',
       'items': [
-        {'name': '갈릭 브레드', 'price': '3,000원'},
-        {'name': '치즈 스틱', 'price': '4,500원'},
-        {'name': '감자튀김', 'price': '2,500원'},
+        {'id': '2-1', 'name': '갈릭 브레드', 'price': 3000},
+        {'id': '2-2', 'name': '치즈 스틱', 'price': 4500},
+        {'id': '2-3', 'name': '감자튀김', 'price': 2500},
       ]
     },
     {
+      'id': '3',
       'name': '음료',
-      'maxSelection': '선택 최대 2개',
+      'maxSelection': 2,
+      'description': '식사와 함께 마실 수 있는 음료',
       'items': [
-        {'name': '콜라', 'price': '2,000원'},
-        {'name': '사이다', 'price': '2,000원'},
-        {'name': '오렌지 주스', 'price': '3,000원'},
+        {'id': '3-1', 'name': '콜라', 'price': 2000},
+        {'id': '3-2', 'name': '사이다', 'price': 2000},
+        {'id': '3-3', 'name': '오렌지 주스', 'price': 3000},
       ]
     },
   ];
@@ -439,11 +447,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                     ),
                   ),
                   ElevatedButton.icon(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('옵션 그룹 추가 기능 준비중입니다.')),
-                      );
-                    },
+                    onPressed: _showOptionGroupAddDialog,
                     icon: Icon(MdiIcons.plus, size: AppSizes.iconSm),
                     label: Text('옵션 그룹 추가'),
                     style: ElevatedButton.styleFrom(
@@ -495,7 +499,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                         ),
                         SizedBox(height: AppSizes.xs),
                         Text(
-                          group['maxSelection'],
+                          '선택 최대 ${group['maxSelection']}개',
                           style: TextStyle(
                             fontSize: 16.sp,
                             color: AppColors.textTertiary,
@@ -532,11 +536,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                   ],
                 ),
                 OutlinedButton.icon(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('${group['name']} 옵션 추가 기능 준비중입니다.')),
-                    );
-                  },
+                  onPressed: () => _showOptionItemAddDialog(group),
                   icon: Icon(MdiIcons.plus, size: AppSizes.iconSm),
                   label: Text('옵션 추가'),
                   style: OutlinedButton.styleFrom(
@@ -586,11 +586,11 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                 ),
                 SizedBox(height: AppSizes.xs),
                 Text(
-                  item['price'],
+                  item['price'] == 0 ? '무료' : '${item['price'].toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원',
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textSecondary,
+                    color: item['price'] == 0 ? AppColors.success : AppColors.textSecondary,
                   ),
                 ),
               ],
@@ -660,6 +660,66 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
           groupId: groupName,
         ),
       ),
+    );
+  }
+
+  void _showOptionGroupAddDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return OptionGroupAddDialog(
+          onAdd: (String name, String description, int maxSelection) {
+            setState(() {
+              _optionGroups.add({
+                'id': DateTime.now().millisecondsSinceEpoch.toString(),
+                'name': name,
+                'description': description,
+                'maxSelection': maxSelection,
+                'items': [],
+              });
+            });
+            
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('옵션 그룹 "$name"이 추가되었습니다.'),
+                backgroundColor: AppColors.success,
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showOptionItemAddDialog(Map<String, dynamic> group) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return OptionItemAddDialog(
+          groupName: group['name'],
+          onAdd: (String name, int price) {
+            setState(() {
+              final groupIndex = _optionGroups.indexWhere((g) => g['id'] == group['id']);
+              if (groupIndex != -1) {
+                List<Map<String, dynamic>> items = List.from(_optionGroups[groupIndex]['items']);
+                items.add({
+                  'id': DateTime.now().millisecondsSinceEpoch.toString(),
+                  'name': name,
+                  'price': price,
+                });
+                _optionGroups[groupIndex]['items'] = items;
+              }
+            });
+            
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('옵션 아이템 "$name"이 "${group['name']}" 그룹에 추가되었습니다.'),
+                backgroundColor: AppColors.success,
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
