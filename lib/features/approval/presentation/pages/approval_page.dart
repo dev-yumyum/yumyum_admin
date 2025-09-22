@@ -205,7 +205,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
           Tab(
             child:               Text(
                 '사업자 승인',
-                style: TextStyle(
+              style: TextStyle(
                   fontSize: 18.sp, // 16.sp -> 18.sp
                   fontWeight: FontWeight.w600,
                 ),
@@ -375,7 +375,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
           InkWell(
             onTap: () => _showApprovalDetailDialog(request),
             child:             Text(
-              request.requestNumber,
+            request.requestNumber,
               style: TextStyle(
                 fontSize: 18.sp, // 16.sp -> 18.sp
                 color: AppColors.primary,
@@ -388,20 +388,20 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
           InkWell(
             onTap: () => _showApprovalDetailDialog(request),
             child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppSizes.sm,
-                vertical: AppSizes.xs,
-              ),
-              decoration: BoxDecoration(
-                color: _getTypeColor(request.requestType).withOpacity(0.1),
-                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-              ),
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSizes.sm,
+              vertical: AppSizes.xs,
+            ),
+            decoration: BoxDecoration(
+              color: _getTypeColor(request.requestType).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+            ),
               child:               Text(
-                request.displayRequestType,
-                style: TextStyle(
+              request.displayRequestType,
+              style: TextStyle(
                   fontSize: 16.sp, // 14.sp -> 16.sp
-                  fontWeight: FontWeight.w600,
-                  color: _getTypeColor(request.requestType),
+                fontWeight: FontWeight.w600,
+                color: _getTypeColor(request.requestType),
                 ),
               ),
             ),
@@ -411,7 +411,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
           InkWell(
             onTap: () => _showApprovalDetailDialog(request),
             child:             Text(
-              request.requester,
+            request.requester,
               style: TextStyle(fontSize: 18.sp), // 16.sp -> 18.sp
             ),
           ),
@@ -420,12 +420,12 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
           InkWell(
             onTap: () => _showApprovalDetailDialog(request),
             child: SizedBox(
-              width: 200.w,
+            width: 200.w,
               child:               Text(
-                request.requestContent,
+              request.requestContent,
                 style: TextStyle(fontSize: 18.sp), // 16.sp -> 18.sp
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
@@ -434,7 +434,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
           InkWell(
             onTap: () => _showApprovalDetailDialog(request),
             child:             Text(
-              request.requestDate,
+            request.requestDate,
               style: TextStyle(fontSize: 18.sp), // 16.sp -> 18.sp
             ),
           ),
