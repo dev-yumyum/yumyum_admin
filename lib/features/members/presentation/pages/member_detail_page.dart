@@ -107,7 +107,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
         child: Text(
           '활성 회원',
           style: TextStyle(
-            fontSize: 12.sp,
+            fontSize: 18.sp, // 12.sp -> 18.sp (가독성 개선)
             fontWeight: FontWeight.w600,
             color: AppColors.success,
           ),
@@ -141,7 +141,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
               Text(
                 _member!.memberName ?? '김민수',
                 style: TextStyle(
-                  fontSize: 28.sp,
+                  fontSize: 32.sp, // 28.sp -> 32.sp (프로필 이름 가독성 개선)
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
                 ),
@@ -181,7 +181,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
         Text(
           value,
           style: TextStyle(
-            fontSize: 24.sp,
+            fontSize: 28.sp, // 24.sp -> 28.sp (통계 값 가독성 개선)
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
           ),
@@ -190,7 +190,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
         Text(
           label,
           style: TextStyle(
-            fontSize: 12.sp,
+            fontSize: 18.sp, // 12.sp -> 18.sp (가독성 개선)
             color: AppColors.textSecondary,
           ),
         ),
@@ -350,7 +350,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
             Text(
               label,
               style: TextStyle(
-                fontSize: 12.sp,
+                fontSize: 18.sp, // 12.sp -> 18.sp (가독성 개선)
                 color: AppColors.textSecondary,
               ),
             ),
@@ -379,7 +379,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
             Text(
               label,
               style: TextStyle(
-                fontSize: 12.sp,
+                fontSize: 18.sp, // 12.sp -> 18.sp (가독성 개선)
                 color: AppColors.textSecondary,
               ),
             ),
@@ -396,7 +396,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
               child: Text(
                 value,
                 style: TextStyle(
-                  fontSize: 12.sp,
+                  fontSize: 18.sp, // 12.sp -> 18.sp (가독성 개선)
                   fontWeight: FontWeight.w600,
                   color: value == '카카오톡' ? Colors.black : chipColor,
                 ),
@@ -420,7 +420,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                 Text(
                   '패스워드:',
                   style: TextStyle(
-                    fontSize: 12.sp,
+                    fontSize: 18.sp, // 12.sp -> 18.sp (가독성 개선)
                     color: AppColors.textSecondary,
                   ),
                 ),
@@ -533,7 +533,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                 Text(
                   date,
                   style: TextStyle(
-                    fontSize: 12.sp,
+                    fontSize: 18.sp, // 12.sp -> 18.sp (가독성 개선)
                     color: AppColors.textSecondary,
                   ),
                 ),
@@ -571,7 +571,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
             Text(
               '$title승인 대기',
               style: TextStyle(
-                fontSize: 12.sp,
+                fontSize: 18.sp, // 12.sp -> 18.sp (가독성 개선)
                 color: AppColors.textSecondary,
               ),
             ),

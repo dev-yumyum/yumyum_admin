@@ -104,7 +104,7 @@ class _MembersPageState extends State<MembersPage> {
     return Text(
       '고객관리',
       style: TextStyle(
-        fontSize: 28.sp,
+        fontSize: 36.sp, // 28.sp -> 36.sp (헤더 통일화)
         fontWeight: FontWeight.bold,
         color: AppColors.textPrimary,
       ),
@@ -326,7 +326,7 @@ class _MembersPageState extends State<MembersPage> {
                         '고유번호',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18.sp,
+                          fontSize: 22.sp, // 18.sp -> 22.sp (테이블 헤더 통일화)
                         ),
                       ),
                     ),
@@ -335,7 +335,7 @@ class _MembersPageState extends State<MembersPage> {
                         '회원명',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18.sp,
+                          fontSize: 22.sp, // 18.sp -> 22.sp (테이블 헤더 통일화)
                         ),
                       ),
                     ),
@@ -344,7 +344,7 @@ class _MembersPageState extends State<MembersPage> {
                         '연락처',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18.sp,
+                          fontSize: 22.sp, // 18.sp -> 22.sp (테이블 헤더 통일화)
                         ),
                       ),
                     ),
@@ -353,7 +353,7 @@ class _MembersPageState extends State<MembersPage> {
                         '이메일',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18.sp,
+                          fontSize: 22.sp, // 18.sp -> 22.sp (테이블 헤더 통일화)
                         ),
                       ),
                     ),
@@ -362,7 +362,7 @@ class _MembersPageState extends State<MembersPage> {
                         '가입일',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18.sp,
+                          fontSize: 22.sp, // 18.sp -> 22.sp (테이블 헤더 통일화)
                         ),
                       ),
                     ),
@@ -371,7 +371,7 @@ class _MembersPageState extends State<MembersPage> {
                         '상태',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18.sp,
+                          fontSize: 22.sp, // 18.sp -> 22.sp (테이블 헤더 통일화)
                         ),
                       ),
                     ),
@@ -380,7 +380,7 @@ class _MembersPageState extends State<MembersPage> {
                         '가입형식',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18.sp,
+                          fontSize: 22.sp, // 18.sp -> 22.sp (테이블 헤더 통일화)
                         ),
                       ),
                     ),
@@ -389,7 +389,7 @@ class _MembersPageState extends State<MembersPage> {
                         '최근접속',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 18.sp,
+                          fontSize: 22.sp, // 18.sp -> 22.sp (테이블 헤더 통일화)
                         ),
                       ),
                     ),
@@ -416,31 +416,31 @@ class _MembersPageState extends State<MembersPage> {
         DataCell(
           Text(
             member.memberId,
-            style: TextStyle(fontSize: 12.sp),
+            style: TextStyle(fontSize: 20.sp), // 12.sp -> 20.sp (데이터 행 통일화)
           ),
         ),
         DataCell(
           Text(
             member.memberName ?? '-',
-            style: TextStyle(fontSize: 12.sp),
+            style: TextStyle(fontSize: 20.sp), // 12.sp -> 20.sp (데이터 행 통일화)
           ),
         ),
         DataCell(
           Text(
             member.phone ?? '-',
-            style: TextStyle(fontSize: 12.sp),
+            style: TextStyle(fontSize: 20.sp), // 12.sp -> 20.sp (데이터 행 통일화)
           ),
         ),
         DataCell(
           Text(
             member.email ?? '-',
-            style: TextStyle(fontSize: 12.sp),
+            style: TextStyle(fontSize: 20.sp), // 12.sp -> 20.sp (데이터 행 통일화)
           ),
         ),
         DataCell(
           Text(
             member.registrationDate,
-            style: TextStyle(fontSize: 12.sp),
+            style: TextStyle(fontSize: 20.sp), // 12.sp -> 20.sp (데이터 행 통일화)
           ),
         ),
         DataCell(_buildStatusChip(member.status)),
@@ -448,7 +448,7 @@ class _MembersPageState extends State<MembersPage> {
         DataCell(
           Text(
             member.lastLoginDate ?? '-',
-            style: TextStyle(fontSize: 12.sp),
+            style: TextStyle(fontSize: 20.sp), // 12.sp -> 20.sp (데이터 행 통일화)
           ),
         ),
       ],
@@ -489,7 +489,7 @@ class _MembersPageState extends State<MembersPage> {
       child: Text(
         statusText,
         style: TextStyle(
-          fontSize: 10.sp,
+          fontSize: 16.sp, // 10.sp -> 16.sp (칩 텍스트 가독성 개선)
           fontWeight: FontWeight.w600,
           color: chipColor,
         ),
@@ -533,7 +533,7 @@ class _MembersPageState extends State<MembersPage> {
       child: Text(
         typeText,
         style: TextStyle(
-          fontSize: 10.sp,
+          fontSize: 16.sp, // 10.sp -> 16.sp (칩 텍스트 가독성 개선)
           fontWeight: FontWeight.w600,
           color: registrationType == '카카오톡' ? Colors.black : chipColor,
         ),
@@ -614,7 +614,7 @@ class _MembersPageState extends State<MembersPage> {
                   margin: EdgeInsets.symmetric(horizontal: 2.w),
                   child: Text(
                     totalPages.toString(),
-                    style: TextStyle(fontSize: 12.sp),
+                    style: TextStyle(fontSize: 20.sp), // 12.sp -> 20.sp (데이터 행 통일화)
                   ),
                 ),
               ),

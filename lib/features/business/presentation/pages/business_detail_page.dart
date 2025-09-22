@@ -325,7 +325,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
               Text(
                 '사업자 상세정보',
                 style: TextStyle(
-                  fontSize: 28.sp,
+                  fontSize: 36.sp, // 28.sp -> 36.sp (헤더 통일화)
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
                 ),
@@ -334,7 +334,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
               Text(
                 '${_business?.businessName ?? '사업자'} 정보',
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
                   color: AppColors.textSecondary,
                 ),
               ),
