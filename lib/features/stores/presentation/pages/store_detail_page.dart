@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:form_field_validator/form_field_validator.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../shared/widgets/crm_layout.dart';
@@ -23,20 +26,54 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
   
   // Form controllers
   final _formKey = GlobalKey<FormState>();
-  late TextEditingController _storeNameController;
-  late TextEditingController _storeAddressController;
-  late TextEditingController _storeAddressDetailController;
-  late TextEditingController _storePhoneController;
-  late TextEditingController _storeDescriptionController;
-  late TextEditingController _operatingHoursController;
-  late TextEditingController _deliveryRadiusController;
-  late TextEditingController _minimumOrderAmountController;
-  late TextEditingController _deliveryFeeController;
+  
+  // 기본 정보 Controllers
+  final _storeNameController = TextEditingController();
+  final _storeAddressController = TextEditingController();
+  final _storeAddressDetailController = TextEditingController();
+  final _storePhoneController = TextEditingController();
+
+  // 매장 소개 Controllers
+  final _storeDescriptionController = TextEditingController();
+  final _noticeController = TextEditingController();
+
+  // 카테고리 및 정보 Controllers
+  final _originInfoController = TextEditingController();
+  final _nutritionInfoController = TextEditingController();
+  final _allergyInfoController = TextEditingController();
+
+  // 편의 정보 Controllers
+  final _findTipController = TextEditingController();
+  final _parkingInfoController = TextEditingController();
+
+  // 선택 상태들
+  String? _selectedBusinessId;
+  List<String> _selectedCategories = [];
+  String _parkingAvailable = 'NO'; // YES or NO
+
+  // 파일 업로드
+  List<File?> _findTipImages = [null, null, null];
+  List<String?> _findTipImageNames = [null, null, null];
+  List<String?> _existingImageUrls = [null, null, null]; // 기존 이미지 URL들
+
+  // 카테고리 옵션들
+  final List<String> _categoryOptions = [
+    '한식', '중식', '일식', '양식', '치킨', '피자', '햄버거',
+    '카페', '디저트', '분식', '술집', '고기', '해산물', '아시안',
+    '멕시칸', '인도', '태국', '베트남', '샐러드', '건강식',
+  ];
+
+  // 사업자 목록 (실제로는 API에서 가져옴)
+  final List<Map<String, String>> _businessOptions = [
+    {'id': '1', 'name': '㈜맛있는집'},
+    {'id': '2', 'name': '치킨왕 프랜차이즈'},
+    {'id': '3', 'name': '피자마을'},
+    {'id': '4', 'name': '햄버거킹'},
+  ];
 
   @override
   void initState() {
     super.initState();
-    _initializeControllers();
     _loadStoreData();
   }
 
@@ -47,28 +84,16 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
     _storeAddressDetailController.dispose();
     _storePhoneController.dispose();
     _storeDescriptionController.dispose();
-    _operatingHoursController.dispose();
-    _deliveryRadiusController.dispose();
-    _minimumOrderAmountController.dispose();
-    _deliveryFeeController.dispose();
+    _noticeController.dispose();
+    _originInfoController.dispose();
+    _nutritionInfoController.dispose();
+    _allergyInfoController.dispose();
+    _findTipController.dispose();
+    _parkingInfoController.dispose();
     super.dispose();
   }
 
-  void _initializeControllers() {
-    _storeNameController = TextEditingController();
-    _storeAddressController = TextEditingController();
-    _storeAddressDetailController = TextEditingController();
-    _storePhoneController = TextEditingController();
-    _storeDescriptionController = TextEditingController();
-    _operatingHoursController = TextEditingController();
-    _deliveryRadiusController = TextEditingController();
-    _minimumOrderAmountController = TextEditingController();
-    _deliveryFeeController = TextEditingController();
-  }
-
   Future<void> _loadStoreData() async {
-    // TODO: 실제 API 호출로 데이터 가져오기
-    // 현재는 샘플 데이터 사용
     await Future.delayed(const Duration(seconds: 1));
     
     final sampleStores = _getSampleStores();
@@ -89,44 +114,81 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
   void _updateControllers() {
     if (_store == null) return;
     
+    // 기본 정보
     _storeNameController.text = _store!.storeName;
     _storeAddressController.text = _store!.storeAddress;
     _storeAddressDetailController.text = _store!.storeAddressDetail ?? '';
     _storePhoneController.text = _store!.storePhone ?? '';
-    _storeDescriptionController.text = _store!.storeDescription ?? '';
-    _operatingHoursController.text = _store!.operatingHours ?? '';
-    _deliveryRadiusController.text = _store!.deliveryRadius ?? '';
-    _minimumOrderAmountController.text = _store!.minimumOrderAmount ?? '';
-    _deliveryFeeController.text = _store!.deliveryFee ?? '';
+    
+    // 매장 소개 (실제로는 store 모델에서 가져와야 함, 현재는 샘플 데이터)
+    _storeDescriptionController.text = _store!.storeDescription ?? '신선한 재료로 만든 맛있는 요리를 제공합니다.';
+    _noticeController.text = '매장 휴무일: 매주 월요일\n배달 시간: 오전 11시 ~ 오후 9시';
+    
+    // 카테고리 및 정보 (샘플 데이터)
+    _selectedCategories = ['한식', '치킨'];
+    _originInfoController.text = '쌀: 국산, 닭고기: 국산, 야채류: 국산';
+    _nutritionInfoController.text = '칼로리: 350kcal, 나트륨: 800mg, 단백질: 25g';
+    _allergyInfoController.text = '대두, 밀, 달걀 함유';
+    
+    // 편의 정보 (샘플 데이터)
+    _findTipController.text = '지하철 2호선 강남역 3번 출구에서 도보 5분\n건물 1층에 위치';
+    _parkingAvailable = 'YES';
+    _parkingInfoController.text = '건물 지하 1층 무료주차 (2시간)';
+    
+    // 사업자 ID 설정
+    _selectedBusinessId = _store!.businessId;
+    
+    // 기존 이미지 URL (샘플)
+    _existingImageUrls = [
+      'https://example.com/store1.jpg',
+      'https://example.com/store2.jpg', 
+      null
+    ];
   }
 
   void _toggleEditMode() {
     setState(() {
       _isEditMode = !_isEditMode;
       if (!_isEditMode) {
-        // 수정 모드 종료시 원래 데이터로 복원
+        // 편집 취소 시 원래 값으로 복원
         _updateControllers();
       }
     });
   }
 
   Future<void> _saveChanges() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
 
-    // TODO: 실제 API 호출로 데이터 저장
-    await Future.delayed(const Duration(seconds: 1));
+    if (_selectedCategories.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '최소 1개 이상의 카테고리를 선택해주세요.',
+            style: TextStyle(fontSize: 18.sp),
+          ),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
 
-    if (_store != null) {
+    try {
+      // 실제로는 API 호출
+      await Future.delayed(const Duration(seconds: 1));
+      
+      // 업데이트된 매장 정보 생성
       final updatedStore = _store!.copyWith(
         storeName: _storeNameController.text,
         storeAddress: _storeAddressController.text,
-        storeAddressDetail: _storeAddressDetailController.text.isEmpty ? null : _storeAddressDetailController.text,
-        storePhone: _storePhoneController.text.isEmpty ? null : _storePhoneController.text,
-        storeDescription: _storeDescriptionController.text.isEmpty ? null : _storeDescriptionController.text,
-        operatingHours: _operatingHoursController.text.isEmpty ? null : _operatingHoursController.text,
-        deliveryRadius: _deliveryRadiusController.text.isEmpty ? null : _deliveryRadiusController.text,
-        minimumOrderAmount: _minimumOrderAmountController.text.isEmpty ? null : _minimumOrderAmountController.text,
-        deliveryFee: _deliveryFeeController.text.isEmpty ? null : _deliveryFeeController.text,
+        storeAddressDetail: _storeAddressDetailController.text.isEmpty 
+            ? null : _storeAddressDetailController.text,
+        storePhone: _storePhoneController.text.isEmpty 
+            ? null : _storePhoneController.text,
+        storeDescription: _storeDescriptionController.text.isEmpty 
+            ? null : _storeDescriptionController.text,
+        businessId: _selectedBusinessId!,
       );
 
       setState(() {
@@ -134,37 +196,63 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
         _isEditMode = false;
       });
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('매장 정보가 성공적으로 수정되었습니다.'),
-            backgroundColor: AppColors.success,
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '매장 정보가 성공적으로 수정되었습니다.',
+            style: TextStyle(fontSize: 18.sp),
           ),
-        );
-      }
+          backgroundColor: AppColors.success,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '수정 중 오류가 발생했습니다.',
+            style: TextStyle(fontSize: 18.sp),
+          ),
+          backgroundColor: AppColors.error,
+        ),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const CrmLayout(
+        currentRoute: RouteNames.store,
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return CrmLayout(
       currentRoute: RouteNames.store,
-      child: _isLoading 
-          ? const Center(child: CircularProgressIndicator())
-          : Form(
-              key: _formKey,
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(AppSizes.lg),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildHeader(),
-                    SizedBox(height: AppSizes.lg),
-                    _buildContent(),
-                  ],
-                ),
-              ),
-            ),
+      child: SingleChildScrollView(
+        padding: EdgeInsets.all(AppSizes.lg),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(),
+              SizedBox(height: AppSizes.lg),
+              _buildBasicInfoSection(),
+              SizedBox(height: AppSizes.lg),
+              _buildDescriptionSection(),
+              SizedBox(height: AppSizes.lg),
+              _buildCategoryInfoSection(),
+              SizedBox(height: AppSizes.lg),
+              _buildConvenienceSection(),
+              if (_isEditMode) ...[
+                SizedBox(height: AppSizes.xl),
+                _buildEditActions(),
+              ],
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -173,7 +261,11 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
       children: [
         IconButton(
           onPressed: () => context.go(RouteNames.store),
-          icon: Icon(MdiIcons.arrowLeft, size: AppSizes.iconMd),
+          icon: Icon(
+            MdiIcons.arrowLeft, 
+            size: AppSizes.iconMd,
+            color: AppColors.textPrimary,
+          ),
         ),
         SizedBox(width: AppSizes.sm),
         Expanded(
@@ -181,18 +273,18 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '매장 상세정보',
+                _store?.storeName ?? '매장 상세정보',
                 style: TextStyle(
-                  fontSize: 36.sp, // 30.sp -> 36.sp (가독성 개선)
+                  fontSize: 36.sp, // 통일화된 헤더 크기
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
                 ),
               ),
               SizedBox(height: AppSizes.xs),
               Text(
-                '${_store?.storeName ?? '매장'} 정보',
+                '매장 정보를 확인하고 수정할 수 있습니다.',
                 style: TextStyle(
-                  fontSize: 18.sp, // 16.sp -> 18.sp
+                  fontSize: 20.sp, // 통일화된 서브 텍스트 크기
                   color: AppColors.textSecondary,
                 ),
               ),
@@ -201,45 +293,15 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
         ),
         _buildStatusChip(),
         SizedBox(width: AppSizes.md),
-        if (_isEditMode) ...[
-          ElevatedButton.icon(
-            onPressed: _saveChanges,
-            icon: Icon(MdiIcons.check, size: AppSizes.iconSm),
-            label: const Text('저장'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.success,
-              foregroundColor: Colors.white,
-            ),
-          ),
-          SizedBox(width: AppSizes.sm),
-          OutlinedButton.icon(
-            onPressed: _toggleEditMode,
-            icon: Icon(MdiIcons.close, size: AppSizes.iconSm),
-            label: const Text('취소'),
-            style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.error,
-              side: const BorderSide(color: AppColors.error),
-            ),
-          ),
-        ] else ...[
+        if (!_isEditMode)
           ElevatedButton.icon(
             onPressed: _toggleEditMode,
             icon: Icon(MdiIcons.pencil, size: AppSizes.iconSm),
-            label: const Text('수정'),
-          ),
-          SizedBox(width: AppSizes.sm),
-          ElevatedButton.icon(
-            onPressed: () {
-              context.go('/store/${widget.storeId}/menu');
-            },
-            icon: Icon(MdiIcons.silverware, size: AppSizes.iconSm),
-            label: const Text('메뉴 관리'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.warning,
-              foregroundColor: Colors.white,
+            label: Text(
+              '수정',
+              style: TextStyle(fontSize: 18.sp),
             ),
           ),
-        ],
       ],
     );
   }
@@ -265,23 +327,22 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
         break;
       default:
         chipColor = AppColors.inactive;
-        statusText = '알 수 없음';
+        statusText = _store!.status;
     }
 
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: AppSizes.md,
-        vertical: AppSizes.sm,
+        vertical: AppSizes.xs,
       ),
       decoration: BoxDecoration(
         color: chipColor.withOpacity(0.1),
         borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-        border: Border.all(color: chipColor.withOpacity(0.3)),
       ),
       child: Text(
         statusText,
         style: TextStyle(
-          fontSize: 14.sp, // 12.sp -> 14.sp
+          fontSize: 16.sp,
           fontWeight: FontWeight.w600,
           color: chipColor,
         ),
@@ -289,293 +350,320 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
     );
   }
 
-  Widget _buildContent() {
-    if (_store == null) return const SizedBox.shrink();
-
-    return Column(
-      children: [
-        _buildBasicInfoCard(),
-        SizedBox(height: AppSizes.lg),
-        _buildBusinessInfoCard(),
-        SizedBox(height: AppSizes.lg),
-        _buildDeliveryInfoCard(),
-        SizedBox(height: AppSizes.lg),
-        _buildOperationInfoCard(),
-      ],
-    );
-  }
-
-  Widget _buildBasicInfoCard() {
+  Widget _buildBasicInfoSection() {
     return Card(
       child: Padding(
         padding: EdgeInsets.all(AppSizes.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Icon(
-                  MdiIcons.storefront,
-                  size: AppSizes.iconMd,
-                  color: AppColors.primary,
-                ),
-                SizedBox(width: AppSizes.sm),
-                Text(
-                  '기본 정보',
-                  style: TextStyle(
-                    fontSize: 24.sp, // 20.sp -> 24.sp (가독성 개선)
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-              ],
+            Text(
+              '기본 정보',
+              style: TextStyle(
+                fontSize: 24.sp, // 통일화된 카드 제목 크기
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
             ),
             SizedBox(height: AppSizes.lg),
+            
+            // 사업자 선택
             _buildInfoRow(
-              '매장명', 
-              _store!.storeName,
-              controller: _storeNameController,
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return '매장명은 필수입니다.';
-                }
-                return null;
-              },
+              '사업자',
+              _isEditMode
+                  ? DropdownButtonFormField<String>(
+                      value: _selectedBusinessId,
+                      decoration: const InputDecoration(
+                        labelText: '사업자를 선택하세요',
+                      ),
+                      items: _businessOptions.map((business) {
+                        return DropdownMenuItem<String>(
+                          value: business['id'],
+                          child: Text(
+                            business['name']!,
+                            style: TextStyle(fontSize: 20.sp),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedBusinessId = value;
+                        });
+                      },
+                      validator: RequiredValidator(errorText: '사업자를 선택해주세요'),
+                    )
+                  : null,
+              _getBusinessNameById(_selectedBusinessId ?? ''),
             ),
-            _buildInfoRow('사업자', _store!.businessName ?? '-'),
+
             _buildInfoRow(
-              '매장 주소', 
-              _store!.storeAddress,
-              controller: _storeAddressController,
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return '매장 주소는 필수입니다.';
-                }
-                return null;
-              },
+              '매장명',
+              _isEditMode
+                  ? TextFormField(
+                      controller: _storeNameController,
+                      decoration: const InputDecoration(labelText: '매장명'),
+                      validator: RequiredValidator(errorText: '매장명을 입력해주세요'),
+                    )
+                  : null,
+              _store?.storeName ?? '',
             ),
+
             _buildInfoRow(
-              '상세주소', 
-              _store!.storeAddressDetail ?? '',
-              controller: _storeAddressDetailController,
+              '매장주소',
+              _isEditMode
+                  ? TextFormField(
+                      controller: _storeAddressController,
+                      decoration: const InputDecoration(labelText: '매장주소'),
+                      validator: RequiredValidator(errorText: '매장주소를 입력해주세요'),
+                    )
+                  : null,
+              _store?.storeAddress ?? '',
             ),
+
             _buildInfoRow(
-              '매장 전화번호', 
-              _store!.storePhone ?? '',
-              controller: _storePhoneController,
+              '상세주소',
+              _isEditMode
+                  ? TextFormField(
+                      controller: _storeAddressDetailController,
+                      decoration: const InputDecoration(labelText: '상세주소'),
+                    )
+                  : null,
+              _store?.storeAddressDetail ?? '-',
             ),
+
             _buildInfoRow(
-              '매장 설명', 
-              _store!.storeDescription ?? '',
-              controller: _storeDescriptionController,
+              '매장 전화번호',
+              _isEditMode
+                  ? TextFormField(
+                      controller: _storePhoneController,
+                      decoration: const InputDecoration(labelText: '매장 전화번호'),
+                      validator: RequiredValidator(errorText: '매장 전화번호를 입력해주세요'),
+                    )
+                  : null,
+              _store?.storePhone ?? '-',
             ),
-            _buildInfoRow('등록일', _store!.registrationDate),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildBusinessInfoCard() {
+  Widget _buildDescriptionSection() {
     return Card(
       child: Padding(
         padding: EdgeInsets.all(AppSizes.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Icon(
-                  MdiIcons.domain,
-                  size: AppSizes.iconMd,
-                  color: AppColors.secondary,
-                ),
-                SizedBox(width: AppSizes.sm),
-                Text(
-                  '사업 정보',
-                  style: TextStyle(
-                    fontSize: 24.sp, // 20.sp -> 24.sp (가독성 개선)
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-              ],
+            Text(
+              '매장 소개',
+              style: TextStyle(
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
             ),
             SizedBox(height: AppSizes.lg),
+
             _buildInfoRow(
-              '운영시간', 
-              _store!.operatingHours ?? '',
-              controller: _operatingHoursController,
+              '매장소개글',
+              _isEditMode
+                  ? TextFormField(
+                      controller: _storeDescriptionController,
+                      maxLines: 5,
+                      maxLength: 500,
+                      decoration: const InputDecoration(
+                        labelText: '매장소개글',
+                        alignLabelWithHint: true,
+                      ),
+                    )
+                  : null,
+              _storeDescriptionController.text.isEmpty ? '-' : _storeDescriptionController.text,
             ),
-            _buildInfoRow('서비스 타입', _buildServiceTypeText()),
-            _buildInfoRow('메뉴 개수', _store!.menuCount != null ? '${_store!.menuCount}개' : '-'),
-            if (_store!.lastOrderDate != null)
-              _buildInfoRow('최근 주문일', _store!.lastOrderDate!),
+
+            _buildInfoRow(
+              '공지사항',
+              _isEditMode
+                  ? TextFormField(
+                      controller: _noticeController,
+                      maxLines: 5,
+                      maxLength: 500,
+                      decoration: const InputDecoration(
+                        labelText: '공지사항',
+                        alignLabelWithHint: true,
+                      ),
+                    )
+                  : null,
+              _noticeController.text.isEmpty ? '-' : _noticeController.text,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildDeliveryInfoCard() {
+  Widget _buildCategoryInfoSection() {
     return Card(
       child: Padding(
         padding: EdgeInsets.all(AppSizes.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Icon(
-                  MdiIcons.truckDelivery,
-                  size: AppSizes.iconMd,
-                  color: AppColors.info,
-                ),
-                SizedBox(width: AppSizes.sm),
-                Text(
-                  '포장 정보',
-                  style: TextStyle(
-                    fontSize: 24.sp, // 20.sp -> 24.sp (가독성 개선)
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-              ],
+            Text(
+              '카테고리 및 정보',
+              style: TextStyle(
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
             ),
             SizedBox(height: AppSizes.lg),
-            _buildInfoRow('포장 가능', _store!.isDeliveryAvailable ? '가능' : '불가능'),
-            if (_store!.isDeliveryAvailable) ...[
-              _buildInfoRow(
-                '포장 범위', 
-                _store!.deliveryRadius != null ? '${_store!.deliveryRadius}km' : '',
-                controller: _deliveryRadiusController,
-                validator: (value) {
-                  if (value != null && value.isNotEmpty) {
-                    final radius = double.tryParse(value);
-                    if (radius == null || radius <= 0) {
-                      return '올바른 숫자를 입력하세요.';
-                    }
-                  }
-                  return null;
-                },
+
+            // 카테고리
+            _buildInfoRow(
+              '카테고리',
+              _isEditMode ? _buildCategorySelection() : null,
+              _selectedCategories.isEmpty ? '-' : _selectedCategories.join(', '),
+            ),
+
+            _buildInfoRow(
+              '원산지 표시',
+              _isEditMode
+                  ? TextFormField(
+                      controller: _originInfoController,
+                      maxLines: 3,
+                      decoration: const InputDecoration(
+                        labelText: '원산지 표시',
+                        alignLabelWithHint: true,
+                      ),
+                    )
+                  : null,
+              _originInfoController.text.isEmpty ? '-' : _originInfoController.text,
+            ),
+
+            _buildInfoRow(
+              '영양성분 정보',
+              _isEditMode
+                  ? TextFormField(
+                      controller: _nutritionInfoController,
+                      maxLines: 3,
+                      decoration: const InputDecoration(
+                        labelText: '영양성분 정보',
+                        alignLabelWithHint: true,
+                      ),
+                    )
+                  : null,
+              _nutritionInfoController.text.isEmpty ? '-' : _nutritionInfoController.text,
+            ),
+
+            _buildInfoRow(
+              '알레르기 유발 정보',
+              _isEditMode
+                  ? TextFormField(
+                      controller: _allergyInfoController,
+                      maxLines: 3,
+                      decoration: const InputDecoration(
+                        labelText: '알레르기 유발 정보',
+                        alignLabelWithHint: true,
+                      ),
+                    )
+                  : null,
+              _allergyInfoController.text.isEmpty ? '-' : _allergyInfoController.text,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildConvenienceSection() {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppSizes.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '편의 정보',
+              style: TextStyle(
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
               ),
-              _buildInfoRow(
-                '포장 수수료', 
-                _store!.deliveryFee != null ? '${_formatCurrency(_store!.deliveryFee!)}원' : '',
-                controller: _deliveryFeeController,
-                validator: (value) {
-                  if (value != null && value.isNotEmpty) {
-                    final fee = int.tryParse(value.replaceAll(',', ''));
-                    if (fee == null || fee < 0) {
-                      return '올바른 금액을 입력하세요.';
-                    }
-                  }
-                  return null;
-                },
+            ),
+            SizedBox(height: AppSizes.lg),
+
+            _buildInfoRow(
+              '매장찾기팁',
+              _isEditMode
+                  ? TextFormField(
+                      controller: _findTipController,
+                      maxLines: 3,
+                      decoration: const InputDecoration(
+                        labelText: '매장찾기팁',
+                        alignLabelWithHint: true,
+                      ),
+                    )
+                  : null,
+              _findTipController.text.isEmpty ? '-' : _findTipController.text,
+            ),
+
+            // 매장찾기팁 사진
+            if (_isEditMode || _hasImages()) ...[
+              SizedBox(height: AppSizes.md),
+              Text(
+                '매장찾기팁 사진',
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textPrimary,
+                ),
               ),
+              SizedBox(height: AppSizes.sm),
+              _isEditMode ? _buildImageUploadSection() : _buildImageDisplaySection(),
             ],
-            _buildInfoRow('매장 픽업 가능', _store!.isPickupAvailable ? '가능' : '불가능'),
-            _buildInfoRow(
-              '최소 주문금액', 
-              _store!.minimumOrderAmount != null ? '${_formatCurrency(_store!.minimumOrderAmount!)}원' : '',
-              controller: _minimumOrderAmountController,
-              validator: (value) {
-                if (value != null && value.isNotEmpty) {
-                  final amount = int.tryParse(value.replaceAll(',', ''));
-                  if (amount == null || amount < 0) {
-                    return '올바른 금액을 입력하세요.';
-                  }
-                }
-                return null;
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
-  Widget _buildOperationInfoCard() {
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(AppSizes.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  MdiIcons.chartLine,
-                  size: AppSizes.iconMd,
-                  color: AppColors.warning,
-                ),
-                SizedBox(width: AppSizes.sm),
-                Text(
-                  '운영 현황',
-                  style: TextStyle(
-                    fontSize: 24.sp, // 20.sp -> 24.sp (가독성 개선)
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-              ],
-            ),
             SizedBox(height: AppSizes.lg),
-            _buildStatCard('총 주문 수', '1,234', '건', AppColors.primary),
-            SizedBox(height: AppSizes.md),
-            _buildStatCard('월 매출', '2,500,000', '원', AppColors.success),
-            SizedBox(height: AppSizes.md),
-            _buildStatCard('평균 주문 금액', '25,000', '원', AppColors.info),
-            SizedBox(height: AppSizes.md),
-            _buildStatCard('리뷰 평점', '4.5', '점', AppColors.warning),
+
+            // 주차정보
+            _buildInfoRow(
+              '주차정보',
+              _isEditMode ? _buildParkingSection() : null,
+              _parkingAvailable == 'YES' 
+                  ? '주차 가능${_parkingInfoController.text.isNotEmpty ? ' - ${_parkingInfoController.text}' : ''}'
+                  : '주차 불가능',
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildInfoRow(String label, String value, {TextEditingController? controller, String? Function(String?)? validator}) {
+  Widget _buildInfoRow(String label, Widget? editWidget, String displayValue) {
     return Padding(
       padding: EdgeInsets.only(bottom: AppSizes.md),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 100.w,
-            child: Padding(
-              padding: EdgeInsets.only(top: _isEditMode ? 14.h : 0),
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textSecondary,
-                ),
+            width: 150.w,
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textSecondary,
               ),
             ),
           ),
-          SizedBox(width: AppSizes.md),
+          SizedBox(width: AppSizes.lg),
           Expanded(
-            child: _isEditMode && controller != null
-                ? TextFormField(
-                    controller: controller,
-                    validator: validator,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: AppSizes.sm,
-                        vertical: AppSizes.sm,
-                      ),
-                    ),
-                    style: TextStyle(
-                      fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
-                      color: AppColors.textPrimary,
-                    ),
-                  )
+            child: _isEditMode && editWidget != null
+                ? editWidget
                 : Text(
-                    value,
+                    displayValue,
                     style: TextStyle(
-                      fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
+                      fontSize: 20.sp,
                       color: AppColors.textPrimary,
                     ),
                   ),
@@ -585,70 +673,328 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
     );
   }
 
-  Widget _buildStatCard(String label, String value, String unit, Color color) {
+  Widget _buildCategorySelection() {
     return Container(
       padding: EdgeInsets.all(AppSizes.md),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        border: Border.all(color: AppColors.border),
         borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-        border: Border.all(color: color.withOpacity(0.3)),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 14.sp, // 12.sp -> 14.sp
-                    color: AppColors.textSecondary,
+          if (_selectedCategories.isNotEmpty) ...[
+            Wrap(
+              spacing: AppSizes.sm,
+              runSpacing: AppSizes.sm,
+              children: _selectedCategories.map((category) {
+                return Chip(
+                  label: Text(
+                    category,
+                    style: TextStyle(fontSize: 16.sp),
                   ),
-                ),
-                SizedBox(height: AppSizes.xs),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      value,
-                      style: TextStyle(
-                        fontSize: 24.sp, // 20.sp -> 24.sp (가독성 개선)
-                        fontWeight: FontWeight.bold,
-                        color: color,
-                      ),
-                    ),
-                    SizedBox(width: AppSizes.xs),
-                    Text(
-                      unit,
-                      style: TextStyle(
-                        fontSize: 14.sp, // 12.sp -> 14.sp
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                  deleteIcon: const Icon(Icons.close, size: 18),
+                  onDeleted: () {
+                    setState(() {
+                      _selectedCategories.remove(category);
+                    });
+                  },
+                );
+              }).toList(),
             ),
+            SizedBox(height: AppSizes.md),
+          ],
+          Wrap(
+            spacing: AppSizes.sm,
+            runSpacing: AppSizes.sm,
+            children: _categoryOptions
+                .where((category) => !_selectedCategories.contains(category))
+                .map((category) {
+              return FilterChip(
+                label: Text(
+                  category,
+                  style: TextStyle(fontSize: 16.sp),
+                ),
+                selected: false,
+                onSelected: (selected) {
+                  if (selected) {
+                    setState(() {
+                      _selectedCategories.add(category);
+                    });
+                  }
+                },
+              );
+            }).toList(),
           ),
         ],
       ),
     );
   }
 
-  String _buildServiceTypeText() {
-    List<String> services = [];
-    if (_store!.isDeliveryAvailable) services.add('포장 서비스');
-    if (_store!.isPickupAvailable) services.add('매장 픽업');
-    return services.isEmpty ? '-' : services.join(', ');
+  Widget _buildParkingSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: RadioListTile<String>(
+                title: Text(
+                  '주차 가능',
+                  style: TextStyle(fontSize: 18.sp),
+                ),
+                value: 'YES',
+                groupValue: _parkingAvailable,
+                onChanged: (value) {
+                  setState(() {
+                    _parkingAvailable = value!;
+                  });
+                },
+              ),
+            ),
+            Expanded(
+              child: RadioListTile<String>(
+                title: Text(
+                  '주차 불가능',
+                  style: TextStyle(fontSize: 18.sp),
+                ),
+                value: 'NO',
+                groupValue: _parkingAvailable,
+                onChanged: (value) {
+                  setState(() {
+                    _parkingAvailable = value!;
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
+        if (_parkingAvailable == 'YES') ...[
+          SizedBox(height: AppSizes.md),
+          TextFormField(
+            controller: _parkingInfoController,
+            maxLines: 2,
+            decoration: const InputDecoration(
+              labelText: '주차 상세정보',
+              hintText: '주차 가능 대수, 주차 요금, 주차 위치 등을 입력하세요',
+              alignLabelWithHint: true,
+            ),
+          ),
+        ],
+      ],
+    );
   }
 
-  String _formatCurrency(String value) {
-    final num = int.tryParse(value) ?? 0;
-    return num.toString().replaceAllMapped(
-      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-      (Match m) => '${m[1]},',
+  Widget _buildImageUploadSection() {
+    return Column(
+      children: List.generate(3, (index) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: AppSizes.md),
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 120.h,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.border),
+                    borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                  ),
+                  child: _findTipImages[index] != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                          child: Image.file(
+                            _findTipImages[index]!,
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : _existingImageUrls[index] != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                              child: Container(
+                                color: AppColors.background,
+                                child: Center(
+                                  child: Text(
+                                    '기존 이미지 ${index + 1}',
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    MdiIcons.imageOutline,
+                                    size: 40.r,
+                                    color: AppColors.textTertiary,
+                                  ),
+                                  SizedBox(height: AppSizes.xs),
+                                  Text(
+                                    '사진 ${index + 1}',
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      color: AppColors.textTertiary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                ),
+              ),
+              SizedBox(width: AppSizes.md),
+              Column(
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () => _pickImage(index),
+                    icon: Icon(MdiIcons.upload, size: AppSizes.iconSm),
+                    label: Text(
+                      _findTipImages[index] != null || _existingImageUrls[index] != null 
+                          ? '변경' : '선택',
+                      style: TextStyle(fontSize: 16.sp),
+                    ),
+                  ),
+                  if (_findTipImages[index] != null || _existingImageUrls[index] != null) ...[
+                    SizedBox(height: AppSizes.sm),
+                    OutlinedButton.icon(
+                      onPressed: () => _removeImage(index),
+                      icon: Icon(MdiIcons.delete, size: AppSizes.iconSm),
+                      label: Text(
+                        '삭제',
+                        style: TextStyle(fontSize: 16.sp),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ],
+          ),
+        );
+      }),
     );
+  }
+
+  Widget _buildImageDisplaySection() {
+    List<String> imageUrls = [];
+    for (int i = 0; i < 3; i++) {
+      if (_existingImageUrls[i] != null) {
+        imageUrls.add(_existingImageUrls[i]!);
+      }
+    }
+
+    if (imageUrls.isEmpty) {
+      return Text(
+        '등록된 이미지가 없습니다.',
+        style: TextStyle(
+          fontSize: 18.sp,
+          color: AppColors.textTertiary,
+        ),
+      );
+    }
+
+    return Wrap(
+      spacing: AppSizes.md,
+      runSpacing: AppSizes.md,
+      children: imageUrls.map((url) {
+        return Container(
+          width: 120.w,
+          height: 120.h,
+          decoration: BoxDecoration(
+            border: Border.all(color: AppColors.border),
+            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+            color: AppColors.background,
+          ),
+          child: Center(
+            child: Text(
+              '매장 이미지',
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  bool _hasImages() {
+    return _existingImageUrls.any((url) => url != null) ||
+           _findTipImages.any((file) => file != null);
+  }
+
+  Widget _buildEditActions() {
+    return Row(
+      children: [
+        Expanded(
+          child: OutlinedButton.icon(
+            onPressed: _toggleEditMode,
+            icon: Icon(MdiIcons.close, size: AppSizes.iconSm),
+            label: Text(
+              '취소',
+              style: TextStyle(fontSize: 20.sp),
+            ),
+          ),
+        ),
+        SizedBox(width: AppSizes.md),
+        Expanded(
+          flex: 2,
+          child: ElevatedButton.icon(
+            onPressed: _saveChanges,
+            icon: Icon(MdiIcons.check, size: AppSizes.iconSm),
+            label: Text(
+              '저장',
+              style: TextStyle(fontSize: 20.sp),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _getBusinessNameById(String id) {
+    final business = _businessOptions.firstWhere(
+      (b) => b['id'] == id,
+      orElse: () => {'id': '', 'name': '-'},
+    );
+    return business['name'] ?? '-';
+  }
+
+  Future<void> _pickImage(int index) async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: false,
+      );
+
+      if (result != null && result.files.single.path != null) {
+        setState(() {
+          _findTipImages[index] = File(result.files.single.path!);
+          _findTipImageNames[index] = result.files.single.name;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '이미지 선택 중 오류가 발생했습니다.',
+            style: TextStyle(fontSize: 18.sp),
+          ),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
+  }
+
+  void _removeImage(int index) {
+    setState(() {
+      _findTipImages[index] = null;
+      _findTipImageNames[index] = null;
+      _existingImageUrls[index] = null;
+    });
   }
 
   List<StoreModel> _getSampleStores() {
@@ -657,80 +1003,37 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
         id: '1',
         businessId: '1',
         storeName: '맛있는집 강남점',
-        storeAddress: '서울특별시 강남구 역삼로 123',
-        storeAddressDetail: '○○빌딩 1층',
+        storeAddress: '서울시 강남구 테헤란로 123',
+        storeAddressDetail: '1층',
         storePhone: '02-1234-5678',
-        storeDescription: '정통 한식을 맛볼 수 있는 곳',
-        registrationDate: '2024-08-15',
+        storeDescription: '신선한 재료로 만든 맛있는 한식을 제공합니다.',
         status: 'ACTIVE',
-        operatingHours: '10:00-22:00',
-        deliveryRadius: '3',
+        operatingHours: '09:00-21:00',
+        deliveryRadius: '3km',
+        minimumOrderAmount: '15000',
+        deliveryFee: '3000',
         isDeliveryAvailable: true,
         isPickupAvailable: true,
-        minimumOrderAmount: '12000',
-        deliveryFee: '3000',
-        businessName: '㈜맛있는집',
-        menuCount: 25,
-        lastOrderDate: '2024-09-19',
+        latitude: 37.5665,
+        longitude: 126.9780,
+        registrationDate: '2024-01-15',
       ),
       StoreModel(
         id: '2',
         businessId: '2',
         storeName: '치킨왕 홍대점',
-        storeAddress: '서울특별시 마포구 홍익로 456',
-        storeAddressDetail: '△△타워 지하 1층',
+        storeAddress: '서울시 마포구 홍익로 456',
         storePhone: '02-2345-6789',
-        storeDescription: '바삭바삭한 치킨 전문점',
-        registrationDate: '2024-08-20',
-        status: 'PENDING',
-        operatingHours: '16:00-02:00',
-        deliveryRadius: '5',
-        isDeliveryAvailable: true,
-        isPickupAvailable: true,
-        minimumOrderAmount: '15000',
-        deliveryFee: '2500',
-        businessName: '치킨왕 프랜차이즈',
-        menuCount: 18,
-        lastOrderDate: '2024-09-18',
-      ),
-      StoreModel(
-        id: '3',
-        businessId: '3',
-        storeName: '피자마을 신촌점',
-        storeAddress: '서울특별시 서대문구 신촌로 789',
-        storeAddressDetail: '□□플라자 2층',
-        storePhone: '02-3456-7890',
-        storeDescription: '수제 피자 전문점',
-        registrationDate: '2024-09-01',
         status: 'ACTIVE',
         operatingHours: '11:00-23:00',
-        deliveryRadius: '4',
+        deliveryRadius: '2km',
+        minimumOrderAmount: '20000',
+        deliveryFee: '2000',
         isDeliveryAvailable: true,
-        isPickupAvailable: false,
-        minimumOrderAmount: '18000',
-        deliveryFee: '3500',
-        businessName: '피자마을',
-        menuCount: 32,
-        lastOrderDate: '2024-09-19',
-      ),
-      StoreModel(
-        id: '4',
-        businessId: '1',
-        storeName: '맛있는집 서초점',
-        storeAddress: '서울특별시 서초구 서초대로 321',
-        storePhone: '02-4567-8901',
-        storeDescription: '맛있는집 2호점',
-        registrationDate: '2024-09-10',
-        status: 'INACTIVE',
-        operatingHours: '10:00-22:00',
-        deliveryRadius: '3',
-        isDeliveryAvailable: false,
         isPickupAvailable: true,
-        minimumOrderAmount: '12000',
-        deliveryFee: '0',
-        businessName: '㈜맛있는집',
-        menuCount: 20,
-        lastOrderDate: '2024-09-15',
+        latitude: 37.5547,
+        longitude: 126.9236,
+        registrationDate: '2024-02-10',
       ),
     ];
   }
