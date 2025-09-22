@@ -124,7 +124,7 @@ class RouteNames {
 class AppStrings {
   // 앱 정보
   static const String appName = 'YumYum CRM';
-  static const String appDescription = '맛있는 포장 서비스 관리자 페이지';
+  static const String appDescription = '포장 서비스 관리자 페이지';
   
   // 공통
   static const String confirm = '확인';

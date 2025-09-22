@@ -443,10 +443,10 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               ],
             ),
             SizedBox(height: AppSizes.lg),
-            _buildInfoRow('배달 가능', _store!.isDeliveryAvailable ? '가능' : '불가능'),
+            _buildInfoRow('포장 가능', _store!.isDeliveryAvailable ? '가능' : '불가능'),
             if (_store!.isDeliveryAvailable) ...[
               _buildInfoRow(
-                '배달 범위', 
+                '포장 범위', 
                 _store!.deliveryRadius != null ? '${_store!.deliveryRadius}km' : '',
                 controller: _deliveryRadiusController,
                 validator: (value) {
@@ -460,7 +460,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                 },
               ),
               _buildInfoRow(
-                '배달 수수료', 
+                '포장 수수료', 
                 _store!.deliveryFee != null ? '${_formatCurrency(_store!.deliveryFee!)}원' : '',
                 controller: _deliveryFeeController,
                 validator: (value) {
@@ -474,7 +474,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                 },
               ),
             ],
-            _buildInfoRow('포장 가능', _store!.isPickupAvailable ? '가능' : '불가능'),
+            _buildInfoRow('매장 픽업 가능', _store!.isPickupAvailable ? '가능' : '불가능'),
             _buildInfoRow(
               '최소 주문금액', 
               _store!.minimumOrderAmount != null ? '${_formatCurrency(_store!.minimumOrderAmount!)}원' : '',
@@ -638,8 +638,8 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
 
   String _buildServiceTypeText() {
     List<String> services = [];
-    if (_store!.isDeliveryAvailable) services.add('포장');
-    if (_store!.isPickupAvailable) services.add('포장');
+    if (_store!.isDeliveryAvailable) services.add('포장 서비스');
+    if (_store!.isPickupAvailable) services.add('매장 픽업');
     return services.isEmpty ? '-' : services.join(', ');
   }
 

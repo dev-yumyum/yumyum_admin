@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp.router(
-          title: 'YumYum CRM - 맛있는 포장 서비스 관리자',
+          title: 'YumYum CRM - 포장 서비스 관리자',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.lightTheme,
           routerConfig: _router,

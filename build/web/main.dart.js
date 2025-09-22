@@ -94241,8 +94241,8 @@ l=i.as
 l===$&&A.a()
 l=i.z8("\uc6b4\uc601\uc2dc\uac04",m,l)
 k=A.b([],t.s)
-if(i.d.Q)k.push("\ud3ec\uc7a5")
-if(i.d.as)k.push("\ud3ec\uc7a5")
+if(i.d.Q)k.push("\ud3ec\uc7a5 \uc11c\ube44\uc2a4")
+if(i.d.as)k.push("\ub9e4\uc7a5 \ud53d\uc5c5")
 m=i.o1("\uc11c\ube44\uc2a4 \ud0c0\uc785",k.length===0?"-":B.b.bt(k,", "))
 j=i.d.cy
 o=A.b([o,n,l,m,i.o1("\uba54\ub274 \uac1c\uc218",j!=null?A.q(j)+"\uac1c":"-")],p)
@@ -94278,18 +94278,18 @@ o=n.Q
 o===$&&A.a()
 return A.bT(new A.ap(new A.y(l,l,l,l),A.S(A.b([j,i,g,h,r,q,p,n.z8("\ub9e4\uc7a5 \uc124\uba85",s,o),n.o1("\ub4f1\ub85d\uc77c",n.d.w)],k),B.o,B.f,B.d),m),m,m)},
 a6w(){var s,r,q=this,p=null,o=$.a_(),n=t.p,m=A.a0(A.b([A.a8(B.Zh,B.an,p,$.cu()),A.l(p,p,$.aj()),A.m("\ud3ec\uc7a5 \uc815\ubcf4",p,p,p,p,A.n(p,p,B.j,p,p,p,p,p,p,p,p,$.f().q(20),p,p,B.q,p,p,!0,p,p,p,p,p,p,p,p),p,p,p)],n),B.h,B.f,B.d,0,p),l=A.l(p,$.a_(),p)
-m=A.b([m,l,q.o1("\ubc30\ub2ec \uac00\ub2a5",q.d.Q?"\uac00\ub2a5":"\ubd88\uac00\ub2a5")],n)
+m=A.b([m,l,q.o1("\ud3ec\uc7a5 \uac00\ub2a5",q.d.Q?"\uac00\ub2a5":"\ubd88\uac00\ub2a5")],n)
 l=q.d
 if(l.Q){l=l.z
 l=l!=null?l+"km":""
 s=q.at
 s===$&&A.a()
-s=q.o2("\ubc30\ub2ec \ubc94\uc704",l,s,new A.axm())
+s=q.o2("\ud3ec\uc7a5 \ubc94\uc704",l,s,new A.axm())
 l=q.d.ax
 l=l!=null?q.SU(l)+"\uc6d0":""
 r=q.ay
 r===$&&A.a()
-B.b.M(m,A.b([s,q.o2("\ubc30\ub2ec \uc218\uc218\ub8cc",l,r,new A.axn())],n))}m.push(q.o1("\ud3ec\uc7a5 \uac00\ub2a5",q.d.as?"\uac00\ub2a5":"\ubd88\uac00\ub2a5"))
+B.b.M(m,A.b([s,q.o2("\ud3ec\uc7a5 \uc218\uc218\ub8cc",l,r,new A.axn())],n))}m.push(q.o1("\ub9e4\uc7a5 \ud53d\uc5c5 \uac00\ub2a5",q.d.as?"\uac00\ub2a5":"\ubd88\uac00\ub2a5"))
 n=q.d.at
 n=n!=null?q.SU(n)+"\uc6d0":""
 l=q.ax
@@ -94774,7 +94774,7 @@ o=A.aB(l)
 s=A.aB(l)
 l=A.aB(l)
 r=$.V()
-return new A.o6(this.a.c,new A.adq(),"YumYum CRM - \ub9db\uc788\ub294 \ud3ec\uc7a5 \uc11c\ube44\uc2a4 \uad00\ub9ac\uc790",A.x1(h,q,new A.q_(q,B.l,q,q,2,q,new A.ct(j,B.w)),p,new A.uV(i),A.aI0(new A.dL(4,m,new A.aQ(B.ag,1,B.D,-1)),q,new A.y(r,r,r,r),q,new A.dL(4,n,new A.aQ(B.ag,1,B.D,-1)),new A.dL(4,s,new A.aQ(B.C,1,B.D,-1)),new A.dL(4,o,new A.aQ(B.y,2,B.D,-1)),new A.dL(4,l,new A.aQ(B.C,2,B.D,-1)),A.n(q,q,B.aC,q,q,q,q,q,q,q,q,$.f().q(16),q,q,q,q,q,!0,q,q,q,q,q,q,q,q),A.n(q,q,B.r,q,q,q,q,q,q,q,q,$.f().q(16),q,q,q,q,q,!0,q,q,q,q,q,q,q,q)),new A.vS(k),B.d9,g,!0),!1,B.nw.HB(!1,!0),q)},
+return new A.o6(this.a.c,new A.adq(),"YumYum CRM - \ud3ec\uc7a5 \uc11c\ube44\uc2a4 \uad00\ub9ac\uc790",A.x1(h,q,new A.q_(q,B.l,q,q,2,q,new A.ct(j,B.w)),p,new A.uV(i),A.aI0(new A.dL(4,m,new A.aQ(B.ag,1,B.D,-1)),q,new A.y(r,r,r,r),q,new A.dL(4,n,new A.aQ(B.ag,1,B.D,-1)),new A.dL(4,s,new A.aQ(B.C,1,B.D,-1)),new A.dL(4,o,new A.aQ(B.y,2,B.D,-1)),new A.dL(4,l,new A.aQ(B.C,2,B.D,-1)),A.n(q,q,B.aC,q,q,q,q,q,q,q,q,$.f().q(16),q,q,q,q,q,!0,q,q,q,q,q,q,q,q),A.n(q,q,B.r,q,q,q,q,q,q,q,q,$.f().q(16),q,q,q,q,q,!0,q,q,q,q,q,q,q,q)),new A.vS(k),B.d9,g,!0),!1,B.nw.HB(!1,!0),q)},
 $S:633}
 A.adq.prototype={
 $2(a,b){var s=B.nw.apb(!1,B.C9,!0)
