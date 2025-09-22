@@ -36,7 +36,7 @@ class DashboardChartCard extends StatelessWidget {
                       Text(
                         title,
                         style: TextStyle(
-                          fontSize: 18.sp,
+                          fontSize: 22.sp, // 18.sp -> 22.sp (가독성 개선)
                           fontWeight: FontWeight.bold,
                           color: AppColors.textPrimary,
                         ),

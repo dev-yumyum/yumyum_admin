@@ -183,7 +183,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               Text(
                 '매장 상세정보',
                 style: TextStyle(
-                  fontSize: 30.sp, // 28.sp -> 30.sp
+                  fontSize: 36.sp, // 30.sp -> 36.sp (가독성 개선)
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
                 ),
@@ -323,7 +323,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                 Text(
                   '기본 정보',
                   style: TextStyle(
-                    fontSize: 20.sp, // 18.sp -> 20.sp
+                    fontSize: 24.sp, // 20.sp -> 24.sp (가독성 개선)
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -394,7 +394,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                 Text(
                   '사업 정보',
                   style: TextStyle(
-                    fontSize: 20.sp, // 18.sp -> 20.sp
+                    fontSize: 24.sp, // 20.sp -> 24.sp (가독성 개선)
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -435,7 +435,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                 Text(
                   '포장 정보',
                   style: TextStyle(
-                    fontSize: 20.sp, // 18.sp -> 20.sp
+                    fontSize: 24.sp, // 20.sp -> 24.sp (가독성 개선)
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -513,7 +513,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                 Text(
                   '운영 현황',
                   style: TextStyle(
-                    fontSize: 20.sp, // 18.sp -> 20.sp
+                    fontSize: 24.sp, // 20.sp -> 24.sp (가독성 개선)
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -547,7 +547,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               child: Text(
                 label,
                 style: TextStyle(
-                  fontSize: 16.sp, // 14.sp -> 16.sp
+                  fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
                   fontWeight: FontWeight.w500,
                   color: AppColors.textSecondary,
                 ),
@@ -568,14 +568,14 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                       ),
                     ),
                     style: TextStyle(
-                      fontSize: 16.sp, // 14.sp -> 16.sp
+                      fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
                       color: AppColors.textPrimary,
                     ),
                   )
                 : Text(
                     value,
                     style: TextStyle(
-                      fontSize: 16.sp, // 14.sp -> 16.sp
+                      fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
                       color: AppColors.textPrimary,
                     ),
                   ),
@@ -613,7 +613,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                     Text(
                       value,
                       style: TextStyle(
-                        fontSize: 20.sp, // 18.sp -> 20.sp
+                        fontSize: 24.sp, // 20.sp -> 24.sp (가독성 개선)
                         fontWeight: FontWeight.bold,
                         color: color,
                       ),

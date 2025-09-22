@@ -13,23 +13,23 @@ class AppTheme {
       ),
       scaffoldBackgroundColor: AppColors.background,
       
-      // 전체 텍스트 테마 설정 (기본 크기 +2)
+      // 전체 텍스트 테마 설정 (가독성 개선을 위해 크기 대폭 증가)
       textTheme: TextTheme(
-        displayLarge: TextStyle(fontSize: 59.sp, fontWeight: FontWeight.w300, color: AppColors.textPrimary),
-        displayMedium: TextStyle(fontSize: 47.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
-        displaySmall: TextStyle(fontSize: 38.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
-        headlineLarge: TextStyle(fontSize: 34.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
-        headlineMedium: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
-        headlineSmall: TextStyle(fontSize: 26.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
-        titleLarge: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
-        titleMedium: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
-        titleSmall: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
-        bodyLarge: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
-        bodyMedium: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
-        bodySmall: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: AppColors.textSecondary),
-        labelLarge: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
-        labelMedium: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
-        labelSmall: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w500, color: AppColors.textSecondary),
+        displayLarge: TextStyle(fontSize: 65.sp, fontWeight: FontWeight.w300, color: AppColors.textPrimary),
+        displayMedium: TextStyle(fontSize: 53.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
+        displaySmall: TextStyle(fontSize: 44.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
+        headlineLarge: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
+        headlineMedium: TextStyle(fontSize: 36.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
+        headlineSmall: TextStyle(fontSize: 32.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
+        titleLarge: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
+        titleMedium: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
+        titleSmall: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
+        bodyLarge: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
+        bodyMedium: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
+        bodySmall: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w400, color: AppColors.textSecondary),
+        labelLarge: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
+        labelMedium: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
+        labelSmall: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: AppColors.textSecondary),
       ),
       
       appBarTheme: AppBarTheme(
@@ -39,7 +39,7 @@ class AppTheme {
         centerTitle: false,
         titleTextStyle: TextStyle(
           color: AppColors.textPrimary,
-          fontSize: 22.sp, // 20.sp -> 22.sp
+          fontSize: 26.sp, // 22.sp -> 26.sp (가독성 개선)
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -63,7 +63,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(AppSizes.borderRadius),
           ),
           textStyle: TextStyle(
-            fontSize: 16.sp, // 14.sp -> 16.sp
+            fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -80,7 +80,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(AppSizes.borderRadius),
           ),
           textStyle: TextStyle(
-            fontSize: 16.sp, // 14.sp -> 16.sp
+            fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -109,11 +109,11 @@ class AppTheme {
         contentPadding: EdgeInsets.all(AppSizes.md),
         hintStyle: TextStyle(
           color: AppColors.textTertiary,
-          fontSize: 16.sp, // 14.sp -> 16.sp
+          fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
         ),
         labelStyle: TextStyle(
           color: AppColors.textSecondary,
-          fontSize: 16.sp, // 14.sp -> 16.sp
+          fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
         ),
       ),
     );

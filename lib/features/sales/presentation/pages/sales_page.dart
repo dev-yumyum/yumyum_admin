@@ -130,7 +130,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
     return Text(
       '매출관리',
       style: TextStyle(
-        fontSize: 28.sp,
+        fontSize: 36.sp, // 28.sp -> 36.sp (가독성 개선)
         fontWeight: FontWeight.bold,
         color: AppColors.textPrimary,
       ),
@@ -285,7 +285,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
             Text(
               subtitle,
               style: TextStyle(
-                fontSize: 16.sp,
+                fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
                 color: AppColors.textSecondary,
               ),
             ),
@@ -325,7 +325,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
                 Text(
                   '~',
                   style: TextStyle(
-                    fontSize: 16.sp,
+                    fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
                     color: AppColors.textSecondary,
                   ),
                 ),
@@ -489,7 +489,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
                       label: Text(
                         '주문번호',
                         style: TextStyle(
-                          fontSize: 18.sp,
+                          fontSize: 22.sp, // 18.sp -> 22.sp (가독성 개선)
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPrimary,
                         ),
@@ -499,7 +499,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
                       label: Text(
                         '매장명',
                         style: TextStyle(
-                          fontSize: 18.sp,
+                          fontSize: 22.sp, // 18.sp -> 22.sp (가독성 개선)
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPrimary,
                         ),
@@ -509,7 +509,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
                       label: Text(
                         '고객명',
                         style: TextStyle(
-                          fontSize: 18.sp,
+                          fontSize: 22.sp, // 18.sp -> 22.sp (가독성 개선)
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPrimary,
                         ),
@@ -519,7 +519,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
                       label: Text(
                         '결제금액',
                         style: TextStyle(
-                          fontSize: 18.sp,
+                          fontSize: 22.sp, // 18.sp -> 22.sp (가독성 개선)
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPrimary,
                         ),
@@ -529,7 +529,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
                       label: Text(
                         '주문상태',
                         style: TextStyle(
-                          fontSize: 18.sp,
+                          fontSize: 22.sp, // 18.sp -> 22.sp (가독성 개선)
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPrimary,
                         ),
@@ -539,7 +539,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
                       label: Text(
                         '최종변경시간',
                         style: TextStyle(
-                          fontSize: 18.sp,
+                          fontSize: 22.sp, // 18.sp -> 22.sp (가독성 개선)
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPrimary,
                         ),
@@ -565,7 +565,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
           Text(
             sale.orderNumber,
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
               color: AppColors.textPrimary,
             ),
           ),
@@ -574,7 +574,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
           Text(
             sale.storeName ?? '',
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
               color: AppColors.textPrimary,
             ),
           ),
@@ -583,7 +583,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
           Text(
             sale.customerName ?? sale.memberName ?? '',
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
               color: AppColors.textPrimary,
             ),
           ),
@@ -592,7 +592,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
           Text(
             '${_formatCurrency(sale.paymentAmount.toString())}원',
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
               color: AppColors.textPrimary,
               fontWeight: FontWeight.w600,
             ),
@@ -603,7 +603,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
           Text(
             sale.orderDate,
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
               color: AppColors.textSecondary,
             ),
           ),

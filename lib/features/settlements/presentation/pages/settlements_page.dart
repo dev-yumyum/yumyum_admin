@@ -106,7 +106,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
     return Text(
       '정산관리',
       style: TextStyle(
-        fontSize: 30.sp, // 28.sp -> 30.sp
+        fontSize: 36.sp, // 30.sp -> 36.sp (가독성 개선)
         fontWeight: FontWeight.bold,
         color: AppColors.textPrimary,
       ),
@@ -230,7 +230,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
             Text(
               value,
               style: TextStyle(
-                fontSize: 30.sp, // 28.sp -> 30.sp
+                fontSize: 36.sp, // 30.sp -> 36.sp (가독성 개선)
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
