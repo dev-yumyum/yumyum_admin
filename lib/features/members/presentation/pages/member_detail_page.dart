@@ -358,7 +358,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
             Text(
               value,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 18.sp, // 14.sp -> 18.sp (가독성 개선)
                 fontWeight: FontWeight.w500,
                 color: AppColors.textPrimary,
               ),
@@ -525,7 +525,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                 Text(
                   title,
                   style: TextStyle(
-                    fontSize: 14.sp,
+                    fontSize: 18.sp, // 14.sp -> 18.sp (가독성 개선)
                     fontWeight: FontWeight.w500,
                     color: AppColors.textPrimary,
                   ),
