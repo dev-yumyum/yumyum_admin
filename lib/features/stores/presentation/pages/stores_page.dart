@@ -251,32 +251,14 @@ class _StoresPageState extends State<StoresPage> {
         DataCell(
           Container(
             width: 200.w,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    store.storeName,
-                    style: TextStyle(
-                      fontSize: 20.sp, // 가독성 개선
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                SizedBox(width: AppSizes.xs),
-                IconButton(
-                  onPressed: () {
-                    context.go('/store/${store.id}/menu');
-                  },
-                  icon: Icon(
-                    MdiIcons.silverware,
-                    size: AppSizes.iconSm,
-                    color: AppColors.warning,
-                  ),
-                  tooltip: '메뉴 관리',
-                ),
-              ],
+            child: Text(
+              store.storeName,
+              style: TextStyle(
+                fontSize: 20.sp, // 가독성 개선
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ),
