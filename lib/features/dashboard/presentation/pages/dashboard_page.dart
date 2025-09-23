@@ -5,10 +5,18 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import '../../../../core/constants/app_constants.dart';
 import '../../../../shared/widgets/crm_layout.dart';
 import '../widgets/dashboard_stat_card.dart';
-import '../widgets/dashboard_chart_card.dart';
+import '../widgets/sales_chart_widget.dart';
+import '../widgets/order_status_chart_widget.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
+
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  DateTime _selectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +31,23 @@ class DashboardPage extends StatelessWidget {
             SizedBox(height: AppSizes.lg),
             Column(
               children: [
-                _buildSalesChart(),
+                SalesChartWidget(
+                  selectedDate: _selectedDate,
+                  onDateChanged: (date) {
+                    setState(() {
+                      _selectedDate = date;
+                    });
+                  },
+                ),
                 SizedBox(height: AppSizes.lg),
-                _buildOrderChart(),
+                OrderStatusChartWidget(
+                  selectedDate: _selectedDate,
+                  onDateChanged: (date) {
+                    setState(() {
+                      _selectedDate = date;
+                    });
+                  },
+                ),
               ],
             ),
           ],
@@ -88,72 +110,5 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSalesChart() {
-    return DashboardChartCard(
-      title: '매출 현황',
-      subtitle: '최근 7일간 매출 추이',
-      child: Container(
-        height: 300.h,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                MdiIcons.chartLine,
-                size: 48.w,
-                color: AppColors.textTertiary,
-              ),
-              SizedBox(height: AppSizes.sm),
-              Text(
-                '매출 차트 영역',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  color: AppColors.textTertiary,
-                ),
-              ),
-              SizedBox(height: AppSizes.xs),
-              Text(
-                'fl_chart 라이브러리를 사용하여 구현 예정',
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  color: AppColors.textTertiary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOrderChart() {
-    return DashboardChartCard(
-      title: '주문 현황',
-      subtitle: '주문 상태별 분포',
-      child: Container(
-        height: 250.h,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                MdiIcons.chartPie,
-                size: 48.w,
-                color: AppColors.textTertiary,
-              ),
-              SizedBox(height: AppSizes.sm),
-              Text(
-                '주문 상태 원형 차트',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  color: AppColors.textTertiary,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
 }
