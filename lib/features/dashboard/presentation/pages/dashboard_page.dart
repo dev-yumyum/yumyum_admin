@@ -6,7 +6,6 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../shared/widgets/crm_layout.dart';
 import '../widgets/dashboard_stat_card.dart';
 import '../widgets/dashboard_chart_card.dart';
-import '../widgets/dashboard_recent_activities.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -22,30 +21,11 @@ class DashboardPage extends StatelessWidget {
           children: [
             _buildStatCards(),
             SizedBox(height: AppSizes.lg),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            Column(
               children: [
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    children: [
-                      _buildSalesChart(),
-                      SizedBox(height: AppSizes.lg),
-                      _buildOrderChart(),
-                    ],
-                  ),
-                ),
-                SizedBox(width: AppSizes.lg),
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    children: [
-                      _buildQuickActions(),
-                      SizedBox(height: AppSizes.lg),
-                      _buildRecentActivities(),
-                    ],
-                  ),
-                ),
+                _buildSalesChart(),
+                SizedBox(height: AppSizes.lg),
+                _buildOrderChart(),
               ],
             ),
           ],
@@ -176,118 +156,4 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickActions() {
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(AppSizes.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '빠른 작업',
-              style: TextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            SizedBox(height: AppSizes.md),
-            _buildQuickActionButton(
-              icon: MdiIcons.domain,
-              title: '사업자 등록',
-              subtitle: '새 사업자 추가',
-              onTap: () {
-                // TODO: 사업자 등록 페이지로 이동
-              },
-            ),
-            SizedBox(height: AppSizes.sm),
-            _buildQuickActionButton(
-              icon: MdiIcons.storefront,
-              title: '매장 등록',
-              subtitle: '새 매장 추가',
-              onTap: () {
-                // TODO: 매장 등록 페이지로 이동
-              },
-            ),
-            SizedBox(height: AppSizes.sm),
-            _buildQuickActionButton(
-              icon: MdiIcons.checkCircle,
-              title: '승인 처리',
-              subtitle: '대기 중인 승인 처리',
-              onTap: () {
-                // TODO: 승인 관리 페이지로 이동
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildQuickActionButton({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-      child: Container(
-        padding: EdgeInsets.all(AppSizes.md),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.all(AppSizes.sm),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-              ),
-              child: Icon(
-                icon,
-                size: AppSizes.iconMd,
-                color: AppColors.primary,
-              ),
-            ),
-            SizedBox(width: AppSizes.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              MdiIcons.chevronRight,
-              size: AppSizes.iconSm,
-              color: AppColors.textTertiary,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRecentActivities() {
-    return const DashboardRecentActivities();
-  }
 }
