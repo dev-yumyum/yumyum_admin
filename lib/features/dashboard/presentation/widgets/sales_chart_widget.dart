@@ -38,21 +38,42 @@ class _SalesChartWidgetState extends State<SalesChartWidget> {
   }
   
   void _loadSalesData() {
-    final sales = DashboardDataService.getSampleSalesData();
-    // 선택된 날짜 기준으로 1달간 데이터 필터링
+    // 정확히 4주의 주차별 데이터 생성
     final endDate = widget.selectedDate;
-    final startDate = endDate.subtract(const Duration(days: 28)); // 4주
+    final weeklyData = <WeeklySalesData>[];
     
-    final filteredSales = sales.where((sale) {
-      final orderDate = DateTime.parse(sale.orderDate);
-      return orderDate.isAfter(startDate) && orderDate.isBefore(endDate.add(const Duration(days: 1)));
-    }).toList();
+    // 오늘 기준으로 이전 4주 계산
+    for (int weekOffset = 3; weekOffset >= 0; weekOffset--) {
+      final weekStartDate = _getWeekStartForOffset(endDate, weekOffset);
+      final weekSales = _generateWeeklySales(weekStartDate, weekOffset);
+      
+      weeklyData.add(WeeklySalesData(
+        weekStart: '${weekStartDate.year}-${weekStartDate.month.toString().padLeft(2, '0')}-${weekStartDate.day.toString().padLeft(2, '0')}',
+        totalSales: weekSales,
+      ));
+    }
     
     setState(() {
-      _salesData = DashboardDataService.aggregateWeeklySales(filteredSales);
+      _salesData = weeklyData;
     });
   }
   
+  /// 주어진 오프셋으로 주 시작 날짜 계산 (월요일 기준)
+  DateTime _getWeekStartForOffset(DateTime baseDate, int weekOffset) {
+    // 먼저 현재 주의 월요일을 찾음
+    final currentWeekStart = baseDate.subtract(Duration(days: baseDate.weekday - 1));
+    // 그 다음 주 오프셋만큼 빼기
+    return currentWeekStart.subtract(Duration(days: weekOffset * 7));
+  }
+  
+  /// 해당 주의 매출 데이터 생성 (샘플)
+  double _generateWeeklySales(DateTime weekStart, int weekOffset) {
+    // 주차별로 다른 매출 생성 (샘플 데이터)
+    final baseSales = 25000000.0; // 2500만원 기준
+    final variation = (weekOffset * 3000000.0) + (weekStart.day % 7) * 1000000.0;
+    return baseSales + variation;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
