@@ -207,17 +207,20 @@ class _SalesChartWidgetState extends State<SalesChartWidget> {
                 getTitlesWidget: (value, meta) {
                   final index = value.toInt();
                   if (index >= 0 && index < _salesData.length) {
+                    final weekData = _salesData[index];
+                    final weekStartDate = DateTime.parse(weekData.weekStart);
+                    final weekLabel = _formatWeekLabel(weekStartDate);
                     return Text(
-                      '${index + 1}주',
+                      weekLabel,
                       style: TextStyle(
-                        fontSize: 12.sp,
+                        fontSize: 11.sp,
                         color: AppColors.textTertiary,
                       ),
                     );
                   }
                   return Text('');
                 },
-                reservedSize: 32.h,
+                reservedSize: 40.h,
               ),
             ),
           ),
@@ -268,6 +271,45 @@ class _SalesChartWidgetState extends State<SalesChartWidget> {
     final endDate = widget.selectedDate;
     final startDate = endDate.subtract(const Duration(days: 28));
     return '${startDate.month}/${startDate.day} - ${endDate.month}/${endDate.day}';
+  }
+  
+  /// 주어진 날짜를 "월 N째주" 형태로 포맷
+  String _formatWeekLabel(DateTime weekStartDate) {
+    final month = weekStartDate.month;
+    
+    // 해당 월의 첫 번째 월요일 찾기
+    final firstDayOfMonth = DateTime(weekStartDate.year, month, 1);
+    final firstMonday = _getFirstMondayOfMonth(firstDayOfMonth);
+    
+    // 현재 주가 해당 월의 몇 번째 주인지 계산
+    final daysDiff = weekStartDate.difference(firstMonday).inDays;
+    final weekNumber = (daysDiff / 7).floor() + 1;
+    
+    // 만약 weekNumber가 0 이하면 이전 달의 주차
+    if (weekNumber <= 0) {
+      final prevMonth = month == 1 ? 12 : month - 1;
+      return '${_getMonthName(prevMonth)}${4 + weekNumber}째주'; // 대략적으로 이전 달 마지막 주
+    }
+    
+    return '${_getMonthName(month)}${weekNumber}째주';
+  }
+  
+  /// 해당 월의 첫 번째 월요일 찾기
+  DateTime _getFirstMondayOfMonth(DateTime firstDay) {
+    DateTime monday = firstDay;
+    while (monday.weekday != DateTime.monday) {
+      monday = monday.add(const Duration(days: 1));
+    }
+    return monday;
+  }
+  
+  /// 월 번호를 월 이름으로 변환
+  String _getMonthName(int month) {
+    const monthNames = [
+      '', '1월', '2월', '3월', '4월', '5월', '6월',
+      '7월', '8월', '9월', '10월', '11월', '12월'
+    ];
+    return monthNames[month];
   }
   
   void _showDatePicker() async {
