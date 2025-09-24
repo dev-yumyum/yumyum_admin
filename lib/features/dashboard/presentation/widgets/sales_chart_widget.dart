@@ -197,9 +197,8 @@ class _SalesChartWidgetState extends State<SalesChartWidget> {
                 getTitlesWidget: (value, meta) {
                   final index = value.toInt();
                   if (index >= 0 && index < _salesData.length) {
-                    final weekStart = DateTime.parse(_salesData[index].weekStart);
                     return Text(
-                      '${weekStart.month}/${weekStart.day}',
+                      '${index + 1}주',
                       style: TextStyle(
                         fontSize: 12.sp,
                         color: AppColors.textTertiary,
