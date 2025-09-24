@@ -82,8 +82,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
   Widget _buildHeader() {
     return Text(
       '승인관리',
-      style: TextStyle(
-        fontSize: 36.sp, // 30.sp -> 36.sp (가독성 개선)
+      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
         fontWeight: FontWeight.bold,
         color: AppColors.textPrimary,
       ),

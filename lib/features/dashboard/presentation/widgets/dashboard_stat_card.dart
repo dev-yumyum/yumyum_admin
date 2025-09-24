@@ -42,8 +42,7 @@ class DashboardStatCard extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: TextStyle(
-                          fontSize: 18.sp, // 14.sp -> 18.sp (가독성 개선)
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           color: AppColors.textSecondary,
                           fontWeight: FontWeight.w500,
                         ),
@@ -51,8 +50,7 @@ class DashboardStatCard extends StatelessWidget {
                       SizedBox(height: AppSizes.xs),
                       Text(
                         value,
-                        style: TextStyle(
-                          fontSize: 30.sp, // 24.sp -> 30.sp (가독성 개선)
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: AppColors.textPrimary,
                         ),
@@ -80,8 +78,7 @@ class DashboardStatCard extends StatelessWidget {
               children: [
                 Text(
                   subtitle,
-                  style: TextStyle(
-                    fontSize: 16.sp, // 12.sp -> 16.sp (가독성 개선)
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: AppColors.textTertiary,
                   ),
                 ),
@@ -96,8 +93,7 @@ class DashboardStatCard extends StatelessWidget {
                       SizedBox(width: AppSizes.xs),
                       Text(
                         trend!,
-                        style: TextStyle(
-                          fontSize: 16.sp, // 12.sp -> 16.sp (가독성 개선)
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           color: isPositive ? AppColors.success : AppColors.error,
                           fontWeight: FontWeight.w600,
                         ),

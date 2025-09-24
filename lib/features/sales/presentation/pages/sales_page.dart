@@ -129,8 +129,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
   Widget _buildHeader() {
     return Text(
       '매출관리',
-      style: TextStyle(
-        fontSize: 36.sp, // 28.sp -> 36.sp (가독성 개선)
+      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
         fontWeight: FontWeight.bold,
         color: AppColors.textPrimary,
       ),
@@ -489,8 +488,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
                     DataColumn(
                       label: Text(
                         '주문번호',
-                        style: TextStyle(
-                          fontSize: 22.sp, // 18.sp -> 22.sp (가독성 개선)
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPrimary,
                         ),
@@ -499,8 +497,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
                     DataColumn(
                       label: Text(
                         '매장명',
-                        style: TextStyle(
-                          fontSize: 22.sp, // 18.sp -> 22.sp (가독성 개선)
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPrimary,
                         ),

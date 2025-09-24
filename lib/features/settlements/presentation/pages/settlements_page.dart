@@ -106,8 +106,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
   Widget _buildHeader() {
     return Text(
       '정산관리',
-      style: TextStyle(
-        fontSize: 36.sp, // 30.sp -> 36.sp (가독성 개선)
+      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
         fontWeight: FontWeight.bold,
         color: AppColors.textPrimary,
       ),
@@ -219,8 +218,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                 SizedBox(width: AppSizes.sm),
                 Text(
                   title,
-                  style: TextStyle(
-                    fontSize: 22.sp, // 20.sp -> 22.sp
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: AppColors.textSecondary,
                   ),
@@ -230,8 +228,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
             SizedBox(height: AppSizes.sm),
             Text(
               value,
-              style: TextStyle(
-                fontSize: 36.sp, // 30.sp -> 36.sp (가독성 개선)
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimary,
               ),
@@ -239,8 +236,7 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
             SizedBox(height: AppSizes.xs),
             Text(
               subtitle,
-              style: TextStyle(
-                fontSize: 18.sp, // 16.sp -> 18.sp
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: AppColors.textSecondary,
               ),
             ),

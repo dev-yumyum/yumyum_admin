@@ -50,8 +50,19 @@ class MyApp extends StatelessWidget {
           theme: AppTheme.lightTheme,
           routerConfig: _router,
           
-          // 웹 최적화 설정
+          // 웹 최적화 설정 및 폰트 스케일 제한
           builder: (context, child) {
+            // 폰트 스케일 팩터 제한 (0.8 ~ 1.2)
+            final mediaQueryData = MediaQuery.of(context);
+            final constrainedTextScaleFactor = mediaQueryData.textScaleFactor.clamp(0.8, 1.2);
+            
+            Widget constrainedChild = MediaQuery(
+              data: mediaQueryData.copyWith(
+                textScaleFactor: constrainedTextScaleFactor,
+              ),
+              child: child!,
+            );
+            
             // 웹에서 스크롤바 커스터마이징
             return kIsWeb
                 ? ScrollConfiguration(
@@ -60,9 +71,9 @@ class MyApp extends StatelessWidget {
                       overscroll: false,
                       physics: const BouncingScrollPhysics(),
                     ),
-                    child: child!,
+                    child: constrainedChild,
                   )
-                : child!;
+                : constrainedChild;
           },
           
           // 웹 성능 최적화
