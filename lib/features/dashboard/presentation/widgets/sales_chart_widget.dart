@@ -164,7 +164,7 @@ class _SalesChartWidgetState extends State<SalesChartWidget> {
           gridData: FlGridData(
             show: true,
             drawVerticalLine: false,
-            horizontalInterval: 200000,
+            horizontalInterval: 10000000, // 1000만원 단위로 격자선
             getDrawingHorizontalLine: (value) {
               return FlLine(
                 color: AppColors.border,
@@ -176,17 +176,27 @@ class _SalesChartWidgetState extends State<SalesChartWidget> {
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                interval: 200000,
+                interval: 10000000, // 1000만원 단위
                 getTitlesWidget: (value, meta) {
+                  final thousand = (value / 10000000).round(); // 1000만원 단위로 계산
+                  if (thousand == 0) {
+                    return Text(
+                      '0',
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        color: AppColors.textTertiary,
+                      ),
+                    );
+                  }
                   return Text(
-                    '${(value / 10000).round()}만',
+                    '${thousand}000만',
                     style: TextStyle(
                       fontSize: 12.sp,
                       color: AppColors.textTertiary,
                     ),
                   );
                 },
-                reservedSize: 40.w,
+                reservedSize: 60.w, // 텍스트가 길어져서 공간 확장
               ),
             ),
             rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -248,9 +258,7 @@ class _SalesChartWidgetState extends State<SalesChartWidget> {
             ),
           ],
           minY: 0,
-          maxY: _salesData.isNotEmpty 
-              ? _salesData.map((e) => e.totalSales).reduce((a, b) => a > b ? a : b) * 1.2
-              : 1000000,
+          maxY: 100000000, // 1억원 고정 최대값
         ),
       ),
     );
