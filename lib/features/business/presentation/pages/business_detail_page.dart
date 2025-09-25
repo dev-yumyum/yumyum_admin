@@ -324,8 +324,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
             children: [
               Text(
                 '사업자 상세정보',
-                style: TextStyle(
-                  fontSize: 36.sp, // 28.sp -> 36.sp (헤더 통일화)
+                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
                 ),
@@ -333,8 +332,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
               SizedBox(height: AppSizes.xs),
               Text(
                 '${_business?.businessName ?? '사업자'} 정보',
-                style: TextStyle(
-                  fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: AppColors.textSecondary,
                 ),
               ),
@@ -388,8 +386,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
       ),
       child: Text(
         statusText,
-        style: TextStyle(
-          fontSize: 12.sp,
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.w600,
           color: chipColor,
         ),
@@ -434,8 +431,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                 SizedBox(width: AppSizes.sm),
                 Text(
                   '기본 정보',
-                  style: TextStyle(
-                    fontSize: 18.sp,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -498,8 +494,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                 SizedBox(width: AppSizes.sm),
                 Text(
                   '사업 정보',
-                  style: TextStyle(
-                    fontSize: 18.sp,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -552,8 +547,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                 SizedBox(width: AppSizes.sm),
                 Text(
                   '연락처 정보',
-                  style: TextStyle(
-                    fontSize: 18.sp,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -608,8 +602,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                 SizedBox(width: AppSizes.sm),
                 Text(
                   '정산 계좌',
-                  style: TextStyle(
-                    fontSize: 18.sp,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -782,8 +775,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
             children: [
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: 14.sp,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w500,
                   color: AppColors.textSecondary,
                 ),
@@ -791,8 +783,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
               if (isRequired)
                 Text(
                   ' *',
-                  style: TextStyle(
-                    fontSize: 14.sp,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: AppColors.error,
                   ),
                 ),
@@ -825,8 +816,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                 borderSide: BorderSide(color: AppColors.primary, width: 2),
               ),
             ),
-            style: TextStyle(
-              fontSize: 14.sp,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               color: _isEditing ? AppColors.textPrimary : AppColors.textSecondary,
             ),
           ),
@@ -846,8 +836,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
             children: [
               Text(
                 label,
-                style: TextStyle(
-                  fontSize: 14.sp,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w500,
                   color: AppColors.textSecondary,
                 ),
@@ -855,8 +844,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
               if (isRequired)
                 Text(
                   ' *',
-                  style: TextStyle(
-                    fontSize: 14.sp,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: AppColors.error,
                   ),
                 ),
@@ -903,8 +891,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
               ),
               child: Text(
                 value,
-                style: TextStyle(
-                  fontSize: 14.sp,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: AppColors.textSecondary,
                 ),
               ),
@@ -1214,16 +1201,14 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
             children: [
               Text(
                 '비밀번호',
-                style: TextStyle(
-                  fontSize: 14.sp,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.w500,
                   color: AppColors.textSecondary,
                 ),
               ),
               Text(
                 ' *',
-                style: TextStyle(
-                  fontSize: 14.sp,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: AppColors.error,
                 ),
               ),
@@ -1259,8 +1244,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                       borderSide: BorderSide(color: AppColors.primary, width: 2),
                     ),
                   ),
-                  style: TextStyle(
-                    fontSize: 14.sp,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: _isEditing ? AppColors.textPrimary : AppColors.textSecondary,
                   ),
                 ),
@@ -1684,8 +1668,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                 SizedBox(width: AppSizes.sm),
                 Text(
                   '연결된 매장',
-                  style: TextStyle(
-                    fontSize: 18.sp,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
@@ -1849,8 +1832,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                 SizedBox(width: AppSizes.sm),
                 Text(
                   '변경이력',
-                  style: TextStyle(
-                    fontSize: 18.sp,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
                   ),
