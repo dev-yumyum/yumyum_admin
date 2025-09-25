@@ -28,6 +28,7 @@ class _ManagersPageState extends State<ManagersPage> {
     _currentUser = AdminModel(
       id: 'current_user',
       adminId: 'admin001',
+      password: 'admin123',
       name: '김관리자',
       email: 'admin@yumyum.com',
       phone: '010-1234-5678',
@@ -45,6 +46,7 @@ class _ManagersPageState extends State<ManagersPage> {
         AdminModel(
           id: '1',
           adminId: 'admin002',
+          password: 'yumyum1',
           name: '이영수',
           email: 'youngsoo.lee@yumyum.com',
           phone: '010-2345-6789',
@@ -57,6 +59,7 @@ class _ManagersPageState extends State<ManagersPage> {
         AdminModel(
           id: '2',
           adminId: 'manager001',
+          password: 'yumyum1',
           name: '박민정',
           email: 'minjung.park@yumyum.com',
           phone: '010-3456-7890',
@@ -69,6 +72,7 @@ class _ManagersPageState extends State<ManagersPage> {
         AdminModel(
           id: '3',
           adminId: 'staff001',
+          password: 'yumyum1',
           name: '최지혜',
           email: 'jihye.choi@yumyum.com',
           phone: '010-4567-8901',
@@ -81,6 +85,7 @@ class _ManagersPageState extends State<ManagersPage> {
         AdminModel(
           id: '4',
           adminId: 'admin003',
+          password: 'yumyum1',
           name: '정현우',
           email: 'hyunwoo.jung@yumyum.com',
           phone: '010-5678-9012',
@@ -93,6 +98,7 @@ class _ManagersPageState extends State<ManagersPage> {
         AdminModel(
           id: '5',
           adminId: 'manager002',
+          password: 'yumyum1',
           name: '송미영',
           email: 'miyoung.song@yumyum.com',
           phone: '010-6789-0123',
@@ -370,140 +376,294 @@ class _ManagersPageState extends State<ManagersPage> {
     final isEdit = admin != null;
     final nameController = TextEditingController(text: admin?.name ?? '');
     final adminIdController = TextEditingController(text: admin?.adminId ?? '');
+    final passwordController = TextEditingController(text: admin?.password ?? 'yumyum1');
     final emailController = TextEditingController(text: admin?.email ?? '');
     final phoneController = TextEditingController(text: admin?.phone ?? '');
     final departmentController = TextEditingController(text: admin?.department ?? '');
     final positionController = TextEditingController(text: admin?.position ?? '');
     
     String selectedRole = admin?.role ?? 'STAFF';
+    bool showPassword = false;
 
     showDialog(
       context: context,
       builder: (context) => Dialog(
         child: Container(
-          width: 500.w,
-          padding: EdgeInsets.all(AppSizes.lg),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  isEdit ? '관리자 수정' : '관리자 추가',
-                  style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: AppSizes.md),
-                TextFormField(
-                  controller: nameController,
-                  decoration: InputDecoration(
-                    labelText: '이름',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: AppSizes.sm),
-                TextFormField(
-                  controller: adminIdController,
-                  decoration: InputDecoration(
-                    labelText: '관리자 ID',
-                    border: OutlineInputBorder(),
-                  ),
-                  enabled: !isEdit,
-                ),
-                SizedBox(height: AppSizes.sm),
-                TextFormField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    labelText: '이메일',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: AppSizes.sm),
-                TextFormField(
-                  controller: phoneController,
-                  decoration: InputDecoration(
-                    labelText: '연락처',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: AppSizes.sm),
-                TextFormField(
-                  controller: departmentController,
-                  decoration: InputDecoration(
-                    labelText: '부서',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: AppSizes.sm),
-                TextFormField(
-                  controller: positionController,
-                  decoration: InputDecoration(
-                    labelText: '직책',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: AppSizes.sm),
-                StatefulBuilder(
-                  builder: (context, setDialogState) {
-                    return DropdownButtonFormField<String>(
-                      value: selectedRole,
-                      decoration: InputDecoration(
-                        labelText: '권한',
-                        border: OutlineInputBorder(),
-                      ),
-                      items: const [
-                        DropdownMenuItem(value: 'SUPER_ADMIN', child: Text('최고관리자')),
-                        DropdownMenuItem(value: 'ADMIN', child: Text('관리자')),
-                        DropdownMenuItem(value: 'MANAGER', child: Text('매니저')),
-                        DropdownMenuItem(value: 'STAFF', child: Text('직원')),
-                      ],
-                      onChanged: (value) {
-                        setDialogState(() {
-                          selectedRole = value!;
-                        });
-                      },
-                    );
-                  },
-                ),
-                SizedBox(height: AppSizes.lg),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text('취소'),
+          width: 750.w, // 50% 증가 (500.w -> 750.w)
+          height: 700.h, // 높이도 증가
+          padding: EdgeInsets.all(AppSizes.xl),
+          child: Column(
+            children: [
+              // 헤더
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    isEdit ? '구성원 상세정보' : '관리자 추가',
+                    style: TextStyle(
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
                     ),
-                    SizedBox(width: AppSizes.sm),
-                    ElevatedButton(
-                      onPressed: () {
-                        final newAdmin = AdminModel(
-                          id: admin?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
-                          adminId: adminIdController.text,
-                          name: nameController.text,
-                          email: emailController.text,
-                          phone: phoneController.text,
-                          department: departmentController.text,
-                          position: positionController.text,
-                          role: selectedRole,
-                          createdAt: admin?.createdAt ?? DateTime.now(),
-                          status: 'ACTIVE',
-                        );
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(MdiIcons.close),
+                  ),
+                ],
+              ),
+              Divider(),
+              SizedBox(height: AppSizes.md),
+              
+              // 스크롤 가능한 콘텐츠
+              Expanded(
+                child: SingleChildScrollView(
+                  child: StatefulBuilder(
+                    builder: (context, setDialogState) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // 기본 정보 섹션
+                          Text(
+                            '기본 정보',
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          SizedBox(height: AppSizes.md),
+                          
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  controller: nameController,
+                                  decoration: InputDecoration(
+                                    labelText: '이름 *',
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(MdiIcons.account),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: AppSizes.md),
+                              Expanded(
+                                child: TextFormField(
+                                  controller: adminIdController,
+                                  decoration: InputDecoration(
+                                    labelText: '아이디 *',
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(MdiIcons.accountKey),
+                                  ),
+                                  enabled: !isEdit,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: AppSizes.md),
+                          
+                          // 패스워드 섹션
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  controller: passwordController,
+                                  decoration: InputDecoration(
+                                    labelText: '패스워드',
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(MdiIcons.lock),
+                                    suffixIcon: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        IconButton(
+                                          onPressed: () {
+                                            setDialogState(() {
+                                              showPassword = !showPassword;
+                                            });
+                                          },
+                                          icon: Icon(
+                                            showPassword ? MdiIcons.eyeOff : MdiIcons.eye,
+                                          ),
+                                        ),
+                                        if (isEdit) ...[
+                                          VerticalDivider(),
+                                          TextButton(
+                                            onPressed: () {
+                                              setDialogState(() {
+                                                passwordController.text = 'yumyum1';
+                                              });
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: Text('패스워드가 yumyum1로 초기화되었습니다.'),
+                                                  backgroundColor: AppColors.success,
+                                                ),
+                                              );
+                                            },
+                                            child: Text(
+                                              '초기화',
+                                              style: TextStyle(
+                                                fontSize: 12.sp,
+                                                color: AppColors.error,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  ),
+                                  obscureText: !showPassword,
+                                  readOnly: !isEdit,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: AppSizes.lg),
+                          
+                          // 연락처 정보 섹션
+                          Text(
+                            '연락처 정보',
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          SizedBox(height: AppSizes.md),
+                          
+                          TextFormField(
+                            controller: emailController,
+                            decoration: InputDecoration(
+                              labelText: '이메일 *',
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(MdiIcons.email),
+                            ),
+                          ),
+                          SizedBox(height: AppSizes.md),
+                          
+                          TextFormField(
+                            controller: phoneController,
+                            decoration: InputDecoration(
+                              labelText: '연락처 *',
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(MdiIcons.phone),
+                            ),
+                          ),
+                          SizedBox(height: AppSizes.lg),
+                          
+                          // 직책 정보 섹션
+                          Text(
+                            '직책 정보',
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          SizedBox(height: AppSizes.md),
+                          
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  controller: departmentController,
+                                  decoration: InputDecoration(
+                                    labelText: '부서 *',
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(MdiIcons.domain),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: AppSizes.md),
+                              Expanded(
+                                child: TextFormField(
+                                  controller: positionController,
+                                  decoration: InputDecoration(
+                                    labelText: '직책 *',
+                                    border: OutlineInputBorder(),
+                                    prefixIcon: Icon(MdiIcons.briefcase),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: AppSizes.md),
+                          
+                          DropdownButtonFormField<String>(
+                            value: selectedRole,
+                            decoration: InputDecoration(
+                              labelText: '권한 *',
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(MdiIcons.shieldAccount),
+                            ),
+                            items: const [
+                              DropdownMenuItem(value: 'SUPER_ADMIN', child: Text('최고관리자')),
+                              DropdownMenuItem(value: 'ADMIN', child: Text('관리자')),
+                              DropdownMenuItem(value: 'MANAGER', child: Text('매니저')),
+                              DropdownMenuItem(value: 'STAFF', child: Text('직원')),
+                            ],
+                            onChanged: (value) {
+                              setDialogState(() {
+                                selectedRole = value!;
+                              });
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ),
+              
+              // 하단 버튼
+              Divider(),
+              SizedBox(height: AppSizes.md),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: OutlinedButton.styleFrom(
+                      minimumSize: Size(100.w, 45.h),
+                    ),
+                    child: Text('취소'),
+                  ),
+                  SizedBox(width: AppSizes.md),
+                  ElevatedButton(
+                    onPressed: () {
+                      final newAdmin = AdminModel(
+                        id: admin?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+                        adminId: adminIdController.text,
+                        password: passwordController.text,
+                        name: nameController.text,
+                        email: emailController.text,
+                        phone: phoneController.text,
+                        department: departmentController.text,
+                        position: positionController.text,
+                        role: selectedRole,
+                        createdAt: admin?.createdAt ?? DateTime.now(),
+                        status: admin?.status ?? 'ACTIVE',
+                      );
 
-                        if (isEdit) {
-                          _updateAdmin(newAdmin);
-                        } else {
-                          _addAdmin(newAdmin);
-                        }
-                        Navigator.pop(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                      ),
-                      child: Text(isEdit ? '수정' : '추가'),
+                      if (isEdit) {
+                        _updateAdmin(newAdmin);
+                      } else {
+                        _addAdmin(newAdmin);
+                      }
+                      Navigator.pop(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: Colors.white,
+                      minimumSize: Size(120.w, 45.h),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                    child: Text(
+                      isEdit ? '정보 수정' : '관리자 추가',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

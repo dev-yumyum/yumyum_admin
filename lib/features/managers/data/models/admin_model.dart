@@ -1,6 +1,7 @@
 class AdminModel {
   final String id;
   final String adminId; // 관리자 ID (로그인용)
+  final String password; // 비밀번호
   final String name;
   final String email;
   final String phone;
@@ -15,6 +16,7 @@ class AdminModel {
   AdminModel({
     required this.id,
     required this.adminId,
+    required this.password,
     required this.name,
     required this.email,
     required this.phone,
@@ -61,6 +63,7 @@ class AdminModel {
   AdminModel copyWith({
     String? id,
     String? adminId,
+    String? password,
     String? name,
     String? email,
     String? phone,
@@ -75,6 +78,7 @@ class AdminModel {
     return AdminModel(
       id: id ?? this.id,
       adminId: adminId ?? this.adminId,
+      password: password ?? this.password,
       name: name ?? this.name,
       email: email ?? this.email,
       phone: phone ?? this.phone,
@@ -93,6 +97,7 @@ class AdminModel {
     return {
       'id': id,
       'adminId': adminId,
+      'password': password,
       'name': name,
       'email': email,
       'phone': phone,
@@ -110,6 +115,7 @@ class AdminModel {
     return AdminModel(
       id: json['id'],
       adminId: json['adminId'],
+      password: json['password'] ?? 'yumyum1', // 기본 패스워드
       name: json['name'],
       email: json['email'],
       phone: json['phone'],
