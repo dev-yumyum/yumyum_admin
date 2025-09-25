@@ -38,40 +38,48 @@ class _SalesChartWidgetState extends State<SalesChartWidget> {
   }
   
   void _loadSalesData() {
-    // 정확히 4주의 주차별 데이터 생성
+    final sales = DashboardDataService.getSampleSalesData();
+    // 선택된 날짜 기준으로 4주간 데이터 필터링
     final endDate = widget.selectedDate;
-    final weeklyData = <WeeklySalesData>[];
+    final startDate = endDate.subtract(const Duration(days: 28)); // 4주
     
-    // 오늘 기준으로 이전 4주 계산
-    for (int weekOffset = 3; weekOffset >= 0; weekOffset--) {
-      final weekStartDate = _getWeekStartForOffset(endDate, weekOffset);
-      final weekSales = _generateWeeklySales(weekStartDate, weekOffset);
+    final filteredSales = sales.where((sale) {
+      final orderDate = DateTime.parse(sale.orderDate);
+      return orderDate.isAfter(startDate) && orderDate.isBefore(endDate.add(const Duration(days: 1)));
+    }).toList();
+    
+    final aggregatedData = DashboardDataService.aggregateWeeklySales(filteredSales);
+    
+    // 정확히 4주의 데이터만 유지하고 중복 제거
+    final uniqueWeeks = <String, WeeklySalesData>{};
+    
+    for (final data in aggregatedData) {
+      final weekStart = DateTime.parse(data.weekStart);
+      final weekLabel = _formatWeekDateRange(weekStart);
       
-      weeklyData.add(WeeklySalesData(
-        weekStart: '${weekStartDate.year}-${weekStartDate.month.toString().padLeft(2, '0')}-${weekStartDate.day.toString().padLeft(2, '0')}',
-        totalSales: weekSales,
-      ));
+      // 같은 주차 라벨이면 매출을 합산
+      if (uniqueWeeks.containsKey(weekLabel)) {
+        final existing = uniqueWeeks[weekLabel]!;
+        uniqueWeeks[weekLabel] = WeeklySalesData(
+          weekStart: existing.weekStart,
+          totalSales: existing.totalSales + data.totalSales,
+        );
+      } else {
+        uniqueWeeks[weekLabel] = data;
+      }
     }
     
+    // 최신 4주만 유지
+    final sortedData = uniqueWeeks.values.toList()
+      ..sort((a, b) => DateTime.parse(a.weekStart).compareTo(DateTime.parse(b.weekStart)));
+    
+    final last4Weeks = sortedData.length > 4 
+        ? sortedData.sublist(sortedData.length - 4)
+        : sortedData;
+    
     setState(() {
-      _salesData = weeklyData;
+      _salesData = last4Weeks;
     });
-  }
-  
-  /// 주어진 오프셋으로 주 시작 날짜 계산 (월요일 기준)
-  DateTime _getWeekStartForOffset(DateTime baseDate, int weekOffset) {
-    // 먼저 현재 주의 월요일을 찾음
-    final currentWeekStart = baseDate.subtract(Duration(days: baseDate.weekday - 1));
-    // 그 다음 주 오프셋만큼 빼기
-    return currentWeekStart.subtract(Duration(days: weekOffset * 7));
-  }
-  
-  /// 해당 주의 매출 데이터 생성 (샘플)
-  double _generateWeeklySales(DateTime weekStart, int weekOffset) {
-    // 주차별로 다른 매출 생성 (샘플 데이터)
-    final baseSales = 25000000.0; // 2500만원 기준
-    final variation = (weekOffset * 3000000.0) + (weekStart.day % 7) * 1000000.0;
-    return baseSales + variation;
   }
 
   @override
@@ -230,11 +238,11 @@ class _SalesChartWidgetState extends State<SalesChartWidget> {
                   if (index >= 0 && index < _salesData.length) {
                     final weekData = _salesData[index];
                     final weekStartDate = DateTime.parse(weekData.weekStart);
-                    final weekLabel = _formatWeekLabel(weekStartDate);
+                    final weekLabel = _formatWeekDateRange(weekStartDate);
                     return Text(
                       weekLabel,
                       style: TextStyle(
-                        fontSize: 11.sp,
+                        fontSize: 10.sp,
                         color: AppColors.textTertiary,
                       ),
                     );
@@ -294,43 +302,16 @@ class _SalesChartWidgetState extends State<SalesChartWidget> {
     return '${startDate.month}/${startDate.day} - ${endDate.month}/${endDate.day}';
   }
   
-  /// 주어진 날짜를 "월 N째주" 형태로 포맷
-  String _formatWeekLabel(DateTime weekStartDate) {
-    final month = weekStartDate.month;
+  /// 주 시작 날짜를 "MM/DD~MM/DD" 형태로 포맷
+  String _formatWeekDateRange(DateTime weekStartDate) {
+    final weekEndDate = weekStartDate.add(const Duration(days: 6));
     
-    // 해당 월의 첫 번째 월요일 찾기
-    final firstDayOfMonth = DateTime(weekStartDate.year, month, 1);
-    final firstMonday = _getFirstMondayOfMonth(firstDayOfMonth);
+    final startMonth = weekStartDate.month.toString().padLeft(2, '0');
+    final startDay = weekStartDate.day.toString().padLeft(2, '0');
+    final endMonth = weekEndDate.month.toString().padLeft(2, '0');
+    final endDay = weekEndDate.day.toString().padLeft(2, '0');
     
-    // 현재 주가 해당 월의 몇 번째 주인지 계산
-    final daysDiff = weekStartDate.difference(firstMonday).inDays;
-    final weekNumber = (daysDiff / 7).floor() + 1;
-    
-    // 만약 weekNumber가 0 이하면 이전 달의 주차
-    if (weekNumber <= 0) {
-      final prevMonth = month == 1 ? 12 : month - 1;
-      return '${_getMonthName(prevMonth)}${4 + weekNumber}째주'; // 대략적으로 이전 달 마지막 주
-    }
-    
-    return '${_getMonthName(month)}${weekNumber}째주';
-  }
-  
-  /// 해당 월의 첫 번째 월요일 찾기
-  DateTime _getFirstMondayOfMonth(DateTime firstDay) {
-    DateTime monday = firstDay;
-    while (monday.weekday != DateTime.monday) {
-      monday = monday.add(const Duration(days: 1));
-    }
-    return monday;
-  }
-  
-  /// 월 번호를 월 이름으로 변환
-  String _getMonthName(int month) {
-    const monthNames = [
-      '', '1월', '2월', '3월', '4월', '5월', '6월',
-      '7월', '8월', '9월', '10월', '11월', '12월'
-    ];
-    return monthNames[month];
+    return '$startMonth/$startDay~$endMonth/$endDay';
   }
   
   void _showDatePicker() async {
