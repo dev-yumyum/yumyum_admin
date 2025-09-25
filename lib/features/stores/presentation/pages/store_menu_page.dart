@@ -504,40 +504,41 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                 },
               )
             else
-              _getFilteredItems(group['items']).isEmpty
-                  ? Padding(
-                      padding: EdgeInsets.all(AppSizes.lg),
-                      child: Center(
-                        child: Column(
-                          children: [
-                            Icon(
-                              MdiIcons.filterOff,
-                              size: 40.r,
-                              color: AppColors.textTertiary,
-                            ),
-                            SizedBox(height: AppSizes.sm),
-                            Text(
-                              '선택한 상태의 메뉴가 없습니다.',
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                color: AppColors.textTertiary,
-                              ),
-                            ),
-                          ],
+              if (_getFilteredItems(group['items']).isEmpty)
+                Padding(
+                  padding: EdgeInsets.all(AppSizes.lg),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Icon(
+                          MdiIcons.filterOff,
+                          size: 40.r,
+                          color: AppColors.textTertiary,
                         ),
-                      ),
-                    )
-                  : ..._getFilteredItems(group['items']).asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final item = entry.value;
-                      final originalIndex = group['items'].indexOf(item);
-                      return Column(
-                        children: [
-                          _buildMenuItemCard(item, groupIndex, originalIndex),
-                          if (index < _getFilteredItems(group['items']).length - 1) SizedBox(height: AppSizes.sm),
-                        ],
-                      );
-                    }).toList(),
+                        SizedBox(height: AppSizes.sm),
+                        Text(
+                          '선택한 상태의 메뉴가 없습니다.',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: AppColors.textTertiary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              else
+                ..._getFilteredItems(group['items']).asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final item = entry.value;
+                  final originalIndex = group['items'].indexOf(item);
+                  return Column(
+                    children: [
+                      _buildMenuItemCard(item, groupIndex, originalIndex),
+                      if (index < _getFilteredItems(group['items']).length - 1) SizedBox(height: AppSizes.sm),
+                    ],
+                  );
+                }).toList(),
           ],
         ),
       ),
