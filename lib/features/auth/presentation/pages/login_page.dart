@@ -18,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
+  bool _rememberMe = false;
 
   @override
   void dispose() {
@@ -30,38 +31,62 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Center(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(AppSizes.xl),
-          child: Container(
-            width: 400.w,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppColors.primary.withOpacity(0.1),
+              AppColors.background,
+              AppColors.secondary.withOpacity(0.05),
+            ],
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
             padding: EdgeInsets.all(AppSizes.xl),
-            decoration: BoxDecoration(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(AppSizes.borderRadiusLarge),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.shadow,
-                  offset: const Offset(0, 4),
-                  blurRadius: 16,
-                ),
-              ],
-            ),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildHeader(),
-                  SizedBox(height: AppSizes.xl),
-                  _buildEmailField(),
-                  SizedBox(height: AppSizes.lg),
-                  _buildPasswordField(),
-                  SizedBox(height: AppSizes.xl),
-                  _buildLoginButton(),
-                  SizedBox(height: AppSizes.lg),
-                  _buildFooter(),
+            child: Container(
+              width: 450.w,
+              padding: EdgeInsets.all(AppSizes.xxl),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(AppSizes.borderRadiusLarge),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.shadow.withOpacity(0.1),
+                    offset: const Offset(0, 8),
+                    blurRadius: 32,
+                    spreadRadius: 0,
+                  ),
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.05),
+                    offset: const Offset(0, 0),
+                    blurRadius: 1,
+                    spreadRadius: 0,
+                  ),
                 ],
+              ),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildHeader(),
+                    SizedBox(height: AppSizes.xxl),
+                    _buildEmailField(),
+                    SizedBox(height: AppSizes.xl),
+                    _buildPasswordField(),
+                    SizedBox(height: AppSizes.lg),
+                    _buildRememberMeRow(),
+                    SizedBox(height: AppSizes.xxl),
+                    _buildLoginButton(),
+                    SizedBox(height: AppSizes.xl),
+                    _buildDivider(),
+                    SizedBox(height: AppSizes.lg),
+                    _buildFooter(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -74,32 +99,48 @@ class _LoginPageState extends State<LoginPage> {
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.all(AppSizes.lg),
+          padding: EdgeInsets.all(AppSizes.xl),
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.primary,
+                AppColors.primary.withOpacity(0.8),
+              ],
+            ),
             borderRadius: BorderRadius.circular(AppSizes.borderRadiusLarge),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withOpacity(0.3),
+                offset: const Offset(0, 4),
+                blurRadius: 12,
+              ),
+            ],
           ),
           child: Icon(
             MdiIcons.foodForkDrink,
-            size: 48.w,
-            color: AppColors.primary,
+            size: 56.w,
+            color: Colors.white,
           ),
         ),
-        SizedBox(height: AppSizes.lg),
+        SizedBox(height: AppSizes.xl),
         Text(
-          AppStrings.appName,
+          'YumYum CRM',
           style: TextStyle(
-            fontSize: 28.sp,
+            fontSize: 32.sp,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
+            letterSpacing: -0.5,
           ),
         ),
         SizedBox(height: AppSizes.sm),
         Text(
           '관리자 로그인',
           style: TextStyle(
-            fontSize: 16.sp,
+            fontSize: 18.sp,
             color: AppColors.textSecondary,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],
@@ -158,29 +199,110 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Widget _buildRememberMeRow() {
+    return Row(
+      children: [
+        Checkbox(
+          value: _rememberMe,
+          onChanged: (value) {
+            setState(() {
+              _rememberMe = value ?? false;
+            });
+          },
+          activeColor: AppColors.primary,
+        ),
+        Text(
+          '로그인 상태 유지',
+          style: TextStyle(
+            fontSize: 14.sp,
+            color: AppColors.textSecondary,
+          ),
+        ),
+        const Spacer(),
+        TextButton(
+          onPressed: () {
+            // TODO: 비밀번호 찾기 구현
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('비밀번호 찾기 기능은 준비 중입니다.'),
+              ),
+            );
+          },
+          child: Text(
+            '비밀번호 찾기',
+            style: TextStyle(
+              fontSize: 14.sp,
+              color: AppColors.primary,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildLoginButton() {
     return SizedBox(
       width: double.infinity,
-      height: AppSizes.buttonHeight,
+      height: 56.h,
       child: ElevatedButton(
         onPressed: _isLoading ? null : _handleLogin,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+          ),
+        ),
         child: _isLoading
             ? SizedBox(
-                width: 20.w,
-                height: 20.h,
+                width: 24.w,
+                height: 24.h,
                 child: const CircularProgressIndicator(
-                  strokeWidth: 2,
+                  strokeWidth: 2.5,
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               )
             : Text(
                 '로그인',
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
                 ),
               ),
       ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            height: 1,
+            color: AppColors.border,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: AppSizes.md),
+          child: Text(
+            'YumYum CRM 관리 시스템',
+            style: TextStyle(
+              fontSize: 12.sp,
+              color: AppColors.textTertiary,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            height: 1,
+            color: AppColors.border,
+          ),
+        ),
+      ],
     );
   }
 
@@ -208,15 +330,38 @@ class _LoginPageState extends State<LoginPage> {
       // TODO: 실제 로그인 API 호출
       await Future.delayed(const Duration(seconds: 2));
 
-      if (mounted) {
-        context.go(RouteNames.dashboard);
+      // 임시 로그인 검증 (실제 구현 시 제거)
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+      
+      if (email == 'admin@yumyum.com' && password == 'admin123') {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('로그인 성공! 환영합니다.'),
+              backgroundColor: AppColors.success,
+              duration: const Duration(seconds: 2),
+            ),
+          );
+          
+          // TODO: 로그인 상태 저장 (_rememberMe 활용)
+          if (_rememberMe) {
+            // SharedPreferences 등을 사용하여 로그인 상태 저장
+          }
+          
+          await Future.delayed(const Duration(milliseconds: 500));
+          context.go(RouteNames.dashboard);
+        }
+      } else {
+        throw Exception('이메일 또는 비밀번호가 올바르지 않습니다.');
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('로그인 실패: ${e.toString()}'),
+            content: Text(e.toString()),
             backgroundColor: AppColors.error,
+            duration: const Duration(seconds: 3),
           ),
         );
       }
