@@ -18,8 +18,8 @@ class OrderDetailDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Container(
-        width: 600.w,
-        height: 700.h,
+        width: 900.w,
+        height: 1050.h,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppSizes.borderRadius),
