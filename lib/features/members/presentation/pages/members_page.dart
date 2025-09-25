@@ -27,6 +27,8 @@ class _MembersPageState extends State<MembersPage> {
   int _activeCount = 1108;
   int _inactiveCount = 127;
   int _bannedCount = 12;
+  int _dauCount = 324; // 일간 활성 사용자
+  int _mauCount = 987; // 월간 활성 사용자
 
   @override
   void initState() {
@@ -112,49 +114,86 @@ class _MembersPageState extends State<MembersPage> {
   }
 
   Widget _buildStatsCards() {
-    return Row(
+    return Column(
       children: [
-        Expanded(
-          child: _buildStatCard(
-            '전체',
-            _totalCount,
-            '전체 회원',
-            AppColors.primary,
-            MdiIcons.accountGroup,
-          ),
+        // 첫 번째 줄: 기본 회원 통계
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                '전체',
+                _totalCount,
+                '전체 회원',
+                AppColors.primary,
+                MdiIcons.accountGroup,
+              ),
+            ),
+            SizedBox(width: AppSizes.lg),
+            Expanded(
+              child: _buildStatCard(
+                '활성',
+                _activeCount,
+                '활성 회원',
+                AppColors.success,
+                MdiIcons.accountCheck,
+                backgroundColor: const Color(0xFFE7F5E7),
+              ),
+            ),
+            SizedBox(width: AppSizes.lg),
+            Expanded(
+              child: _buildStatCard(
+                '비활성',
+                _inactiveCount,
+                '비활성 회원',
+                AppColors.warning,
+                MdiIcons.accountMinus,
+                backgroundColor: const Color(0xFFFFF8E1),
+              ),
+            ),
+            SizedBox(width: AppSizes.lg),
+            Expanded(
+              child: _buildStatCard(
+                '차단',
+                _bannedCount,
+                '차단 회원',
+                AppColors.error,
+                MdiIcons.accountCancel,
+                backgroundColor: const Color(0xFFFFEBEE),
+              ),
+            ),
+          ],
         ),
-        SizedBox(width: AppSizes.lg),
-        Expanded(
-          child: _buildStatCard(
-            '활성',
-            _activeCount,
-            '활성 회원',
-            AppColors.success,
-            MdiIcons.accountCheck,
-            backgroundColor: const Color(0xFFE7F5E7),
-          ),
-        ),
-        SizedBox(width: AppSizes.lg),
-        Expanded(
-          child: _buildStatCard(
-            '비활성',
-            _inactiveCount,
-            '비활성 회원',
-            AppColors.warning,
-            MdiIcons.accountMinus,
-            backgroundColor: const Color(0xFFFFF8E1),
-          ),
-        ),
-        SizedBox(width: AppSizes.lg),
-        Expanded(
-          child: _buildStatCard(
-            '차단',
-            _bannedCount,
-            '차단 회원',
-            AppColors.error,
-            MdiIcons.accountCancel,
-            backgroundColor: const Color(0xFFFFEBEE),
-          ),
+        SizedBox(height: AppSizes.lg),
+        // 두 번째 줄: 활성도 통계
+        Row(
+          children: [
+            Expanded(
+              child: _buildStatCard(
+                'DAU',
+                _dauCount,
+                '일간 활성 사용자',
+                AppColors.info,
+                MdiIcons.clockOutline,
+                backgroundColor: const Color(0xFFE3F2FD),
+              ),
+            ),
+            SizedBox(width: AppSizes.lg),
+            Expanded(
+              child: _buildStatCard(
+                'MAU',
+                _mauCount,
+                '월간 활성 사용자',
+                AppColors.secondary,
+                MdiIcons.calendarMonth,
+                backgroundColor: const Color(0xFFF3E5F5),
+              ),
+            ),
+            SizedBox(width: AppSizes.lg),
+            // 빈 공간을 채우기 위한 투명한 카드들
+            Expanded(child: SizedBox()),
+            SizedBox(width: AppSizes.lg),
+            Expanded(child: SizedBox()),
+          ],
         ),
       ],
     );

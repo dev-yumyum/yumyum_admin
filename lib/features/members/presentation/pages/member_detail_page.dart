@@ -6,8 +6,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import '../../../../core/constants/app_constants.dart';
 import '../../../../shared/widgets/crm_layout.dart';
 import '../../data/models/member_model.dart';
-import '../../../approval/data/models/approval_request_model.dart';
-import '../../../approval/presentation/widgets/approval_detail_dialog.dart';
 
 class MemberDetailPage extends StatefulWidget {
   final String? memberId;
@@ -26,15 +24,11 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
   int _currentPoints = 2450;
   int _totalEarned = 15670;
   int _totalUsed = 13220;
-  
-  // 승인 요청 데이터
-  List<ApprovalRequestModel> _approvalRequests = [];
 
   @override
   void initState() {
     super.initState();
     _loadMemberData();
-    _loadApprovalRequests();
   }
 
   Future<void> _loadMemberData() async {
@@ -54,15 +48,6 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
     }
   }
 
-  Future<void> _loadApprovalRequests() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    
-    if (mounted) {
-      setState(() {
-        _approvalRequests = _getSampleApprovalRequests();
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +69,6 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                   _buildJoinInfoSection(),
                   SizedBox(height: AppSizes.lg),
                   _buildPointSection(),
-                  SizedBox(height: AppSizes.lg),
-                  _buildCouponSection(),
                 ],
               ),
             ),
@@ -310,35 +293,6 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
     );
   }
 
-  Widget _buildCouponSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '승인관리',
-          style: TextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        SizedBox(height: AppSizes.md),
-        Row(
-          children: [
-            Expanded(child: _buildCouponCard('사업자', 3)),
-            SizedBox(width: AppSizes.lg),
-            Expanded(child: _buildCouponCard('매장', 2)),
-            SizedBox(width: AppSizes.lg),
-            Expanded(child: _buildCouponCard('통장', 1)),
-            SizedBox(width: AppSizes.lg),
-            Expanded(child: _buildCouponCard('메뉴', 2)),
-          ],
-        ),
-        SizedBox(height: AppSizes.lg),
-        _buildApprovalRequestTable(),
-      ],
-    );
-  }
 
   Widget _buildInfoCard(String label, String value) {
     return Card(
@@ -553,148 +507,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
     );
   }
 
-  Widget _buildCouponCard(String title, int count) {
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(AppSizes.lg),
-        child: Column(
-          children: [
-            Text(
-              count.toString(),
-              style: TextStyle(
-                fontSize: 36.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            SizedBox(height: AppSizes.xs),
-            Text(
-              '$title승인 대기',
-              style: TextStyle(
-                fontSize: 18.sp, // 12.sp -> 18.sp (가독성 개선)
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
-  Widget _buildApprovalRequestTable() {
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(AppSizes.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '승인 요청 목록',
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            SizedBox(height: AppSizes.md),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: [
-                  DataColumn(label: Text('요청번호', style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text('요청유형', style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text('요청자', style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text('요청내용', style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text('요청일시', style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text('상태', style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text('관리', style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold))),
-                ],
-                rows: _approvalRequests.map((request) => _buildApprovalDataRow(request)).toList(),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  DataRow _buildApprovalDataRow(ApprovalRequestModel request) {
-    return DataRow(
-      cells: [
-        DataCell(Text(request.requestNumber, style: TextStyle(fontSize: 11.sp))),
-        DataCell(Text(request.displayRequestType, style: TextStyle(fontSize: 11.sp))),
-        DataCell(Text(request.requester, style: TextStyle(fontSize: 11.sp))),
-        DataCell(Text(request.requestContent, style: TextStyle(fontSize: 11.sp))),
-        DataCell(Text(request.requestDate, style: TextStyle(fontSize: 11.sp))),
-        DataCell(_buildApprovalStatusChip(request.status)),
-        DataCell(
-          ElevatedButton(
-            onPressed: () => _showApprovalDetail(request),
-            style: ElevatedButton.styleFrom(
-              minimumSize: Size(60.w, 30.h),
-              backgroundColor: Colors.grey[800],
-              foregroundColor: Colors.white,
-            ),
-            child: Text('상세보기', style: TextStyle(fontSize: 10.sp)),
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _showApprovalDetail(ApprovalRequestModel request) {
-    showDialog(
-      context: context,
-      builder: (context) => ApprovalDetailDialog(
-        request: request,
-        onProcessed: (updatedRequest, isApproved, rejectionReason) {
-          setState(() {
-            final index = _approvalRequests.indexWhere((r) => r.id == updatedRequest.id);
-            if (index != -1) {
-              _approvalRequests[index] = updatedRequest;
-            }
-          });
-        },
-      ),
-    );
-  }
-
-  Widget _buildApprovalStatusChip(String status) {
-    Color chipColor;
-    String displayStatus;
-    
-    switch (status) {
-      case ApprovalRequestModel.statusApproved:
-        chipColor = AppColors.success;
-        displayStatus = '승인완료';
-        break;
-      case ApprovalRequestModel.statusRejected:
-        chipColor = AppColors.error;
-        displayStatus = '반려';
-        break;
-      case ApprovalRequestModel.statusPending:
-      default:
-        chipColor = AppColors.warning;
-        displayStatus = '승인대기';
-        break;
-    }
-    
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: AppSizes.xs, vertical: 2.h),
-      decoration: BoxDecoration(
-        color: chipColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-      ),
-      child: Text(
-        displayStatus,
-        style: TextStyle(
-          fontSize: 10.sp,
-          fontWeight: FontWeight.w600,
-          color: chipColor,
-        ),
-      ),
-    );
-  }
 
   String _formatCurrency(String value) {
     final num = int.tryParse(value) ?? 0;
@@ -756,94 +569,4 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
     ];
   }
 
-  List<ApprovalRequestModel> _getSampleApprovalRequests() {
-    return [
-      ApprovalRequestModel(
-        id: '1',
-        requestNumber: 'B202409140001',
-        requestType: ApprovalRequestModel.typeBusinessInfo,
-        requester: '맛있는집',
-        requestContent: '사업자 정보 변경 요청',
-        requestDate: '2024.09.14 14:30',
-        status: ApprovalRequestModel.statusPending,
-        businessId: 'B001',
-        description: '사업자 주소 및 대표자 정보 변경',
-        asIsData: {
-          'businessName': '맛있는집',
-          'ownerName': '김대표',
-          'ownerPhone': '010-1111-2222',
-          'businessAddress': '서울시 강남구 구주소 123',
-        },
-        toBeData: {
-          'businessName': '맛있는집 강남점',
-          'ownerName': '김대표',
-          'ownerPhone': '010-1111-3333',
-          'businessAddress': '서울시 강남구 신주소 456',
-        },
-      ),
-      ApprovalRequestModel(
-        id: '2',
-        requestNumber: 'B202409130002',
-        requestType: ApprovalRequestModel.typeBusinessInfo,
-        requester: '치킨왕 프랜차이즈',
-        requestContent: '사업자 정보 등록 요청',
-        requestDate: '2024.09.13 16:45',
-        status: ApprovalRequestModel.statusPending,
-        businessId: 'B002',
-        description: '신규 사업자 등록',
-        asIsData: {},
-        toBeData: {
-          'businessName': '치킨왕 프랜차이즈',
-          'businessNumber': '123-45-67890',
-          'ownerName': '이사장',
-          'ownerPhone': '010-2222-3333',
-          'businessAddress': '서울시 홍대 프랜차이즈 본점',
-        },
-      ),
-      ApprovalRequestModel(
-        id: '3',
-        requestNumber: 'B202409120005',
-        requestType: ApprovalRequestModel.typeBusinessInfo,
-        requester: '피자마을',
-        requestContent: '사업자 정보 등록',
-        requestDate: '2024.09.12 09:15',
-        status: ApprovalRequestModel.statusApproved,
-        businessId: 'B003',
-        processedDate: '2024.09.12 15:30',
-        processedBy: '관리자',
-        description: '사업자 등록 승인 완료',
-        asIsData: {},
-        toBeData: {
-          'businessName': '피자마을',
-          'businessNumber': '987-65-43210',
-          'ownerName': '박사장',
-          'ownerPhone': '010-3333-4444',
-          'businessAddress': '서울시 신촌 피자마을 본점',
-        },
-      ),
-      ApprovalRequestModel(
-        id: '4',
-        requestNumber: 'S202409140003',
-        requestType: ApprovalRequestModel.typeStoreInfo,
-        requester: '맛있는집 강남점',
-        requestContent: '매장 설내일 변경 요청',
-        requestDate: '2024.09.14 10:20',
-        status: ApprovalRequestModel.statusPending,
-        storeId: 'S001',
-        description: '매장 운영시간 및 연락처 변경',
-        asIsData: {
-          'storeName': '맛있는집 강남점',
-          'storePhone': '02-555-1234',
-          'operatingHours': '10:00 - 22:00',
-          'storeAddress': '서울시 강남구 테헤란로 123',
-        },
-        toBeData: {
-          'storeName': '맛있는집 강남점',
-          'storePhone': '02-555-5678',
-          'operatingHours': '09:00 - 23:00',
-          'storeAddress': '서울시 강남구 테헤란로 456',
-        },
-      ),
-    ];
-  }
 }
