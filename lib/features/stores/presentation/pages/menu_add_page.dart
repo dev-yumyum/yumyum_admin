@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:typed_data';
 
 import '../../../../shared/widgets/crm_layout.dart';
 import '../../../../core/constants/app_constants.dart';
@@ -35,6 +37,8 @@ class _MenuAddPageState extends State<MenuAddPage> {
   List<Map<String, dynamic>> _selectedOptions = [];
   List<Map<String, dynamic>> _availableOptions = [];
   String? _menuImagePath;
+  Uint8List? _menuImageBytes; // 웹에서 이미지 바이트 데이터
+  String? _menuImageName; // 선택된 이미지 파일명
 
   @override
   void initState() {
@@ -171,6 +175,38 @@ class _MenuAddPageState extends State<MenuAddPage> {
               ),
             ),
             SizedBox(height: AppSizes.md),
+            if (_menuImageName != null) ...[
+              Container(
+                padding: EdgeInsets.all(AppSizes.sm),
+                decoration: BoxDecoration(
+                  color: AppColors.success.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                  border: Border.all(color: AppColors.success.withOpacity(0.3)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      MdiIcons.checkCircle,
+                      color: AppColors.success,
+                      size: AppSizes.iconSm,
+                    ),
+                    SizedBox(width: AppSizes.sm),
+                    Expanded(
+                      child: Text(
+                        '선택된 파일: $_menuImageName',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: AppColors.success,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: AppSizes.md),
+            ],
             Row(
               children: [
                 // 메뉴 이미지
@@ -182,50 +218,77 @@ class _MenuAddPageState extends State<MenuAddPage> {
                     borderRadius: BorderRadius.circular(AppSizes.borderRadius),
                     border: Border.all(color: AppColors.border),
                   ),
-                  child: _menuImagePath != null
+                  child: _menuImageBytes != null
                       ? ClipRRect(
                           borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-                          child: Image.network(
-                            _menuImagePath!,
+                          child: Image.memory(
+                            _menuImageBytes!,
                             fit: BoxFit.cover,
                           ),
                         )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              MdiIcons.imageOffOutline,
-                              size: AppSizes.iconXl,
-                              color: AppColors.textTertiary,
-                            ),
-                            SizedBox(height: AppSizes.sm),
-                            Text(
-                              '이미지를 등록해주세요',
-                              style: TextStyle(
-                                color: AppColors.textTertiary,
-                                fontSize: 16.sp,
+                      : _menuImagePath != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                              child: Image.network(
+                                _menuImagePath!,
+                                fit: BoxFit.cover,
                               ),
+                            )
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  MdiIcons.imageOffOutline,
+                                  size: AppSizes.iconXl,
+                                  color: AppColors.textTertiary,
+                                ),
+                                SizedBox(height: AppSizes.sm),
+                                Text(
+                                  '이미지를 등록해주세요',
+                                  style: TextStyle(
+                                    color: AppColors.textTertiary,
+                                    fontSize: 16.sp,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
                 ),
                 SizedBox(width: AppSizes.md),
-                // 등록 버튼
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: ElevatedButton.icon(
-                    onPressed: _selectImage,
-                    icon: Icon(MdiIcons.image, size: AppSizes.iconSm),
-                    label: Text(_menuImagePath != null ? '변경' : '등록'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: AppSizes.lg,
-                        vertical: AppSizes.md,
+                // 등록/변경/삭제 버튼들
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: _selectImage,
+                      icon: Icon(MdiIcons.image, size: AppSizes.iconSm),
+                      label: Text((_menuImageBytes != null || _menuImagePath != null) ? '변경' : '등록'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppSizes.lg,
+                          vertical: AppSizes.md,
+                        ),
                       ),
                     ),
-                  ),
+                    if (_menuImageBytes != null || _menuImagePath != null) ...[
+                      SizedBox(height: AppSizes.sm),
+                      OutlinedButton.icon(
+                        onPressed: _removeImage,
+                        icon: Icon(MdiIcons.delete, size: AppSizes.iconSm),
+                        label: const Text('삭제'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: AppColors.error,
+                          side: BorderSide(color: AppColors.error),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: AppSizes.lg,
+                            vertical: AppSizes.md,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ],
             ),
@@ -549,10 +612,85 @@ class _MenuAddPageState extends State<MenuAddPage> {
     );
   }
 
-  void _selectImage() {
-    // 이미지 선택 기능 구현 (웹에서는 파일 선택)
+  void _selectImage() async {
+    try {
+      // 이미지 파일만 선택 가능하도록 제한
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: false,
+        allowedExtensions: null,
+      );
+
+      if (result != null && result.files.isNotEmpty) {
+        final file = result.files.first;
+        
+        // 파일 크기 체크 (10MB 제한)
+        if (file.size > 10 * 1024 * 1024) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('이미지 파일 크기는 10MB 이하여야 합니다.'),
+                backgroundColor: AppColors.error,
+              ),
+            );
+          }
+          return;
+        }
+
+        // 파일 확장자 체크
+        final allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        final extension = file.extension?.toLowerCase();
+        if (extension == null || !allowedExtensions.contains(extension)) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('지원하는 이미지 형식: JPG, PNG, GIF, WebP'),
+                backgroundColor: AppColors.error,
+              ),
+            );
+          }
+          return;
+        }
+
+        setState(() {
+          _menuImageBytes = file.bytes;
+          _menuImageName = file.name;
+          _menuImagePath = null; // 새로 선택한 경우 기존 경로 초기화
+        });
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('이미지가 선택되었습니다: ${file.name}'),
+              backgroundColor: AppColors.success,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('이미지 선택 중 오류가 발생했습니다: ${e.toString()}'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    }
+  }
+
+  void _removeImage() {
+    setState(() {
+      _menuImageBytes = null;
+      _menuImageName = null;
+      _menuImagePath = null;
+    });
+
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('이미지 선택 기능 준비중입니다.')),
+      SnackBar(
+        content: Text('이미지가 삭제되었습니다.'),
+        backgroundColor: AppColors.info,
+      ),
     );
   }
 
@@ -605,9 +743,27 @@ class _MenuAddPageState extends State<MenuAddPage> {
   void _saveMenu() {
     if (_formKey.currentState!.validate()) {
       // 메뉴 저장 로직
+      final menuData = {
+        'name': _menuNameController.text,
+        'price': _priceController.text,
+        'description': _descriptionController.text,
+        'groupId': _selectedGroupId,
+        'imageBytes': _menuImageBytes,
+        'imageName': _menuImageName,
+        'selectedOptions': _selectedOptions,
+      };
+      
+      // TODO: 실제 API 호출로 메뉴 데이터 저장
+      print('저장할 메뉴 데이터: $menuData');
+      
+      String message = widget.menuId != null ? '메뉴가 수정되었습니다.' : '메뉴가 등록되었습니다.';
+      if (_menuImageName != null) {
+        message += ' (이미지: $_menuImageName)';
+      }
+      
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(widget.menuId != null ? '메뉴가 수정되었습니다.' : '메뉴가 등록되었습니다.'),
+          content: Text(message),
           backgroundColor: AppColors.success,
         ),
       );

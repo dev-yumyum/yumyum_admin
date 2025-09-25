@@ -103,13 +103,29 @@ class _MembersPageState extends State<MembersPage> {
   }
 
   Widget _buildHeader() {
-    return Text(
-      '고객관리',
-      style: TextStyle(
-        fontSize: 36.sp, // 28.sp -> 36.sp (헤더 통일화)
-        fontWeight: FontWeight.bold,
-        color: AppColors.textPrimary,
-      ),
+    return Row(
+      children: [
+        IconButton(
+          onPressed: () => context.pop(),
+          icon: Icon(
+            MdiIcons.arrowLeft,
+            size: AppSizes.iconMd,
+            color: AppColors.textPrimary,
+          ),
+          tooltip: '뒤로가기',
+          padding: EdgeInsets.all(AppSizes.sm),
+          iconSize: AppSizes.iconMd,
+        ),
+        SizedBox(width: AppSizes.sm),
+        Text(
+          '고객관리',
+          style: TextStyle(
+            fontSize: 36.sp, // 28.sp -> 36.sp (헤더 통일화)
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
+        ),
+      ],
     );
   }
 

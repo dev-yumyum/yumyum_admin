@@ -10,7 +10,9 @@ import '../../data/models/menu_item_model.dart';
 import '../../data/models/option_group_model.dart';
 import '../../data/models/option_item_model.dart';
 import '../widgets/menu_group_add_dialog.dart';
+import '../widgets/menu_group_edit_dialog.dart';
 import '../widgets/option_group_add_dialog.dart';
+import '../widgets/option_group_edit_dialog.dart';
 import '../widgets/option_item_add_dialog.dart';
 import 'menu_add_page.dart';
 
@@ -906,8 +908,9 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
               ],
             ),
           ),
+          // 수정/삭제 버튼 추가
           PopupMenuButton(
-            icon: Icon(MdiIcons.dotsVertical, color: AppColors.textSecondary),
+            icon: Icon(MdiIcons.dotsVertical, color: AppColors.textSecondary, size: AppSizes.iconSm),
             itemBuilder: (context) => [
               PopupMenuItem(
                 value: 'edit',
@@ -930,6 +933,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                 ),
               ),
             ],
+            onSelected: (value) => _handleOptionItemAction(value, item),
           ),
         ],
       ),
@@ -1275,102 +1279,676 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
     final descriptionController = TextEditingController(text: item['description']);
     final priceLController = TextEditingController(text: item['priceL'].replaceAll(RegExp(r'[^\d]'), ''));
     final priceMController = TextEditingController(text: item['priceM'].replaceAll(RegExp(r'[^\d]'), ''));
+    
+    // 현재 메뉴가 속한 그룹 찾기
+    String selectedGroupId = _menuGroups[groupIndex]['name'];
+    String? menuImagePath = item['imageUrl']; // 기존 이미지 URL
+    
+    // 샘플 메뉴 그룹 데이터
+    final availableGroups = _menuGroups.map((group) => {
+      'id': group['name'],
+      'name': group['name'],
+    }).toList();
+    
+    // 샘플 옵션 그룹 데이터
+    final availableOptions = _optionGroups.map((option) => {
+      'id': option['id'],
+      'name': option['name'],
+      'maxSelection': option['maxSelection'],
+      'items': option['items'],
+    }).toList();
+    
+    List<Map<String, dynamic>> selectedOptions = []; // 현재 선택된 옵션들
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Row(
-            children: [
-              Icon(MdiIcons.pencil, color: AppColors.primary),
-              SizedBox(width: AppSizes.sm),
-              Text(
-                '메뉴 수정',
-                style: TextStyle(fontSize: 20.sp),
-              ),
-            ],
-          ),
-          content: SizedBox(
-            width: 500.w,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  controller: nameController,
-                  decoration: const InputDecoration(
-                    labelText: '메뉴명',
-                    border: OutlineInputBorder(),
-                  ),
-                  style: TextStyle(fontSize: 16.sp),
-                ),
-                SizedBox(height: AppSizes.md),
-                TextFormField(
-                  controller: descriptionController,
-                  decoration: const InputDecoration(
-                    labelText: '메뉴 설명',
-                    border: OutlineInputBorder(),
-                  ),
-                  style: TextStyle(fontSize: 16.sp),
-                  maxLines: 2,
-                ),
-                SizedBox(height: AppSizes.md),
-                Row(
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              child: Container(
+                width: 1125.w, // 750.w에서 50% 더 증가
+                height: 800.h, // 높이도 더 증가
+                padding: EdgeInsets.all(AppSizes.lg),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: priceLController,
-                        decoration: const InputDecoration(
-                          labelText: 'L 사이즈 가격',
-                          border: OutlineInputBorder(),
-                          suffixText: '원',
+                    // 헤더
+                    Row(
+                      children: [
+                        Icon(MdiIcons.pencil, color: AppColors.primary, size: AppSizes.iconMd),
+                        SizedBox(width: AppSizes.sm),
+                        Text(
+                          '메뉴 수정',
+                          style: TextStyle(
+                            fontSize: 24.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimary,
+                          ),
                         ),
-                        style: TextStyle(fontSize: 16.sp),
-                        keyboardType: TextInputType.number,
+                        const Spacer(),
+                        IconButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: Icon(MdiIcons.close, size: AppSizes.iconMd),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: AppSizes.lg),
+                    
+                    // 스크롤 가능한 컨텐츠
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // 메뉴 이미지 섹션
+                            _buildEditImageSection(menuImagePath, setState),
+                            SizedBox(height: AppSizes.lg),
+                            
+                            // 기본 정보 섹션
+                            _buildEditBasicInfoSection(
+                              nameController,
+                              descriptionController,
+                              priceLController,
+                              priceMController,
+                              selectedGroupId,
+                              availableGroups,
+                              setState,
+                            ),
+                            SizedBox(height: AppSizes.lg),
+                            
+                            // 메뉴 옵션 섹션
+                            _buildEditOptionsSection(
+                              selectedOptions,
+                              availableOptions,
+                              setState,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    SizedBox(width: AppSizes.md),
-                    Expanded(
-                      child: TextFormField(
-                        controller: priceMController,
-                        decoration: const InputDecoration(
-                          labelText: 'M 사이즈 가격',
-                          border: OutlineInputBorder(),
-                          suffixText: '원',
+                    
+                    SizedBox(height: AppSizes.lg),
+                    
+                    // 액션 버튼들
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          style: OutlinedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: AppSizes.xl,
+                              vertical: AppSizes.md,
+                            ),
+                          ),
+                          child: Text(
+                            '취소',
+                            style: TextStyle(fontSize: 16.sp),
+                          ),
                         ),
-                        style: TextStyle(fontSize: 16.sp),
+                        SizedBox(width: AppSizes.md),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            _updateMenuItemAdvanced(
+                              groupIndex,
+                              itemIndex,
+                              nameController.text,
+                              descriptionController.text,
+                              priceLController.text,
+                              priceMController.text,
+                              selectedGroupId,
+                              menuImagePath,
+                              selectedOptions,
+                            );
+                            Navigator.of(context).pop();
+                          },
+                          icon: Icon(MdiIcons.check, size: AppSizes.iconSm),
+                          label: Text(
+                            '저장',
+                            style: TextStyle(fontSize: 16.sp),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: AppSizes.xl,
+                              vertical: AppSizes.md,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // 메뉴 이미지 섹션 빌더
+  Widget _buildEditImageSection(String? menuImagePath, Function setState) {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppSizes.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '메뉴 이미지',
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            SizedBox(height: AppSizes.md),
+            Row(
+              children: [
+                // 메뉴 이미지
+                Container(
+                  width: 120.w,
+                  height: 120.h,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: menuImagePath != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                          child: Image.network(
+                            menuImagePath,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  MdiIcons.imageOffOutline,
+                                  size: AppSizes.iconLg,
+                                  color: AppColors.textTertiary,
+                                ),
+                                SizedBox(height: AppSizes.xs),
+                                Text(
+                                  '이미지 로드 실패',
+                                  style: TextStyle(
+                                    color: AppColors.textTertiary,
+                                    fontSize: 12.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              MdiIcons.imageOffOutline,
+                              size: AppSizes.iconLg,
+                              color: AppColors.textTertiary,
+                            ),
+                            SizedBox(height: AppSizes.xs),
+                            Text(
+                              '이미지 없음',
+                              style: TextStyle(
+                                color: AppColors.textTertiary,
+                                fontSize: 12.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                ),
+                SizedBox(width: AppSizes.md),
+                // 이미지 변경 버튼
+                ElevatedButton.icon(
+                  onPressed: () {
+                    // 이미지 선택 기능
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('이미지 선택 기능 준비중입니다.')),
+                    );
+                  },
+                  icon: Icon(MdiIcons.image, size: AppSizes.iconSm),
+                  label: Text(menuImagePath != null ? '변경' : '등록'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 기본 정보 섹션 빌더
+  Widget _buildEditBasicInfoSection(
+    TextEditingController nameController,
+    TextEditingController descriptionController,
+    TextEditingController priceLController,
+    TextEditingController priceMController,
+    String selectedGroupId,
+    List<Map<String, dynamic>> availableGroups,
+    Function setState,
+  ) {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppSizes.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '기본 정보',
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            SizedBox(height: AppSizes.md),
+            
+            // 메뉴명
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '메뉴명 *',
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                SizedBox(height: AppSizes.xs),
+                TextFormField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    hintText: '메뉴명을 입력해주세요',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                    ),
+                  ),
+                  style: TextStyle(fontSize: 14.sp),
+                ),
+              ],
+            ),
+            
+            SizedBox(height: AppSizes.md),
+            
+            // 메뉴 설명
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '메뉴 설명',
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                SizedBox(height: AppSizes.xs),
+                TextFormField(
+                  controller: descriptionController,
+                  maxLines: 2,
+                  decoration: InputDecoration(
+                    hintText: '메뉴에 대한 설명을 입력해주세요',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                    ),
+                  ),
+                  style: TextStyle(fontSize: 14.sp),
+                ),
+              ],
+            ),
+            
+            SizedBox(height: AppSizes.md),
+            
+            // 가격 (L, M 사이즈)
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'L 사이즈 가격 *',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      SizedBox(height: AppSizes.xs),
+                      TextFormField(
+                        controller: priceLController,
                         keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          hintText: '가격을 입력하세요',
+                          suffixText: '원',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                          ),
+                        ),
+                        style: TextStyle(fontSize: 14.sp),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: AppSizes.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'M 사이즈 가격 *',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                      SizedBox(height: AppSizes.xs),
+                      TextFormField(
+                        controller: priceMController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          hintText: '가격을 입력하세요',
+                          suffixText: '원',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                          ),
+                        ),
+                        style: TextStyle(fontSize: 14.sp),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            
+            SizedBox(height: AppSizes.md),
+            
+            // 메뉴 그룹
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '메뉴 그룹 *',
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                SizedBox(height: AppSizes.xs),
+                DropdownButtonFormField<String>(
+                  value: selectedGroupId,
+                  decoration: InputDecoration(
+                    hintText: '메뉴 그룹을 선택해주세요',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                    ),
+                  ),
+                  items: availableGroups.map((group) {
+                    return DropdownMenuItem<String>(
+                      value: group['id'],
+                      child: Text(group['name']),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedGroupId = value!;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 메뉴 옵션 섹션 빌더
+  Widget _buildEditOptionsSection(
+    List<Map<String, dynamic>> selectedOptions,
+    List<Map<String, dynamic>> availableOptions,
+    Function setState,
+  ) {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppSizes.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '메뉴 옵션',
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                OutlinedButton.icon(
+                  onPressed: () => _showEditOptionSelectionDialog(
+                    selectedOptions,
+                    availableOptions,
+                    setState,
+                  ),
+                  icon: Icon(MdiIcons.plus, size: AppSizes.iconSm),
+                  label: const Text('옵션 불러오기'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.primary,
+                    side: BorderSide(color: AppColors.primary),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: AppSizes.md),
+            
+            if (selectedOptions.isEmpty)
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.all(AppSizes.lg),
+                decoration: BoxDecoration(
+                  color: Colors.grey[50],
+                  borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                  border: Border.all(color: AppColors.border),
+                ),
+                child: Column(
+                  children: [
+                    Icon(
+                      MdiIcons.plusCircleOutline,
+                      size: AppSizes.iconLg,
+                      color: AppColors.textTertiary,
+                    ),
+                    SizedBox(height: AppSizes.sm),
+                    Text(
+                      '옵션 불러오기를 통해 옵션을 추가해주세요',
+                      style: TextStyle(
+                        color: AppColors.textTertiary,
+                        fontSize: 14.sp,
                       ),
                     ),
                   ],
                 ),
+              )
+            else
+              Column(
+                children: selectedOptions.map((option) => _buildEditOptionCard(option, selectedOptions, setState)).toList(),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 옵션 카드 빌더
+  Widget _buildEditOptionCard(Map<String, dynamic> option, List<Map<String, dynamic>> selectedOptions, Function setState) {
+    return Container(
+      margin: EdgeInsets.only(bottom: AppSizes.sm),
+      padding: EdgeInsets.all(AppSizes.md),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  option['name'],
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                SizedBox(height: AppSizes.xs),
+                Text(
+                  '최대 ${option['maxSelection']}개 선택',
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
               ],
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              setState(() {
+                selectedOptions.remove(option);
+              });
+            },
+            icon: Icon(
+              MdiIcons.close,
+              color: AppColors.error,
+              size: AppSizes.iconSm,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 옵션 선택 다이얼로그
+  void _showEditOptionSelectionDialog(
+    List<Map<String, dynamic>> selectedOptions,
+    List<Map<String, dynamic>> availableOptions,
+    Function setState,
+  ) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('옵션 선택'),
+          content: Container(
+            width: double.maxFinite,
+            height: 400.h,
+            child: SingleChildScrollView(
+              child: Column(
+                children: availableOptions.map((option) {
+                  final isSelected = selectedOptions.any((selected) => selected['id'] == option['id']);
+                  return Card(
+                    margin: EdgeInsets.only(bottom: AppSizes.sm),
+                    child: Column(
+                      children: [
+                        CheckboxListTile(
+                          title: Text(
+                            option['name'],
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16.sp,
+                            ),
+                          ),
+                          subtitle: Text('최대 ${option['maxSelection']}개 선택'),
+                          value: isSelected,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              if (value == true) {
+                                if (!isSelected) {
+                                  selectedOptions.add(option);
+                                }
+                              } else {
+                                selectedOptions.removeWhere((selected) => selected['id'] == option['id']);
+                              }
+                            });
+                            Navigator.of(context).pop();
+                            _showEditOptionSelectionDialog(selectedOptions, availableOptions, setState);
+                          },
+                        ),
+                        // 옵션 아이템들 표시
+                        if (option['items'] != null && option['items'].isNotEmpty)
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.sm),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[50],
+                              border: Border(top: BorderSide(color: AppColors.border)),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '옵션 항목:',
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                                SizedBox(height: AppSizes.xs),
+                                Wrap(
+                                  spacing: AppSizes.xs,
+                                  runSpacing: AppSizes.xs,
+                                  children: (option['items'] as List).map<Widget>((item) {
+                                    return Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: AppSizes.sm,
+                                        vertical: AppSizes.xs,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.primary.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                                        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                                      ),
+                                      child: Text(
+                                        '${item['name']} (+${_formatPrice(item['price'])})',
+                                        style: TextStyle(
+                                          fontSize: 11.sp,
+                                          color: AppColors.primary,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                '취소',
-                style: TextStyle(fontSize: 16.sp),
-              ),
-            ),
-            ElevatedButton.icon(
-              onPressed: () {
-                _updateMenuItem(
-                  groupIndex,
-                  itemIndex,
-                  nameController.text,
-                  descriptionController.text,
-                  priceLController.text,
-                  priceMController.text,
-                );
-                Navigator.of(context).pop();
-              },
-              icon: Icon(MdiIcons.check, size: AppSizes.iconSm),
-              label: Text(
-                '저장',
-                style: TextStyle(fontSize: 16.sp),
-              ),
+              child: const Text('완료'),
             ),
           ],
         );
@@ -1378,7 +1956,48 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
     );
   }
 
-  // 메뉴 아이템 업데이트
+  // 고급 메뉴 아이템 업데이트
+  void _updateMenuItemAdvanced(
+    int groupIndex,
+    int itemIndex,
+    String name,
+    String description,
+    String priceL,
+    String priceM,
+    String selectedGroupId,
+    String? menuImagePath,
+    List<Map<String, dynamic>> selectedOptions,
+  ) {
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('메뉴명을 입력해주세요.'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _menuGroups[groupIndex]['items'][itemIndex]['name'] = name;
+      _menuGroups[groupIndex]['items'][itemIndex]['description'] = description;
+      _menuGroups[groupIndex]['items'][itemIndex]['priceL'] = _formatPriceFromString(priceL);
+      _menuGroups[groupIndex]['items'][itemIndex]['priceM'] = _formatPriceFromString(priceM);
+      if (menuImagePath != null) {
+        _menuGroups[groupIndex]['items'][itemIndex]['imageUrl'] = menuImagePath;
+      }
+      // 선택된 옵션들 저장 (실제 구현에서는 메뉴 모델에 포함)
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('메뉴 "$name"이(가) 수정되었습니다.'),
+        backgroundColor: AppColors.success,
+      ),
+    );
+  }
+
+  // 메뉴 아이템 업데이트 (기존 함수)
   void _updateMenuItem(int groupIndex, int itemIndex, String name, String description, String priceL, String priceM) {
     if (name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -1524,12 +2143,40 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
   void _handleGroupAction(String action, int groupIndex) {
     switch (action) {
       case 'edit':
-        // 그룹 수정 기능 (추후 구현 가능)
+        _showMenuGroupEditDialog(groupIndex);
         break;
       case 'delete':
         _showGroupDeleteConfirmDialog(groupIndex);
         break;
     }
+  }
+
+  // 메뉴 그룹 수정 다이얼로그
+  void _showMenuGroupEditDialog(int groupIndex) {
+    final group = _menuGroups[groupIndex];
+    
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return MenuGroupEditDialog(
+          initialName: group['name'],
+          initialDescription: group['description'] ?? '',
+          onEdit: (String name, String description) {
+            setState(() {
+              _menuGroups[groupIndex]['name'] = name;
+              _menuGroups[groupIndex]['description'] = description;
+            });
+            
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('메뉴 그룹 "$name"이 수정되었습니다.'),
+                backgroundColor: AppColors.success,
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   // 그룹 삭제 확인 다이얼로그
@@ -1676,12 +2323,191 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
   void _handleOptionGroupAction(String action, int groupIndex) {
     switch (action) {
       case 'edit':
-        // 옵션 그룹 수정 기능 (추후 구현 가능)
+        _showOptionGroupEditDialog(groupIndex);
         break;
       case 'delete':
         _showOptionGroupDeleteConfirmDialog(groupIndex);
         break;
     }
+  }
+
+  // 옵션 그룹 수정 다이얼로그
+  void _showOptionGroupEditDialog(int groupIndex) {
+    final group = _optionGroups[groupIndex];
+    
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return OptionGroupEditDialog(
+          initialName: group['name'],
+          initialDescription: group['description'] ?? '',
+          initialMaxSelection: group['maxSelection'],
+          onEdit: (String name, String description, int maxSelection) {
+            setState(() {
+              _optionGroups[groupIndex]['name'] = name;
+              _optionGroups[groupIndex]['description'] = description;
+              _optionGroups[groupIndex]['maxSelection'] = maxSelection;
+            });
+            
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('옵션 그룹 "$name"이 수정되었습니다.'),
+                backgroundColor: AppColors.success,
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // 옵션 아이템 액션 처리
+  void _handleOptionItemAction(String action, Map<String, dynamic> item) {
+    switch (action) {
+      case 'edit':
+        _showOptionItemEditDialog(item);
+        break;
+      case 'delete':
+        _showOptionItemDeleteConfirmDialog(item);
+        break;
+    }
+  }
+
+  // 옵션 아이템 수정 다이얼로그
+  void _showOptionItemEditDialog(Map<String, dynamic> item) {
+    final nameController = TextEditingController(text: item['name']);
+    final priceController = TextEditingController(text: item['price'].toString());
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(MdiIcons.pencil, color: AppColors.primary),
+              SizedBox(width: AppSizes.sm),
+              Text('옵션 아이템 수정'),
+            ],
+          ),
+          content: SizedBox(
+            width: 400.w,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    labelText: '옵션명 *',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                    ),
+                  ),
+                ),
+                SizedBox(height: AppSizes.md),
+                TextFormField(
+                  controller: priceController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: '추가 가격',
+                    suffixText: '원',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('취소'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (nameController.text.trim().isNotEmpty) {
+                  _updateOptionItem(item, nameController.text.trim(), int.tryParse(priceController.text) ?? 0);
+                  Navigator.of(context).pop();
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+              ),
+              child: Text('수정'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // 옵션 아이템 삭제 확인 다이얼로그
+  void _showOptionItemDeleteConfirmDialog(Map<String, dynamic> item) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(MdiIcons.alertCircle, color: AppColors.error),
+              SizedBox(width: AppSizes.sm),
+              Text('옵션 아이템 삭제'),
+            ],
+          ),
+          content: Text('옵션 아이템 "${item['name']}"을 삭제하시겠습니까?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('취소'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                _deleteOptionItem(item);
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                foregroundColor: Colors.white,
+              ),
+              child: Text('삭제'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // 옵션 아이템 업데이트
+  void _updateOptionItem(Map<String, dynamic> item, String name, int price) {
+    setState(() {
+      item['name'] = name;
+      item['price'] = price;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('옵션 아이템 "$name"이 수정되었습니다.'),
+        backgroundColor: AppColors.success,
+      ),
+    );
+  }
+
+  // 옵션 아이템 삭제
+  void _deleteOptionItem(Map<String, dynamic> item) {
+    setState(() {
+      for (int i = 0; i < _optionGroups.length; i++) {
+        final items = _optionGroups[i]['items'] as List;
+        items.removeWhere((optionItem) => optionItem['id'] == item['id']);
+      }
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('옵션 아이템 "${item['name']}"이 삭제되었습니다.'),
+        backgroundColor: AppColors.success,
+      ),
+    );
   }
 
   // 옵션 그룹 삭제 확인 다이얼로그
