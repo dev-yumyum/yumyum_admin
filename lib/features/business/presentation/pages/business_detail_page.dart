@@ -600,74 +600,79 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                   color: AppColors.warning,
                 ),
                 SizedBox(width: AppSizes.sm),
-                Text(
-                  '정산 계좌',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      '정산 계좌',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    SizedBox(width: AppSizes.sm),
+                    if (_business!.accountVerified == true)
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppSizes.sm,
+                          vertical: AppSizes.xs,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.success.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              MdiIcons.checkCircle,
+                              size: AppSizes.iconXs,
+                              color: AppColors.success,
+                            ),
+                            SizedBox(width: AppSizes.xs),
+                            Text(
+                              '확인완료',
+                              style: TextStyle(
+                                fontSize: 10.sp,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.success,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    else
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppSizes.sm,
+                          vertical: AppSizes.xs,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.warning.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              MdiIcons.clockAlert,
+                              size: AppSizes.iconXs,
+                              color: AppColors.warning,
+                            ),
+                            SizedBox(width: AppSizes.xs),
+                            Text(
+                              '확인대기',
+                              style: TextStyle(
+                                fontSize: 10.sp,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.warning,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
                 ),
                 const Spacer(),
-                if (_business!.accountVerified == true)
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSizes.sm,
-                      vertical: AppSizes.xs,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.success.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          MdiIcons.checkCircle,
-                          size: AppSizes.iconXs,
-                          color: AppColors.success,
-                        ),
-                        SizedBox(width: AppSizes.xs),
-                        Text(
-                          '확인완료',
-                          style: TextStyle(
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.success,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                else
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSizes.sm,
-                      vertical: AppSizes.xs,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.warning.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          MdiIcons.clockAlert,
-                          size: AppSizes.iconXs,
-                          color: AppColors.warning,
-                        ),
-                        SizedBox(width: AppSizes.xs),
-                        Text(
-                          '확인대기',
-                          style: TextStyle(
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.warning,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
               ],
             ),
             SizedBox(height: AppSizes.lg),
