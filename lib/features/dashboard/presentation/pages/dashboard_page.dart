@@ -29,24 +29,29 @@ class _DashboardPageState extends State<DashboardPage> {
           children: [
             _buildStatCards(),
             SizedBox(height: AppSizes.lg),
-            Column(
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SalesChartWidget(
-                  selectedDate: _selectedDate,
-                  onDateChanged: (date) {
-                    setState(() {
-                      _selectedDate = date;
-                    });
-                  },
+                Expanded(
+                  child: SalesChartWidget(
+                    selectedDate: _selectedDate,
+                    onDateChanged: (date) {
+                      setState(() {
+                        _selectedDate = date;
+                      });
+                    },
+                  ),
                 ),
-                SizedBox(height: AppSizes.lg),
-                OrderStatusChartWidget(
-                  selectedDate: _selectedDate,
-                  onDateChanged: (date) {
-                    setState(() {
-                      _selectedDate = date;
-                    });
-                  },
+                SizedBox(width: AppSizes.lg),
+                Expanded(
+                  child: OrderStatusChartWidget(
+                    selectedDate: _selectedDate,
+                    onDateChanged: (date) {
+                      setState(() {
+                        _selectedDate = date;
+                      });
+                    },
+                  ),
                 ),
               ],
             ),
@@ -63,11 +68,9 @@ class _DashboardPageState extends State<DashboardPage> {
           child: DashboardStatCard(
             title: '총 매출',
             value: '₩15,840,000',
-            subtitle: '이번 달',
+            subtitle: '',
             icon: MdiIcons.currencyKrw,
             color: AppColors.success,
-            trend: '+12.5%',
-            isPositive: true,
           ),
         ),
         SizedBox(width: AppSizes.md),
@@ -75,11 +78,9 @@ class _DashboardPageState extends State<DashboardPage> {
           child: DashboardStatCard(
             title: '신규 주문',
             value: '1,247',
-            subtitle: '오늘',
+            subtitle: '',
             icon: MdiIcons.cartPlus,
             color: AppColors.info,
-            trend: '+8.2%',
-            isPositive: true,
           ),
         ),
         SizedBox(width: AppSizes.md),
@@ -87,11 +88,9 @@ class _DashboardPageState extends State<DashboardPage> {
           child: DashboardStatCard(
             title: '가입 사업자',
             value: '342',
-            subtitle: '전체',
+            subtitle: '',
             icon: MdiIcons.domain,
             color: AppColors.primary,
-            trend: '+5.1%',
-            isPositive: true,
           ),
         ),
         SizedBox(width: AppSizes.md),
@@ -99,11 +98,9 @@ class _DashboardPageState extends State<DashboardPage> {
           child: DashboardStatCard(
             title: '승인 대기',
             value: '23',
-            subtitle: '처리 필요',
+            subtitle: '',
             icon: MdiIcons.clockAlert,
             color: AppColors.warning,
-            trend: '-2.3%',
-            isPositive: false,
           ),
         ),
       ],

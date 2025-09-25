@@ -72,37 +72,40 @@ class DashboardStatCard extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: AppSizes.md),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  subtitle,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColors.textTertiary,
-                  ),
-                ),
-                if (trend != null) ...[
-                  Row(
-                    children: [
-                      Icon(
-                        isPositive ? MdiIcons.trendingUp : MdiIcons.trendingDown,
-                        size: AppSizes.iconSm,
-                        color: isPositive ? AppColors.success : AppColors.error,
+            if (subtitle.isNotEmpty || trend != null) ...[
+              SizedBox(height: AppSizes.md),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  if (subtitle.isNotEmpty)
+                    Text(
+                      subtitle,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.textTertiary,
                       ),
-                      SizedBox(width: AppSizes.xs),
-                      Text(
-                        trend!,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    ),
+                  if (trend != null) ...[
+                    Row(
+                      children: [
+                        Icon(
+                          isPositive ? MdiIcons.trendingUp : MdiIcons.trendingDown,
+                          size: AppSizes.iconSm,
                           color: isPositive ? AppColors.success : AppColors.error,
-                          fontWeight: FontWeight.w600,
                         ),
-                      ),
-                    ],
-                  ),
+                        SizedBox(width: AppSizes.xs),
+                        Text(
+                          trend!,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: isPositive ? AppColors.success : AppColors.error,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ],
-              ],
-            ),
+              ),
+            ],
           ],
         ),
       ),
