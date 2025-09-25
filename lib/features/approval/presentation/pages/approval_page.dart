@@ -48,7 +48,9 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
     
     _filteredApprovalRequests = _approvalRequests.where((request) {
       final requestDate = request.requestDate;
-      return requestDate.compareTo(startDateStr) >= 0 && requestDate.compareTo(endDateStr) <= 0;
+      // 날짜 부분만 추출 (시간 부분 제거)
+      final requestDateOnly = requestDate.length >= 10 ? requestDate.substring(0, 10) : requestDate;
+      return requestDateOnly.compareTo(startDateStr) >= 0 && requestDateOnly.compareTo(endDateStr) <= 0;
     }).toList();
   }
 
@@ -1037,9 +1039,11 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
     setState(() {
       final index = _approvalRequests.indexWhere((r) => r.id == request.id);
       if (index != -1) {
+        final now = DateTime.now();
+        final processedDateTime = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}';
         _approvalRequests[index] = request.copyWith(
           status: 'APPROVED',
-          processedDate: DateTime.now().toString().substring(0, 10),
+          processedDate: processedDateTime,
           processedBy: '관리자',
         );
       }
@@ -1059,9 +1063,11 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
     setState(() {
       final index = _approvalRequests.indexWhere((r) => r.id == request.id);
       if (index != -1) {
+        final now = DateTime.now();
+        final processedDateTime = '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}:${now.second.toString().padLeft(2, '0')}';
         _approvalRequests[index] = request.copyWith(
           status: 'REJECTED',
-          processedDate: DateTime.now().toString().substring(0, 10),
+          processedDate: processedDateTime,
           processedBy: '관리자',
           rejectionReason: '관리자에 의해 반려되었습니다.',
         );
@@ -1399,6 +1405,11 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
     final yesterday = today.subtract(Duration(days: 1));
     final yesterdayStr = '${yesterday.year}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.day.toString().padLeft(2, '0')}';
     
+    // 시간 포맷 함수
+    String formatDateTime(DateTime dateTime) {
+      return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
+    }
+    
     return [
       // 오늘 데이터
       ApprovalRequestModel(
@@ -1407,7 +1418,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
         requestType: 'BUSINESS_INFO',
         requester: '김영희 (도미노피자 강남점)',
         requestContent: '사업자 주소 변경 요청 - 서울시 강남구 테헤란로 123',
-        requestDate: todayStr,
+        requestDate: formatDateTime(today.subtract(Duration(hours: 2, minutes: 30, seconds: 15))),
         status: 'PENDING',
         businessId: '1',
         description: '사업장 이전으로 인한 주소 변경',
@@ -1426,7 +1437,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
         requestType: 'STORE_INFO',
         requester: '홍길동 (KFC 신촌점)',
         requestContent: '매장 운영시간 변경 요청 - 08:00~24:00',
-        requestDate: todayStr,
+        requestDate: formatDateTime(today.subtract(Duration(hours: 1, minutes: 15, seconds: 42))),
         status: 'PENDING',
         businessId: '7',
         description: '새벽 배달 서비스 시작으로 인한 운영시간 연장',
@@ -1445,7 +1456,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
         requestType: 'MENU_ITEM',
         requester: '김철수 (맘스터치 강남점)',
         requestContent: '신메뉴 등록 요청 - 매운치킨버거 세트 8,900원',
-        requestDate: todayStr,
+        requestDate: formatDateTime(today.subtract(Duration(minutes: 45, seconds: 8))),
         status: 'REJECTED',
         storeId: '8',
         description: '시즌 한정 매운맛 메뉴 출시',
@@ -1456,7 +1467,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
           'description': '매운 양념으로 재운 치킨패티와 신선한 야채',
           'category': '버거 세트',
         },
-        processedDate: todayStr,
+        processedDate: formatDateTime(today.subtract(Duration(minutes: 30, seconds: 8))),
         processedBy: '관리자',
         rejectionReason: '영양 성분표가 제출되지 않았습니다.',
       ),
@@ -1467,7 +1478,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
         requestType: 'BANK_ACCOUNT',
         requester: '이영수 (롯데리아 홍대점)',
         requestContent: '정산 계좌 변경 요청 - 카카오뱅크 3333-01-1234567',
-        requestDate: yesterdayStr,
+        requestDate: formatDateTime(yesterday.add(Duration(hours: 14, minutes: 22, seconds: 35))),
         status: 'PENDING',
         businessId: '9',
         description: '은행 변경으로 인한 계좌 변경',
@@ -1489,7 +1500,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
         requestType: 'STORE_INFO',
         requester: '이철수 (맥도날드 홍대점)',
         requestContent: '매장 운영시간 변경 요청 - 09:00~23:00',
-        requestDate: yesterdayStr,
+        requestDate: formatDateTime(yesterday.add(Duration(hours: 10, minutes: 15, seconds: 20))),
         status: 'APPROVED',
         storeId: '2',
         description: '고객 요청에 따른 운영시간 연장',
@@ -1501,7 +1512,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
           'openTime': '09:00',
           'closeTime': '23:00',
         },
-        processedDate: yesterdayStr,
+        processedDate: formatDateTime(yesterday.add(Duration(hours: 11, minutes: 30, seconds: 45))),
         processedBy: '관리자',
       ),
       ApprovalRequestModel(
@@ -1510,7 +1521,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
         requestType: 'BANK_ACCOUNT',
         requester: '박민수 (버거킹 신촌점)',
         requestContent: '정산 계좌 변경 요청 - 우리은행 1002-123-456789',
-        requestDate: '2024-09-13',
+        requestDate: '2024-09-13 16:45:12',
         status: 'PENDING',
         businessId: '3',
         description: '기존 계좌 해지로 인한 계좌 변경',
@@ -1531,7 +1542,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
         requestType: 'MENU_ITEM',
         requester: '최지영 (피자헛 잠실점)',
         requestContent: '신메뉴 등록 요청 - 불고기 피자 L사이즈 28,900원',
-        requestDate: '2024-09-12',
+        requestDate: '2024-09-12 11:30:25',
         status: 'REJECTED',
         storeId: '4',
         description: '시즌 한정 메뉴 출시',
@@ -1542,7 +1553,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
           'description': '한국식 불고기와 채소를 올린 피자',
           'category': '프리미엄 피자',
         },
-        processedDate: '2024-09-12',
+        processedDate: '2024-09-12 13:15:40',
         processedBy: '관리자',
         rejectionReason: '메뉴 이미지와 상세 설명이 부족합니다.',
       ),
@@ -1552,7 +1563,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
         requestType: 'BUSINESS_INFO',
         requester: '정수민 (스타벅스 명동점)',
         requestContent: '사업자등록번호 변경 요청 - 123-45-67890',
-        requestDate: '2024-09-11',
+        requestDate: '2024-09-11 09:20:33',
         status: 'PENDING',
         businessId: '5',
         description: '법인 전환으로 인한 사업자번호 변경',
@@ -1571,7 +1582,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
         requestType: 'STORE_INFO',
         requester: '한지수 (서브웨이 강남역점)',
         requestContent: '매장 전화번호 변경 요청 - 02-1234-5678',
-        requestDate: '2024-09-10',
+        requestDate: '2024-09-10 15:42:18',
         status: 'APPROVED',
         storeId: '6',
         description: '기존 번호 장애로 인한 번호 변경',
@@ -1581,7 +1592,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
         toBeData: {
           'phoneNumber': '02-1234-5678',
         },
-        processedDate: '2024-09-10',
+        processedDate: '2024-09-10 17:25:55',
         processedBy: '관리자',
       ),
     ];
