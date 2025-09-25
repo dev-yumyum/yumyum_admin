@@ -1061,13 +1061,13 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
   void _handleMenuItemAction(String action, int groupIndex, int itemIndex) {
     switch (action) {
       case 'edit':
-        // 메뉴 수정 기능
+        _showMenuEditDialog(groupIndex, itemIndex);
         break;
       case 'move':
         _showMoveMenuDialog(groupIndex, itemIndex);
         break;
       case 'status':
-        // 상태 변경 기능
+        _showStatusChangeDialog(groupIndex, itemIndex);
         break;
       case 'delete':
         _deleteMenuItem(groupIndex, itemIndex);
@@ -1231,6 +1231,258 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
           ],
         );
       },
+    );
+  }
+
+  // 메뉴 수정 다이얼로그
+  void _showMenuEditDialog(int groupIndex, int itemIndex) {
+    final item = _menuGroups[groupIndex]['items'][itemIndex];
+    final nameController = TextEditingController(text: item['name']);
+    final descriptionController = TextEditingController(text: item['description']);
+    final priceLController = TextEditingController(text: item['priceL'].replaceAll(RegExp(r'[^\d]'), ''));
+    final priceMController = TextEditingController(text: item['priceM'].replaceAll(RegExp(r'[^\d]'), ''));
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(MdiIcons.pencil, color: AppColors.primary),
+              SizedBox(width: AppSizes.sm),
+              Text(
+                '메뉴 수정',
+                style: TextStyle(fontSize: 20.sp),
+              ),
+            ],
+          ),
+          content: SizedBox(
+            width: 500.w,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                    labelText: '메뉴명',
+                    border: OutlineInputBorder(),
+                  ),
+                  style: TextStyle(fontSize: 16.sp),
+                ),
+                SizedBox(height: AppSizes.md),
+                TextFormField(
+                  controller: descriptionController,
+                  decoration: const InputDecoration(
+                    labelText: '메뉴 설명',
+                    border: OutlineInputBorder(),
+                  ),
+                  style: TextStyle(fontSize: 16.sp),
+                  maxLines: 2,
+                ),
+                SizedBox(height: AppSizes.md),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: priceLController,
+                        decoration: const InputDecoration(
+                          labelText: 'L 사이즈 가격',
+                          border: OutlineInputBorder(),
+                          suffixText: '원',
+                        ),
+                        style: TextStyle(fontSize: 16.sp),
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                    SizedBox(width: AppSizes.md),
+                    Expanded(
+                      child: TextFormField(
+                        controller: priceMController,
+                        decoration: const InputDecoration(
+                          labelText: 'M 사이즈 가격',
+                          border: OutlineInputBorder(),
+                          suffixText: '원',
+                        ),
+                        style: TextStyle(fontSize: 16.sp),
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                '취소',
+                style: TextStyle(fontSize: 16.sp),
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                _updateMenuItem(
+                  groupIndex,
+                  itemIndex,
+                  nameController.text,
+                  descriptionController.text,
+                  priceLController.text,
+                  priceMController.text,
+                );
+                Navigator.of(context).pop();
+              },
+              icon: Icon(MdiIcons.check, size: AppSizes.iconSm),
+              label: Text(
+                '저장',
+                style: TextStyle(fontSize: 16.sp),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // 메뉴 아이템 업데이트
+  void _updateMenuItem(int groupIndex, int itemIndex, String name, String description, String priceL, String priceM) {
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('메뉴명을 입력해주세요.'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _menuGroups[groupIndex]['items'][itemIndex]['name'] = name;
+      _menuGroups[groupIndex]['items'][itemIndex]['description'] = description;
+      _menuGroups[groupIndex]['items'][itemIndex]['priceL'] = _formatPriceFromString(priceL);
+      _menuGroups[groupIndex]['items'][itemIndex]['priceM'] = _formatPriceFromString(priceM);
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('메뉴 "$name"이(가) 수정되었습니다.'),
+        backgroundColor: AppColors.success,
+      ),
+    );
+  }
+
+  // 가격 포맷팅 (문자열용)
+  String _formatPriceFromString(String price) {
+    if (price.isEmpty) return '0원';
+    final numPrice = int.tryParse(price) ?? 0;
+    return '${numPrice.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원';
+  }
+
+  // 상태 변경 다이얼로그
+  void _showStatusChangeDialog(int groupIndex, int itemIndex) {
+    final item = _menuGroups[groupIndex]['items'][itemIndex];
+    final currentStatus = item['status'] ?? '판매중';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(MdiIcons.checkCircle, color: AppColors.info),
+              SizedBox(width: AppSizes.sm),
+              Text(
+                '상태 변경',
+                style: TextStyle(fontSize: 20.sp),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '"${item['name']}"의 판매 상태를 변경하시겠습니까?',
+                style: TextStyle(fontSize: 16.sp),
+              ),
+              SizedBox(height: AppSizes.lg),
+              Text(
+                '현재 상태: $currentStatus',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: AppSizes.md),
+              ...['판매중', '오늘만 품절', '메뉴 숨김'].map((status) {
+                final isSelected = status == currentStatus;
+                return Container(
+                  margin: EdgeInsets.only(bottom: AppSizes.sm),
+                  child: InkWell(
+                    onTap: () {
+                      _changeMenuStatus(groupIndex, itemIndex, status);
+                      Navigator.of(context).pop();
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(AppSizes.md),
+                      decoration: BoxDecoration(
+                        color: isSelected ? AppColors.primary.withOpacity(0.1) : Colors.transparent,
+                        border: Border.all(
+                          color: isSelected ? AppColors.primary : AppColors.border,
+                          width: isSelected ? 2 : 1,
+                        ),
+                        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            isSelected ? MdiIcons.radioboxMarked : MdiIcons.radioboxBlank,
+                            color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                          ),
+                          SizedBox(width: AppSizes.sm),
+                          Text(
+                            status,
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                              color: isSelected ? AppColors.primary : AppColors.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                '취소',
+                style: TextStyle(fontSize: 16.sp),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // 메뉴 상태 변경
+  void _changeMenuStatus(int groupIndex, int itemIndex, String newStatus) {
+    final oldStatus = _menuGroups[groupIndex]['items'][itemIndex]['status'];
+    
+    setState(() {
+      _menuGroups[groupIndex]['items'][itemIndex]['status'] = newStatus;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('메뉴 상태가 "$oldStatus"에서 "$newStatus"로 변경되었습니다.'),
+        backgroundColor: AppColors.success,
+      ),
     );
   }
 }
