@@ -18,6 +18,9 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
   late TabController _tabController;
   String _selectedStatus = 'ALL';
   List<ApprovalRequestModel> _approvalRequests = [];
+  List<ApprovalRequestModel> _filteredApprovalRequests = [];
+  DateTime _selectedStartDate = DateTime.now();
+  DateTime _selectedEndDate = DateTime.now();
   
   @override
   void initState() {
@@ -35,7 +38,18 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
   void _loadApprovalRequests() {
     setState(() {
       _approvalRequests = _getSampleApprovalRequests();
+      _filterApprovalRequests();
     });
+  }
+
+  void _filterApprovalRequests() {
+    final startDateStr = '${_selectedStartDate.year}-${_selectedStartDate.month.toString().padLeft(2, '0')}-${_selectedStartDate.day.toString().padLeft(2, '0')}';
+    final endDateStr = '${_selectedEndDate.year}-${_selectedEndDate.month.toString().padLeft(2, '0')}-${_selectedEndDate.day.toString().padLeft(2, '0')}';
+    
+    _filteredApprovalRequests = _approvalRequests.where((request) {
+      final requestDate = request.requestDate;
+      return requestDate.compareTo(startDateStr) >= 0 && requestDate.compareTo(endDateStr) <= 0;
+    }).toList();
   }
 
   @override
@@ -56,6 +70,8 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildHeader(),
+              SizedBox(height: AppSizes.md),
+              _buildDateFilter(),
               SizedBox(height: AppSizes.md),
               _buildStatsCards(),
               SizedBox(height: AppSizes.md),
@@ -89,11 +105,149 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
     );
   }
 
+  Widget _buildDateFilter() {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppSizes.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(MdiIcons.calendarRange, size: AppSizes.iconSm, color: AppColors.primary),
+                SizedBox(width: AppSizes.sm),
+                Text(
+                  '조회 기간',
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: AppSizes.md),
+            Row(
+              children: [
+                // 시작일
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '시작일',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      SizedBox(height: AppSizes.xs),
+                      InkWell(
+                        onTap: () => _selectStartDate(),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: AppSizes.md,
+                            vertical: AppSizes.sm,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: AppColors.border),
+                            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(MdiIcons.calendar, size: AppSizes.iconSm, color: AppColors.primary),
+                              SizedBox(width: AppSizes.sm),
+                              Text(
+                                '${_selectedStartDate.year}-${_selectedStartDate.month.toString().padLeft(2, '0')}-${_selectedStartDate.day.toString().padLeft(2, '0')}',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: AppSizes.lg),
+                // 종료일
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '종료일',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      SizedBox(height: AppSizes.xs),
+                      InkWell(
+                        onTap: () => _selectEndDate(),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: AppSizes.md,
+                            vertical: AppSizes.sm,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: AppColors.border),
+                            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(MdiIcons.calendar, size: AppSizes.iconSm, color: AppColors.primary),
+                              SizedBox(width: AppSizes.sm),
+                              Text(
+                                '${_selectedEndDate.year}-${_selectedEndDate.month.toString().padLeft(2, '0')}-${_selectedEndDate.day.toString().padLeft(2, '0')}',
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: AppSizes.lg),
+                // 빠른 선택 버튼들
+                Wrap(
+                  spacing: AppSizes.sm,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () => _setDateRange(0), // 오늘
+                      child: Text('오늘', style: TextStyle(fontSize: 14.sp)),
+                    ),
+                    OutlinedButton(
+                      onPressed: () => _setDateRange(7), // 최근 7일
+                      child: Text('7일', style: TextStyle(fontSize: 14.sp)),
+                    ),
+                    OutlinedButton(
+                      onPressed: () => _setDateRange(30), // 최근 30일
+                      child: Text('30일', style: TextStyle(fontSize: 14.sp)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildStatsCards() {
-    final pendingCount = _approvalRequests.where((req) => req.status == 'PENDING').length;
-    final approvedCount = _approvalRequests.where((req) => req.status == 'APPROVED').length;
-    final rejectedCount = _approvalRequests.where((req) => req.status == 'REJECTED').length;
-    final totalCount = _approvalRequests.length;
+    final pendingCount = _filteredApprovalRequests.where((req) => req.status == 'PENDING').length;
+    final approvedCount = _filteredApprovalRequests.where((req) => req.status == 'APPROVED').length;
+    final rejectedCount = _filteredApprovalRequests.where((req) => req.status == 'REJECTED').length;
+    final totalCount = pendingCount + rejectedCount; // 대기와 반려의 합
 
     return Row(
       children: [
@@ -101,7 +255,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
           child: _buildStatusCard(
             '전체',
             '$totalCount',
-            '승인요청',
+            '대기+반려',
             AppColors.textPrimary,
             MdiIcons.clipboardListOutline,
           ),
@@ -524,7 +678,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
   }
 
   List<ApprovalRequestModel> _getFilteredRequestsByType(String requestType) {
-    return _approvalRequests.where((req) => req.requestType == requestType).toList();
+    return _filteredApprovalRequests.where((req) => req.requestType == requestType).toList();
   }
 
   void _showApprovalDetailDialog(ApprovalRequestModel request) {
@@ -1167,15 +1321,63 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
     );
   }
 
+  // 날짜 선택 메서드들
+  Future<void> _selectStartDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedStartDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && picked != _selectedStartDate) {
+      setState(() {
+        _selectedStartDate = picked;
+        if (_selectedStartDate.isAfter(_selectedEndDate)) {
+          _selectedEndDate = _selectedStartDate;
+        }
+        _filterApprovalRequests();
+      });
+    }
+  }
+
+  Future<void> _selectEndDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedEndDate,
+      firstDate: _selectedStartDate,
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && picked != _selectedEndDate) {
+      setState(() {
+        _selectedEndDate = picked;
+        _filterApprovalRequests();
+      });
+    }
+  }
+
+  void _setDateRange(int days) {
+    setState(() {
+      _selectedEndDate = DateTime.now();
+      _selectedStartDate = _selectedEndDate.subtract(Duration(days: days));
+      _filterApprovalRequests();
+    });
+  }
+
   List<ApprovalRequestModel> _getSampleApprovalRequests() {
+    final today = DateTime.now();
+    final todayStr = '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+    final yesterday = today.subtract(Duration(days: 1));
+    final yesterdayStr = '${yesterday.year}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.day.toString().padLeft(2, '0')}';
+    
     return [
+      // 오늘 데이터
       ApprovalRequestModel(
         id: '1',
         requestNumber: 'AR-2024-001',
         requestType: 'BUSINESS_INFO',
         requester: '김영희 (도미노피자 강남점)',
         requestContent: '사업자 주소 변경 요청 - 서울시 강남구 테헤란로 123',
-        requestDate: '2024-09-15',
+        requestDate: todayStr,
         status: 'PENDING',
         businessId: '1',
         description: '사업장 이전으로 인한 주소 변경',
@@ -1189,12 +1391,75 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
         },
       ),
       ApprovalRequestModel(
+        id: '7',
+        requestNumber: 'AR-2024-007',
+        requestType: 'STORE_INFO',
+        requester: '홍길동 (KFC 신촌점)',
+        requestContent: '매장 운영시간 변경 요청 - 08:00~24:00',
+        requestDate: todayStr,
+        status: 'PENDING',
+        businessId: '7',
+        description: '새벽 배달 서비스 시작으로 인한 운영시간 연장',
+        asIsData: {
+          'openTime': '09:00',
+          'closeTime': '22:00',
+        },
+        toBeData: {
+          'openTime': '08:00',
+          'closeTime': '24:00',
+        },
+      ),
+      ApprovalRequestModel(
+        id: '8',
+        requestNumber: 'AR-2024-008',
+        requestType: 'MENU_ITEM',
+        requester: '김철수 (맘스터치 강남점)',
+        requestContent: '신메뉴 등록 요청 - 매운치킨버거 세트 8,900원',
+        requestDate: todayStr,
+        status: 'REJECTED',
+        storeId: '8',
+        description: '시즌 한정 매운맛 메뉴 출시',
+        asIsData: null,
+        toBeData: {
+          'menuName': '매운치킨버거 세트',
+          'price': '8900',
+          'description': '매운 양념으로 재운 치킨패티와 신선한 야채',
+          'category': '버거 세트',
+        },
+        processedDate: todayStr,
+        processedBy: '관리자',
+        rejectionReason: '영양 성분표가 제출되지 않았습니다.',
+      ),
+      // 어제 데이터
+      ApprovalRequestModel(
+        id: '9',
+        requestNumber: 'AR-2024-009',
+        requestType: 'BANK_ACCOUNT',
+        requester: '이영수 (롯데리아 홍대점)',
+        requestContent: '정산 계좌 변경 요청 - 카카오뱅크 3333-01-1234567',
+        requestDate: yesterdayStr,
+        status: 'PENDING',
+        businessId: '9',
+        description: '은행 변경으로 인한 계좌 변경',
+        asIsData: {
+          'bankName': 'KB국민은행',
+          'accountNumber': '123456-04-123456',
+          'accountHolder': '이영수',
+        },
+        toBeData: {
+          'bankName': '카카오뱅크',
+          'accountNumber': '3333-01-1234567',
+          'accountHolder': '이영수',
+        },
+      ),
+      // 기존 데이터 (과거 날짜)
+      ApprovalRequestModel(
         id: '2',
         requestNumber: 'AR-2024-002',
         requestType: 'STORE_INFO',
         requester: '이철수 (맥도날드 홍대점)',
         requestContent: '매장 운영시간 변경 요청 - 09:00~23:00',
-        requestDate: '2024-09-14',
+        requestDate: yesterdayStr,
         status: 'APPROVED',
         storeId: '2',
         description: '고객 요청에 따른 운영시간 연장',
@@ -1206,7 +1471,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
           'openTime': '09:00',
           'closeTime': '23:00',
         },
-        processedDate: '2024-09-14',
+        processedDate: yesterdayStr,
         processedBy: '관리자',
       ),
       ApprovalRequestModel(

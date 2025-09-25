@@ -93,16 +93,6 @@ class _DashboardPageState extends State<DashboardPage> {
             color: AppColors.primary,
           ),
         ),
-        SizedBox(width: AppSizes.md),
-        Expanded(
-          child: DashboardStatCard(
-            title: '승인 대기',
-            value: '23',
-            subtitle: '',
-            icon: MdiIcons.clockAlert,
-            color: AppColors.warning,
-          ),
-        ),
       ],
     );
   }

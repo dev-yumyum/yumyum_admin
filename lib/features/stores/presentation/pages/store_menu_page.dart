@@ -27,6 +27,7 @@ class StoreMenuPage extends StatefulWidget {
 class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateMixin {
   late TabController _tabController;
   bool _isReorderMode = false;
+  String _selectedStatusFilter = '전체'; // 상태 필터
   
   // 샘플 메뉴 그룹 데이터
   final List<Map<String, dynamic>> _menuGroups = [
@@ -380,6 +381,9 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
             ),
           ),
           SizedBox(height: AppSizes.md),
+          // 메뉴 상태 필터
+          _buildStatusFilter(),
+          SizedBox(height: AppSizes.md),
           // 메뉴 그룹 리스트
           if (_isReorderMode)
             ReorderableListView.builder(
@@ -443,6 +447,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                     if (!_isReorderMode)
                       PopupMenuButton(
                         icon: Icon(MdiIcons.dotsVertical, color: AppColors.textSecondary),
+                        onSelected: (value) => _handleGroupAction(value, groupIndex),
                         itemBuilder: (context) => [
                           PopupMenuItem(
                             value: 'edit',
@@ -485,27 +490,54 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
               ReorderableListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: group['items'].length,
+                itemCount: _getFilteredItems(group['items']).length,
                 onReorder: (oldIndex, newIndex) => _onMenuItemReorder(groupIndex, oldIndex, newIndex),
                 itemBuilder: (context, index) {
-                  final item = group['items'][index];
+                  final filteredItems = _getFilteredItems(group['items']);
+                  final item = filteredItems[index];
+                  final originalIndex = group['items'].indexOf(item);
                   return Padding(
-                    key: ValueKey('menu_${groupIndex}_$index'),
-                    padding: EdgeInsets.only(bottom: index < group['items'].length - 1 ? AppSizes.sm : 0),
-                    child: _buildMenuItemCard(item, groupIndex, index),
+                    key: ValueKey('menu_${groupIndex}_$originalIndex'),
+                    padding: EdgeInsets.only(bottom: index < filteredItems.length - 1 ? AppSizes.sm : 0),
+                    child: _buildMenuItemCard(item, groupIndex, originalIndex),
                   );
                 },
               )
             else
-              ...List.generate(group['items'].length, (index) {
-                final item = group['items'][index];
-                return Column(
-                  children: [
-                    _buildMenuItemCard(item, groupIndex, index),
-                    if (index < group['items'].length - 1) SizedBox(height: AppSizes.sm),
-                  ],
-                );
-              }),
+              _getFilteredItems(group['items']).isEmpty
+                  ? Padding(
+                      padding: EdgeInsets.all(AppSizes.lg),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Icon(
+                              MdiIcons.filterOff,
+                              size: 40.r,
+                              color: AppColors.textTertiary,
+                            ),
+                            SizedBox(height: AppSizes.sm),
+                            Text(
+                              '선택한 상태의 메뉴가 없습니다.',
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                color: AppColors.textTertiary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : ..._getFilteredItems(group['items']).asMap().entries.map((entry) {
+                      final index = entry.key;
+                      final item = entry.value;
+                      final originalIndex = group['items'].indexOf(item);
+                      return Column(
+                        children: [
+                          _buildMenuItemCard(item, groupIndex, originalIndex),
+                          if (index < _getFilteredItems(group['items']).length - 1) SizedBox(height: AppSizes.sm),
+                        ],
+                      );
+                    }).toList(),
           ],
         ),
       ),
@@ -786,6 +818,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                     SizedBox(width: AppSizes.sm),
                     PopupMenuButton(
                       icon: Icon(MdiIcons.dotsVertical, color: AppColors.textSecondary),
+                      onSelected: (value) => _handleOptionGroupAction(value, _optionGroups.indexOf(group)),
                       itemBuilder: (context) => [
                         PopupMenuItem(
                           value: 'edit',
@@ -1484,5 +1517,425 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
         backgroundColor: AppColors.success,
       ),
     );
+  }
+
+  // 그룹 액션 처리
+  void _handleGroupAction(String action, int groupIndex) {
+    switch (action) {
+      case 'edit':
+        // 그룹 수정 기능 (추후 구현 가능)
+        break;
+      case 'delete':
+        _showGroupDeleteConfirmDialog(groupIndex);
+        break;
+    }
+  }
+
+  // 그룹 삭제 확인 다이얼로그
+  void _showGroupDeleteConfirmDialog(int groupIndex) {
+    final group = _menuGroups[groupIndex];
+    final menuCount = group['items'].length;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(MdiIcons.alertCircle, color: AppColors.error),
+              SizedBox(width: AppSizes.sm),
+              Text(
+                '그룹 삭제 확인',
+                style: TextStyle(fontSize: 20.sp),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '"${group['name']}" 그룹을 삭제하시겠습니까?',
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              SizedBox(height: AppSizes.lg),
+              Container(
+                padding: EdgeInsets.all(AppSizes.md),
+                decoration: BoxDecoration(
+                  color: AppColors.error.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                  border: Border.all(color: AppColors.error.withOpacity(0.3)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(MdiIcons.alert, color: AppColors.error, size: AppSizes.iconSm),
+                        SizedBox(width: AppSizes.sm),
+                        Text(
+                          '경고',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.error,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: AppSizes.sm),
+                    Text(
+                      '그룹 삭제 시 그룹 내에 있는 모든 메뉴가 삭제됩니다.',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    SizedBox(height: AppSizes.xs),
+                    Text(
+                      '삭제될 메뉴: $menuCount개',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.error,
+                      ),
+                    ),
+                    SizedBox(height: AppSizes.sm),
+                    Text(
+                      '진행하시겠습니까?',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            OutlinedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.textSecondary,
+                side: BorderSide(color: AppColors.border),
+              ),
+              child: Text(
+                '아니오',
+                style: TextStyle(fontSize: 16.sp),
+              ),
+            ),
+            SizedBox(width: AppSizes.md),
+            ElevatedButton(
+              onPressed: () {
+                _deleteMenuGroup(groupIndex);
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                foregroundColor: Colors.white,
+              ),
+              child: Text(
+                '예',
+                style: TextStyle(fontSize: 16.sp),
+              ),
+            ),
+          ],
+          actionsAlignment: MainAxisAlignment.end,
+        );
+      },
+    );
+  }
+
+  // 메뉴 그룹 삭제 실행
+  void _deleteMenuGroup(int groupIndex) {
+    final group = _menuGroups[groupIndex];
+    final groupName = group['name'];
+    final menuCount = group['items'].length;
+
+    setState(() {
+      _menuGroups.removeAt(groupIndex);
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('그룹 "$groupName"과(와) $menuCount개의 메뉴가 삭제되었습니다.'),
+        backgroundColor: AppColors.success,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  // 옵션 그룹 액션 처리
+  void _handleOptionGroupAction(String action, int groupIndex) {
+    switch (action) {
+      case 'edit':
+        // 옵션 그룹 수정 기능 (추후 구현 가능)
+        break;
+      case 'delete':
+        _showOptionGroupDeleteConfirmDialog(groupIndex);
+        break;
+    }
+  }
+
+  // 옵션 그룹 삭제 확인 다이얼로그
+  void _showOptionGroupDeleteConfirmDialog(int groupIndex) {
+    final group = _optionGroups[groupIndex];
+    final optionCount = group['items'].length;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(MdiIcons.alertCircle, color: AppColors.error),
+              SizedBox(width: AppSizes.sm),
+              Text(
+                '옵션 그룹 삭제 확인',
+                style: TextStyle(fontSize: 20.sp),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '"${group['name']}" 옵션 그룹을 삭제하시겠습니까?',
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              SizedBox(height: AppSizes.lg),
+              Container(
+                padding: EdgeInsets.all(AppSizes.md),
+                decoration: BoxDecoration(
+                  color: AppColors.error.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                  border: Border.all(color: AppColors.error.withOpacity(0.3)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(MdiIcons.alert, color: AppColors.error, size: AppSizes.iconSm),
+                        SizedBox(width: AppSizes.sm),
+                        Text(
+                          '경고',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.error,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: AppSizes.sm),
+                    Text(
+                      '그룹 삭제 시 그룹 내에 있는 모든 옵션이 삭제됩니다.',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    SizedBox(height: AppSizes.xs),
+                    Text(
+                      '삭제될 옵션: $optionCount개',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.error,
+                      ),
+                    ),
+                    SizedBox(height: AppSizes.sm),
+                    Text(
+                      '진행하시겠습니까?',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            OutlinedButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.textSecondary,
+                side: BorderSide(color: AppColors.border),
+              ),
+              child: Text(
+                '아니오',
+                style: TextStyle(fontSize: 16.sp),
+              ),
+            ),
+            SizedBox(width: AppSizes.md),
+            ElevatedButton(
+              onPressed: () {
+                _deleteOptionGroup(groupIndex);
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                foregroundColor: Colors.white,
+              ),
+              child: Text(
+                '예',
+                style: TextStyle(fontSize: 16.sp),
+              ),
+            ),
+          ],
+          actionsAlignment: MainAxisAlignment.end,
+        );
+      },
+    );
+  }
+
+  // 옵션 그룹 삭제 실행
+  void _deleteOptionGroup(int groupIndex) {
+    final group = _optionGroups[groupIndex];
+    final groupName = group['name'];
+    final optionCount = group['items'].length;
+
+    setState(() {
+      _optionGroups.removeAt(groupIndex);
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('옵션 그룹 "$groupName"과(와) $optionCount개의 옵션이 삭제되었습니다.'),
+        backgroundColor: AppColors.success,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  // 메뉴 상태 필터 위젯
+  Widget _buildStatusFilter() {
+    final statusOptions = ['전체', '판매중', '오늘만 품절', '메뉴 숨김'];
+    
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppSizes.md),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(MdiIcons.filter, size: AppSizes.iconSm, color: AppColors.primary),
+                SizedBox(width: AppSizes.sm),
+                Text(
+                  '상태별 필터',
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: AppSizes.md),
+            Wrap(
+              spacing: AppSizes.sm,
+              runSpacing: AppSizes.sm,
+              children: statusOptions.map((status) {
+                final isSelected = _selectedStatusFilter == status;
+                final count = _getMenuCountByStatus(status);
+                return FilterChip(
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        status,
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                          color: isSelected ? Colors.white : AppColors.textPrimary,
+                        ),
+                      ),
+                      SizedBox(width: AppSizes.xs),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppSizes.xs,
+                          vertical: 2.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: isSelected ? Colors.white.withOpacity(0.2) : AppColors.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(10.r),
+                        ),
+                        child: Text(
+                          count.toString(),
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.bold,
+                            color: isSelected ? Colors.white : AppColors.primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  selected: isSelected,
+                  onSelected: (selected) {
+                    setState(() {
+                      _selectedStatusFilter = status;
+                    });
+                  },
+                  selectedColor: AppColors.primary,
+                  backgroundColor: Colors.grey[100],
+                  checkmarkColor: Colors.white,
+                  side: BorderSide(
+                    color: isSelected ? AppColors.primary : AppColors.border,
+                    width: isSelected ? 2 : 1,
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 필터에 따른 메뉴 아이템 필터링
+  List<Map<String, dynamic>> _getFilteredItems(List<dynamic> items) {
+    if (_selectedStatusFilter == '전체') {
+      return List<Map<String, dynamic>>.from(items);
+    }
+    
+    return items.where((item) {
+      final status = item['status'] ?? '판매중';
+      return status == _selectedStatusFilter;
+    }).cast<Map<String, dynamic>>().toList();
+  }
+
+  // 상태별 메뉴 개수 계산
+  int _getMenuCountByStatus(String status) {
+    if (status == '전체') {
+      return _menuGroups.fold<int>(0, (total, group) {
+        return total + (group['items'] as List).length;
+      });
+    }
+    
+    return _menuGroups.fold<int>(0, (total, group) {
+      final items = group['items'] as List;
+      final count = items.where((item) {
+        final itemStatus = item['status'] ?? '판매중';
+        return itemStatus == status;
+      }).length;
+      return total + count;
+    });
   }
 }
