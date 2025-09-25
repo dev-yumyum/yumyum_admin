@@ -1912,41 +1912,42 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
         children: [
           Row(
             children: [
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppSizes.sm,
-                  vertical: AppSizes.xs,
-                ),
-                decoration: BoxDecoration(
-                  color: typeColor.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-                ),
-                child: Text(
-                  history.displayChangeType,
-                  style: TextStyle(
-                    fontSize: 11.sp,
-                    fontWeight: FontWeight.w600,
-                    color: typeColor,
-                  ),
-                ),
-              ),
-              const Spacer(),
               Text(
                 '${history.changeDate.year}-${history.changeDate.month.toString().padLeft(2, '0')}-${history.changeDate.day.toString().padLeft(2, '0')} ${history.changeDate.hour.toString().padLeft(2, '0')}:${history.changeDate.minute.toString().padLeft(2, '0')}',
-                style: TextStyle(
-                  fontSize: 11.sp,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
                   color: AppColors.textSecondary,
+                ),
+              ),
+              SizedBox(width: AppSizes.md),
+              Expanded(
+                child: Text(
+                  history.displayFieldName,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
               ),
             ],
           ),
           SizedBox(height: AppSizes.sm),
-          Text(
-            history.displayFieldName,
-            style: TextStyle(
-              fontSize: 13.sp,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+          Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSizes.sm,
+              vertical: AppSizes.xs,
+            ),
+            decoration: BoxDecoration(
+              color: typeColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+            ),
+            child: Text(
+              history.displayChangeType,
+              style: TextStyle(
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w600,
+                color: typeColor,
+              ),
             ),
           ),
           SizedBox(height: AppSizes.xs),
