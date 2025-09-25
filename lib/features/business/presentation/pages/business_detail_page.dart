@@ -70,6 +70,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
     'NH농협은행', '기업은행', '시티은행', 'SC제일은행', '대구은행',
     '부산은행', '광주은행', '제주은행', '전북은행', '경남은행',
     '수협은행', '신협', '새마을금고', '우체국', '산업은행',
+    '카카오뱅크', '토스뱅크', 'K뱅크', '케이뱅크', '뱅크샐러드',
   ];
 
   @override

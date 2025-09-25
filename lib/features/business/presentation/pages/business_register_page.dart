@@ -31,11 +31,11 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
   final _businessLocationDetailController = TextEditingController();
   final _businessCategoryController = TextEditingController();
   final _businessItemController = TextEditingController();
-  final _bankNameController = TextEditingController();
   final _accountNumberController = TextEditingController();
   final _accountHolderController = TextEditingController();
 
   String _selectedBusinessType = 'CORPORATION';
+  String _selectedBankName = '국민은행';
   
   // 사업자등록증 이미지 파일 상태
   File? _businessLicenseImage;
@@ -44,6 +44,15 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
   // 통장 이미지 파일 상태
   File? _bankBookImage;
   String? _bankBookImageName;
+
+  // 국내 은행 목록
+  final List<String> _bankList = [
+    '국민은행', '신한은행', '우리은행', '하나은행', 'KB국민은행',
+    'NH농협은행', '기업은행', '시티은행', 'SC제일은행', '대구은행',
+    '부산은행', '광주은행', '제주은행', '전북은행', '경남은행',
+    '수협은행', '신협', '새마을금고', '우체국', '산업은행',
+    '카카오뱅크', '토스뱅크', 'K뱅크', '케이뱅크', '뱅크샐러드',
+  ];
 
   @override
   void dispose() {
@@ -56,7 +65,6 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
     _businessLocationDetailController.dispose();
     _businessCategoryController.dispose();
     _businessItemController.dispose();
-    _bankNameController.dispose();
     _accountNumberController.dispose();
     _accountHolderController.dispose();
     super.dispose();
@@ -339,13 +347,29 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
               ),
             ),
             SizedBox(height: AppSizes.md),
-            TextFormField(
-              controller: _bankNameController,
+            DropdownButtonFormField<String>(
+              value: _selectedBankName,
               decoration: const InputDecoration(
                 labelText: '은행명 *',
-                hintText: '예: 국민은행',
+                hintText: '은행을 선택해주세요',
               ),
-              validator: RequiredValidator(errorText: '은행명을 입력해주세요.'),
+              items: _bankList.map((String bank) {
+                return DropdownMenuItem<String>(
+                  value: bank,
+                  child: Text(bank),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedBankName = newValue!;
+                });
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return '은행을 선택해주세요.';
+                }
+                return null;
+              },
             ),
             SizedBox(height: AppSizes.md),
             TextFormField(
@@ -712,7 +736,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
         registrationDate: DateTime.now().toString().split(' ')[0],
         status: 'PENDING',
         businessLicenseFileName: _businessLicenseImageName,
-        bankName: _bankNameController.text,
+        bankName: _selectedBankName,
         accountNumber: _accountNumberController.text,
         accountHolder: _accountHolderController.text,
         accountVerified: false,
