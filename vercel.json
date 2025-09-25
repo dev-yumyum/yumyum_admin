@@ -3,6 +3,7 @@
   "outputDirectory": "build/web",
   "framework": null,
   "installCommand": "",
+  "alias": ["yumyum-admin.vercel.app"],
   "rewrites": [
     {
       "source": "/(.*)",
