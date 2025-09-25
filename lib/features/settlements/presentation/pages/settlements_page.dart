@@ -320,26 +320,14 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
                     color: AppColors.textPrimary,
                   ),
                 ),
-                Row(
-                  children: [
-                    Text(
-                      '정산건 검',
-                      style: TextStyle(
-                        fontSize: 20.sp, // 18.sp -> 20.sp
-                        color: AppColors.textSecondary,
-                      ),
-                    ),
-                    SizedBox(width: AppSizes.sm),
-                    ElevatedButton.icon(
-                      onPressed: _exportToExcel,
-                      icon: Icon(MdiIcons.fileExcel, size: AppSizes.iconSm),
-                      label: const Text('엑셀다운로드'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[800],
-                        foregroundColor: Colors.white,
-                      ),
-                    ),
-                  ],
+                ElevatedButton.icon(
+                  onPressed: _exportToExcel,
+                  icon: Icon(MdiIcons.fileExcel, size: AppSizes.iconSm),
+                  label: const Text('엑셀다운로드'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[800],
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ],
             ),
