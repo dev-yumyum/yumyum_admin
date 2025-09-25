@@ -1,0 +1,58 @@
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+MemberModel _$MemberModelFromJson(Map<String, dynamic> json) => MemberModel(
+      id: json['id'] as String,
+      memberId: json['memberId'] as String,
+      memberName: json['memberName'] as String?,
+      email: json['email'] as String?,
+      phone: json['phone'] as String?,
+      nickname: json['nickname'] as String?,
+      profileImage: json['profileImage'] as String?,
+      registrationDate: json['registrationDate'] as String,
+      lastLoginDate: json['lastLoginDate'] as String?,
+      status: json['status'] as String,
+      grade: json['grade'] as String?,
+      totalOrders: (json['totalOrders'] as num?)?.toInt(),
+      totalAmount: json['totalAmount'] as String?,
+      pointBalance: (json['pointBalance'] as num?)?.toInt(),
+      address: json['address'] as String?,
+      addressDetail: json['addressDetail'] as String?,
+      birthDate: json['birthDate'] as String?,
+      gender: json['gender'] as String?,
+      isMarketingAgreed: json['isMarketingAgreed'] as bool?,
+      isPushAgreed: json['isPushAgreed'] as bool?,
+      favoriteCategory: json['favoriteCategory'] as String?,
+      withdrawalReason: json['withdrawalReason'] as String?,
+      withdrawalDate: json['withdrawalDate'] as String?,
+      registrationType: json['registrationType'] as String?,
+    );
+
+Map<String, dynamic> _$MemberModelToJson(MemberModel instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'memberId': instance.memberId,
+      'memberName': instance.memberName,
+      'email': instance.email,
+      'phone': instance.phone,
+      'nickname': instance.nickname,
+      'profileImage': instance.profileImage,
+      'registrationDate': instance.registrationDate,
+      'lastLoginDate': instance.lastLoginDate,
+      'status': instance.status,
+      'grade': instance.grade,
+      'totalOrders': instance.totalOrders,
+      'totalAmount': instance.totalAmount,
+      'pointBalance': instance.pointBalance,
+      'address': instance.address,
+      'addressDetail': instance.addressDetail,
+      'birthDate': instance.birthDate,
+      'gender': instance.gender,
+      'isMarketingAgreed': instance.isMarketingAgreed,
+      'isPushAgreed': instance.isPushAgreed,
+      'favoriteCategory': instance.favoriteCategory,
+      'withdrawalReason': instance.withdrawalReason,
+      'withdrawalDate': instance.withdrawalDate,
+      'registrationType': instance.registrationType,
+    };

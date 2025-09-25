@@ -60,7 +60,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildBackButton(),
+                  _buildHeader(),
                   SizedBox(height: AppSizes.lg),
                   _buildProfileHeader(),
                   SizedBox(height: AppSizes.lg),
@@ -75,7 +75,34 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
     );
   }
 
-  Widget _buildBackButton() {
+  Widget _buildHeader() {
+    return Row(
+      children: [
+        IconButton(
+          onPressed: () => context.pop(),
+          icon: Icon(
+            MdiIcons.arrowLeft,
+            size: 24.r,
+            color: AppColors.textPrimary,
+          ),
+          tooltip: '뒤로가기',
+        ),
+        SizedBox(width: AppSizes.sm),
+        Text(
+          '고객 상세',
+          style: TextStyle(
+            fontSize: 24.sp,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        const Spacer(),
+        _buildStatusBadge(),
+      ],
+    );
+  }
+
+  Widget _buildStatusBadge() {
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: AppSizes.sm,
@@ -85,15 +112,12 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
         color: AppColors.success.withOpacity(0.1),
         borderRadius: BorderRadius.circular(AppSizes.borderRadius),
       ),
-      child: InkWell(
-        onTap: () => context.go(RouteNames.member),
-        child: Text(
-          '활성 회원',
-          style: TextStyle(
-            fontSize: 18.sp, // 12.sp -> 18.sp (가독성 개선)
-            fontWeight: FontWeight.w600,
-            color: AppColors.success,
-          ),
+      child: Text(
+        '활성 회원',
+        style: TextStyle(
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w600,
+          color: AppColors.success,
         ),
       ),
     );
