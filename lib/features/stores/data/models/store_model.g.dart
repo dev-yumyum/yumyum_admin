@@ -25,6 +25,7 @@ StoreModel _$StoreModelFromJson(Map<String, dynamic> json) => StoreModel(
       storeImages: (json['storeImages'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
+      storeIntroImage: json['storeIntroImage'] as String?,
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
       businessName: json['businessName'] as String?,
@@ -50,6 +51,7 @@ Map<String, dynamic> _$StoreModelToJson(StoreModel instance) =>
       'minimumOrderAmount': instance.minimumOrderAmount,
       'deliveryFee': instance.deliveryFee,
       'storeImages': instance.storeImages,
+      'storeIntroImage': instance.storeIntroImage,
       'latitude': instance.latitude,
       'longitude': instance.longitude,
       'businessName': instance.businessName,

@@ -5,6 +5,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
+import 'dart:math' as math;
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../shared/widgets/crm_layout.dart';
@@ -36,6 +37,11 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
   // 매장 소개 Controllers
   final _storeDescriptionController = TextEditingController();
   final _noticeController = TextEditingController();
+
+  // 매장소개 이미지
+  File? _storeIntroImage;
+  String? _storeIntroImageName;
+  String? _existingStoreIntroImageUrl;
 
   // 카테고리 및 정보 Controllers
   final _originInfoController = TextEditingController();
@@ -124,6 +130,9 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
     _storeDescriptionController.text = _store!.storeDescription ?? '신선한 재료로 만든 맛있는 요리를 제공합니다.';
     _noticeController.text = '매장 휴무일: 매주 월요일\n배달 시간: 오전 11시 ~ 오후 9시';
     
+    // 매장소개 이미지 (샘플)
+    _existingStoreIntroImageUrl = _store!.storeIntroImage ?? 'https://example.com/store_intro.jpg';
+    
     // 카테고리 및 정보 (샘플 데이터)
     _selectedCategories = ['한식', '치킨'];
     _originInfoController.text = '쌀: 국산, 닭고기: 국산, 야채류: 국산';
@@ -152,6 +161,9 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
       if (!_isEditMode) {
         // 편집 취소 시 원래 값으로 복원
         _updateControllers();
+        // 매장소개 이미지도 원래 값으로 복원
+        _storeIntroImage = null;
+        _storeIntroImageName = null;
       }
     });
   }
@@ -458,6 +470,9 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                   : null,
               _store?.storePhone ?? '-',
             ),
+
+            // 좌표 정보
+            _buildCoordinateRow(),
           ],
         ),
       ),
@@ -512,6 +527,19 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                   : null,
               _noticeController.text.isEmpty ? '-' : _noticeController.text,
             ),
+
+            // 매장소개 이미지
+            SizedBox(height: AppSizes.md),
+            Text(
+              '매장소개 사진',
+              style: TextStyle(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            SizedBox(height: AppSizes.sm),
+            _isEditMode ? _buildStoreIntroImageUpload() : _buildStoreIntroImageDisplay(),
           ],
         ),
       ),
@@ -1013,6 +1041,316 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
     });
   }
 
+  Widget _buildStoreIntroImageUpload() {
+    return Container(
+      height: 200.h,
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+              ),
+              child: _storeIntroImage != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                      child: Image.file(
+                        _storeIntroImage!,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                      ),
+                    )
+                  : _existingStoreIntroImageUrl != null
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                          child: Container(
+                            color: AppColors.background,
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    MdiIcons.imageOutline,
+                                    size: 40.r,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                  SizedBox(height: AppSizes.xs),
+                                  Text(
+                                    '기존 매장소개 이미지',
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      : Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                MdiIcons.imageOutline,
+                                size: 50.r,
+                                color: AppColors.textTertiary,
+                              ),
+                              SizedBox(height: AppSizes.sm),
+                              Text(
+                                '매장소개 사진을 선택하세요',
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  color: AppColors.textTertiary,
+                                ),
+                              ),
+                              SizedBox(height: AppSizes.xs),
+                              Text(
+                                '1장만 첨부 가능',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: AppColors.textTertiary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+            ),
+          ),
+          SizedBox(width: AppSizes.md),
+          Expanded(
+            flex: 1,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: _pickStoreIntroImage,
+                  icon: Icon(MdiIcons.upload, size: AppSizes.iconSm),
+                  label: Text(
+                    _storeIntroImage != null || _existingStoreIntroImageUrl != null 
+                        ? '변경' : '선택',
+                    style: TextStyle(fontSize: 16.sp),
+                  ),
+                ),
+                if (_storeIntroImage != null || _existingStoreIntroImageUrl != null) ...[
+                  SizedBox(height: AppSizes.md),
+                  OutlinedButton.icon(
+                    onPressed: _removeStoreIntroImage,
+                    icon: Icon(MdiIcons.delete, size: AppSizes.iconSm),
+                    label: Text(
+                      '삭제',
+                      style: TextStyle(fontSize: 16.sp),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.error,
+                      side: BorderSide(color: AppColors.error),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStoreIntroImageDisplay() {
+    if (_existingStoreIntroImageUrl == null) {
+      return Container(
+        height: 120.h,
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.border),
+          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+          color: AppColors.background,
+        ),
+        child: Center(
+          child: Text(
+            '등록된 매장소개 사진이 없습니다.',
+            style: TextStyle(
+              fontSize: 16.sp,
+              color: AppColors.textTertiary,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      height: 200.h,
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+        color: AppColors.background,
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                MdiIcons.imageOutline,
+                size: 40.r,
+                color: AppColors.textSecondary,
+              ),
+              SizedBox(height: AppSizes.sm),
+              Text(
+                '매장소개 이미지',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickStoreIntroImage() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.image,
+        allowMultiple: false,
+      );
+
+      if (result != null && result.files.single.path != null) {
+        setState(() {
+          _storeIntroImage = File(result.files.single.path!);
+          _storeIntroImageName = result.files.single.name;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '이미지 선택 중 오류가 발생했습니다.',
+            style: TextStyle(fontSize: 18.sp),
+          ),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
+  }
+
+  void _removeStoreIntroImage() {
+    setState(() {
+      _storeIntroImage = null;
+      _storeIntroImageName = null;
+      _existingStoreIntroImageUrl = null;
+    });
+  }
+
+  Widget _buildCoordinateRow() {
+    final latitude = _store?.latitude ?? 37.5665;
+    final longitude = _store?.longitude ?? 126.9780;
+    
+    return Padding(
+      padding: EdgeInsets.only(bottom: AppSizes.md),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 150.w,
+            child: Text(
+              '좌표',
+              style: TextStyle(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ),
+          SizedBox(width: AppSizes.lg),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '위도: ${latitude.toStringAsFixed(6)}, 경도: ${longitude.toStringAsFixed(6)}',
+                        style: TextStyle(
+                          fontSize: 20.sp,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: AppSizes.md),
+                    OutlinedButton.icon(
+                      onPressed: () => _showMapDialog(),
+                      icon: Icon(MdiIcons.map, size: AppSizes.iconSm),
+                      label: Text(
+                        '지도로 보기',
+                        style: TextStyle(fontSize: 16.sp),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.primary,
+                        side: BorderSide(color: AppColors.primary),
+                      ),
+                    ),
+                  ],
+                ),
+                if (_isEditMode) ...[
+                  SizedBox(height: AppSizes.sm),
+                  Text(
+                    '지도에서 위치를 수정할 수 있습니다.',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: AppColors.textTertiary,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showMapDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return MapEditDialog(
+          initialLatitude: _store?.latitude ?? 37.5665,
+          initialLongitude: _store?.longitude ?? 126.9780,
+          initialAddress: '${_store?.storeAddress ?? ''} ${_store?.storeAddressDetail ?? ''}'.trim(),
+          isEditMode: _isEditMode,
+          onLocationChanged: (latitude, longitude, address) {
+            if (_isEditMode) {
+              setState(() {
+                // 실제로는 store 모델을 업데이트해야 함
+                _storeAddressController.text = address;
+              });
+              
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    '위치가 업데이트되었습니다.',
+                    style: TextStyle(fontSize: 18.sp),
+                  ),
+                  backgroundColor: AppColors.success,
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
+  }
+
   List<StoreModel> _getSampleStores() {
     return [
       StoreModel(
@@ -1053,4 +1391,479 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
       ),
     ];
   }
+}
+
+class MapEditDialog extends StatefulWidget {
+  final double initialLatitude;
+  final double initialLongitude;
+  final String initialAddress;
+  final bool isEditMode;
+  final Function(double latitude, double longitude, String address)? onLocationChanged;
+
+  const MapEditDialog({
+    super.key,
+    required this.initialLatitude,
+    required this.initialLongitude,
+    required this.initialAddress,
+    required this.isEditMode,
+    this.onLocationChanged,
+  });
+
+  @override
+  State<MapEditDialog> createState() => _MapEditDialogState();
+}
+
+class _MapEditDialogState extends State<MapEditDialog> {
+  late double _currentLatitude;
+  late double _currentLongitude;
+  late String _currentAddress;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentLatitude = widget.initialLatitude;
+    _currentLongitude = widget.initialLongitude;
+    _currentAddress = widget.initialAddress;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Container(
+        width: 800.w,
+        height: 600.h,
+        padding: EdgeInsets.all(AppSizes.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildDialogHeader(),
+            SizedBox(height: AppSizes.lg),
+            _buildCoordinateInfo(),
+            SizedBox(height: AppSizes.md),
+            Expanded(
+              child: _buildMapContainer(),
+            ),
+            SizedBox(height: AppSizes.lg),
+            _buildDialogActions(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDialogHeader() {
+    return Row(
+      children: [
+        Icon(
+          MdiIcons.mapMarker,
+          size: AppSizes.iconMd,
+          color: AppColors.primary,
+        ),
+        SizedBox(width: AppSizes.sm),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.isEditMode ? '매장 위치 수정' : '매장 위치 확인',
+                style: TextStyle(
+                  fontSize: 24.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              Text(
+                widget.isEditMode 
+                    ? '지도에서 마커를 드래그하여 위치를 변경할 수 있습니다.'
+                    : '현재 매장의 위치를 확인할 수 있습니다.',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+        IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: Icon(
+            MdiIcons.close,
+            size: AppSizes.iconMd,
+            color: AppColors.textSecondary,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCoordinateInfo() {
+    return Container(
+      padding: EdgeInsets.all(AppSizes.md),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                MdiIcons.crosshairsGps,
+                size: AppSizes.iconSm,
+                color: AppColors.primary,
+              ),
+              SizedBox(width: AppSizes.sm),
+              Text(
+                '좌표 정보',
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: AppSizes.sm),
+          Text(
+            '위도: ${_currentLatitude.toStringAsFixed(6)}, 경도: ${_currentLongitude.toStringAsFixed(6)}',
+            style: TextStyle(
+              fontSize: 16.sp,
+              color: AppColors.textPrimary,
+              fontFamily: 'monospace',
+            ),
+          ),
+          SizedBox(height: AppSizes.xs),
+          Row(
+            children: [
+              Icon(
+                MdiIcons.mapMarkerOutline,
+                size: AppSizes.iconSm,
+                color: AppColors.textSecondary,
+              ),
+              SizedBox(width: AppSizes.sm),
+              Expanded(
+                child: Text(
+                  _currentAddress.isNotEmpty ? _currentAddress : '주소 정보 없음',
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMapContainer() {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+        child: Stack(
+          children: [
+            // 지도 시뮬레이션 (실제로는 Google Maps 또는 다른 지도 서비스 사용)
+            _buildSimulatedMap(),
+            
+            // 편집 모드인 경우 편집 가능 표시
+            if (widget.isEditMode)
+              Positioned(
+                top: AppSizes.md,
+                right: AppSizes.md,
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppSizes.sm,
+                    vertical: AppSizes.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        MdiIcons.cursorMove,
+                        size: AppSizes.iconXs,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: AppSizes.xs),
+                      Text(
+                        '편집 가능',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+            // 로딩 오버레이
+            if (_isLoading)
+              Container(
+                color: Colors.black.withOpacity(0.3),
+                child: Center(
+                  child: Container(
+                    padding: EdgeInsets.all(AppSizes.lg),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+                        ),
+                        SizedBox(height: AppSizes.md),
+                        Text(
+                          '주소를 업데이트하는 중...',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSimulatedMap() {
+    // 실제 구현에서는 Google Maps 위젯을 사용
+    return GestureDetector(
+      onTapDown: widget.isEditMode ? _handleMapTap : null,
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppColors.background,
+              AppColors.background.withOpacity(0.8),
+            ],
+          ),
+        ),
+        child: Stack(
+          children: [
+            // 격자 패턴으로 지도 느낌 연출
+            CustomPaint(
+              size: Size.infinite,
+              painter: MapGridPainter(),
+            ),
+            
+            // 중앙 마커
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    MdiIcons.mapMarker,
+                    size: 40.r,
+                    color: AppColors.error,
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppSizes.sm,
+                      vertical: AppSizes.xs,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      '매장 위치',
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // 지도 정보
+            Positioned(
+              bottom: AppSizes.md,
+              left: AppSizes.md,
+              child: Container(
+                padding: EdgeInsets.all(AppSizes.sm),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                ),
+                child: Text(
+                  '시뮬레이션 지도\n실제로는 Google Maps 등 실제 지도 서비스가 표시됩니다.',
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _handleMapTap(TapDownDetails details) {
+    if (!widget.isEditMode) return;
+
+    // 시뮬레이션: 탭한 위치 기준으로 좌표 변경
+    setState(() {
+      _isLoading = true;
+    });
+
+    // 가상의 좌표 변경 (실제로는 지도 API에서 제공하는 좌표를 사용)
+    final random = math.Random();
+    final newLatitude = _currentLatitude + (random.nextDouble() - 0.5) * 0.01;
+    final newLongitude = _currentLongitude + (random.nextDouble() - 0.5) * 0.01;
+
+    // 역지오코딩 시뮬레이션
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          _currentLatitude = newLatitude;
+          _currentLongitude = newLongitude;
+          _currentAddress = _generateSimulatedAddress(newLatitude, newLongitude);
+          _isLoading = false;
+        });
+      }
+    });
+  }
+
+  String _generateSimulatedAddress(double latitude, double longitude) {
+    // 실제로는 역지오코딩 API를 호출하여 주소를 가져옴
+    final addressSamples = [
+      '서울시 강남구 테헤란로 152',
+      '서울시 강남구 역삼동 823-24',
+      '서울시 강남구 삼성동 159-1',
+      '서울시 서초구 서초대로 396',
+      '서울시 송파구 잠실동 40-1',
+    ];
+    
+    final random = math.Random();
+    return addressSamples[random.nextInt(addressSamples.length)];
+  }
+
+  Widget _buildDialogActions() {
+    return Row(
+      children: [
+        if (widget.isEditMode) ...[
+          Expanded(
+            child: OutlinedButton.icon(
+              onPressed: () {
+                // 원래 값으로 복원
+                setState(() {
+                  _currentLatitude = widget.initialLatitude;
+                  _currentLongitude = widget.initialLongitude;
+                  _currentAddress = widget.initialAddress;
+                });
+              },
+              icon: Icon(MdiIcons.restore, size: AppSizes.iconSm),
+              label: Text(
+                '원래대로',
+                style: TextStyle(fontSize: 18.sp),
+              ),
+            ),
+          ),
+          SizedBox(width: AppSizes.md),
+        ],
+        Expanded(
+          child: OutlinedButton.icon(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: Icon(MdiIcons.close, size: AppSizes.iconSm),
+            label: Text(
+              '닫기',
+              style: TextStyle(fontSize: 18.sp),
+            ),
+          ),
+        ),
+        if (widget.isEditMode) ...[
+          SizedBox(width: AppSizes.md),
+          Expanded(
+            flex: 2,
+            child: ElevatedButton.icon(
+              onPressed: _isLoading
+                  ? null
+                  : () {
+                      widget.onLocationChanged?.call(
+                        _currentLatitude,
+                        _currentLongitude,
+                        _currentAddress,
+                      );
+                      Navigator.of(context).pop();
+                    },
+              icon: Icon(MdiIcons.check, size: AppSizes.iconSm),
+              label: Text(
+                '적용',
+                style: TextStyle(fontSize: 18.sp),
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class MapGridPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = AppColors.border.withOpacity(0.3)
+      ..strokeWidth = 1;
+
+    const gridSize = 50.0;
+
+    // 세로선
+    for (double x = 0; x < size.width; x += gridSize) {
+      canvas.drawLine(
+        Offset(x, 0),
+        Offset(x, size.height),
+        paint,
+      );
+    }
+
+    // 가로선
+    for (double y = 0; y < size.height; y += gridSize) {
+      canvas.drawLine(
+        Offset(0, y),
+        Offset(size.width, y),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

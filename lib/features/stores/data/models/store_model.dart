@@ -20,6 +20,7 @@ class StoreModel {
   final String? minimumOrderAmount; // 최소 주문 금액
   final String? deliveryFee; // 포장 서비스 수수료
   final List<String>? storeImages; // 매장 이미지 URL 목록
+  final String? storeIntroImage; // 매장소개 이미지 URL (1장만)
   final double? latitude;
   final double? longitude;
   final String? businessName; // 소속 사업자명
@@ -43,6 +44,7 @@ class StoreModel {
     this.minimumOrderAmount,
     this.deliveryFee,
     this.storeImages,
+    this.storeIntroImage,
     this.latitude,
     this.longitude,
     this.businessName,
@@ -72,6 +74,7 @@ class StoreModel {
     String? minimumOrderAmount,
     String? deliveryFee,
     List<String>? storeImages,
+    String? storeIntroImage,
     double? latitude,
     double? longitude,
     String? businessName,
@@ -95,6 +98,7 @@ class StoreModel {
       minimumOrderAmount: minimumOrderAmount ?? this.minimumOrderAmount,
       deliveryFee: deliveryFee ?? this.deliveryFee,
       storeImages: storeImages ?? this.storeImages,
+      storeIntroImage: storeIntroImage ?? this.storeIntroImage,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       businessName: businessName ?? this.businessName,

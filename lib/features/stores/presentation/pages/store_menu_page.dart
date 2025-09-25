@@ -26,6 +26,7 @@ class StoreMenuPage extends StatefulWidget {
 
 class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateMixin {
   late TabController _tabController;
+  bool _isReorderMode = false;
   
   // 샘플 메뉴 그룹 데이터
   final List<Map<String, dynamic>> _menuGroups = [
@@ -344,14 +345,35 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                       color: AppColors.textPrimary,
                     ),
                   ),
-                  ElevatedButton.icon(
-                    onPressed: _showMenuGroupAddDialog,
-                    icon: Icon(MdiIcons.plus, size: AppSizes.iconSm),
-                    label: Text('메뉴 그룹 추가'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                    ),
+                  Row(
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: () {
+                          setState(() {
+                            _isReorderMode = !_isReorderMode;
+                          });
+                        },
+                        icon: Icon(
+                          _isReorderMode ? MdiIcons.check : MdiIcons.dragVariant, 
+                          size: AppSizes.iconSm,
+                        ),
+                        label: Text(_isReorderMode ? '완료' : '순서변경'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: _isReorderMode ? AppColors.success : AppColors.info,
+                          side: BorderSide(color: _isReorderMode ? AppColors.success : AppColors.info),
+                        ),
+                      ),
+                      SizedBox(width: AppSizes.md),
+                      ElevatedButton.icon(
+                        onPressed: _showMenuGroupAddDialog,
+                        icon: Icon(MdiIcons.plus, size: AppSizes.iconSm),
+                        label: Text('메뉴 그룹 추가'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -359,21 +381,37 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
           ),
           SizedBox(height: AppSizes.md),
           // 메뉴 그룹 리스트
-          ...List.generate(_menuGroups.length, (index) {
-            final group = _menuGroups[index];
-            return Column(
-              children: [
-                _buildMenuGroupCard(group),
-                SizedBox(height: AppSizes.md),
-              ],
-            );
-          }),
+          if (_isReorderMode)
+            ReorderableListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _menuGroups.length,
+              onReorder: _onGroupReorder,
+              itemBuilder: (context, index) {
+                final group = _menuGroups[index];
+                return Padding(
+                  key: ValueKey('group_$index'),
+                  padding: EdgeInsets.only(bottom: AppSizes.md),
+                  child: _buildMenuGroupCard(group, index),
+                );
+              },
+            )
+          else
+            ...List.generate(_menuGroups.length, (index) {
+              final group = _menuGroups[index];
+              return Column(
+                children: [
+                  _buildMenuGroupCard(group, index),
+                  SizedBox(height: AppSizes.md),
+                ],
+              );
+            }),
         ],
       ),
     );
   }
   
-  Widget _buildMenuGroupCard(Map<String, dynamic> group) {
+  Widget _buildMenuGroupCard(Map<String, dynamic> group, int groupIndex) {
     return Card(
       child: Padding(
         padding: EdgeInsets.all(AppSizes.lg),
@@ -384,6 +422,15 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
               children: [
                 Row(
                   children: [
+                    if (_isReorderMode)
+                      Padding(
+                        padding: EdgeInsets.only(right: AppSizes.sm),
+                        child: Icon(
+                          MdiIcons.dragHorizontal,
+                          color: AppColors.textSecondary,
+                          size: AppSizes.iconMd,
+                        ),
+                      ),
                     Text(
                       group['name'],
                       style: TextStyle(
@@ -393,61 +440,79 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                       ),
                     ),
                     SizedBox(width: AppSizes.sm),
-                    PopupMenuButton(
-                      icon: Icon(MdiIcons.dotsVertical, color: AppColors.textSecondary),
-                      itemBuilder: (context) => [
-                        PopupMenuItem(
-                          value: 'edit',
-                          child: Row(
-                            children: [
-                              Icon(MdiIcons.pencil, size: AppSizes.iconSm),
-                              SizedBox(width: AppSizes.xs),
-                              Text('그룹 수정'),
-                            ],
+                    if (!_isReorderMode)
+                      PopupMenuButton(
+                        icon: Icon(MdiIcons.dotsVertical, color: AppColors.textSecondary),
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: 'edit',
+                            child: Row(
+                              children: [
+                                Icon(MdiIcons.pencil, size: AppSizes.iconSm),
+                                SizedBox(width: AppSizes.xs),
+                                Text('그룹 수정'),
+                              ],
+                            ),
                           ),
-                        ),
-                        PopupMenuItem(
-                          value: 'delete',
-                          child: Row(
-                            children: [
-                              Icon(MdiIcons.delete, size: AppSizes.iconSm, color: AppColors.error),
-                              SizedBox(width: AppSizes.xs),
-                              Text('그룹 삭제', style: TextStyle(color: AppColors.error)),
-                            ],
+                          PopupMenuItem(
+                            value: 'delete',
+                            child: Row(
+                              children: [
+                                Icon(MdiIcons.delete, size: AppSizes.iconSm, color: AppColors.error),
+                                SizedBox(width: AppSizes.xs),
+                                Text('그룹 삭제', style: TextStyle(color: AppColors.error)),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
                   ],
                 ),
-                OutlinedButton.icon(
-                  onPressed: () => _navigateToMenuAdd(group['name']),
-                  icon: Icon(MdiIcons.plus, size: AppSizes.iconSm),
-                  label: Text('메뉴 추가'),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.primary,
-                    side: BorderSide(color: AppColors.primary),
+                if (!_isReorderMode)
+                  OutlinedButton.icon(
+                    onPressed: () => _navigateToMenuAdd(group['name']),
+                    icon: Icon(MdiIcons.plus, size: AppSizes.iconSm),
+                    label: Text('메뉴 추가'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.primary,
+                      side: BorderSide(color: AppColors.primary),
+                    ),
                   ),
-                ),
               ],
             ),
             SizedBox(height: AppSizes.md),
-            ...List.generate(group['items'].length, (index) {
-              final item = group['items'][index];
-              return Column(
-                children: [
-                  _buildMenuItemCard(item),
-                  if (index < group['items'].length - 1) SizedBox(height: AppSizes.sm),
-                ],
-              );
-            }),
+            if (_isReorderMode)
+              ReorderableListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: group['items'].length,
+                onReorder: (oldIndex, newIndex) => _onMenuItemReorder(groupIndex, oldIndex, newIndex),
+                itemBuilder: (context, index) {
+                  final item = group['items'][index];
+                  return Padding(
+                    key: ValueKey('menu_${groupIndex}_$index'),
+                    padding: EdgeInsets.only(bottom: index < group['items'].length - 1 ? AppSizes.sm : 0),
+                    child: _buildMenuItemCard(item, groupIndex, index),
+                  );
+                },
+              )
+            else
+              ...List.generate(group['items'].length, (index) {
+                final item = group['items'][index];
+                return Column(
+                  children: [
+                    _buildMenuItemCard(item, groupIndex, index),
+                    if (index < group['items'].length - 1) SizedBox(height: AppSizes.sm),
+                  ],
+                );
+              }),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildMenuItemCard(Map<String, dynamic> item) {
+  Widget _buildMenuItemCard(Map<String, dynamic> item, int groupIndex, int itemIndex) {
     final status = item['status'] ?? '판매중';
     Color statusColor = AppColors.success;
     Color cardColor = Colors.grey[50]!;
@@ -494,16 +559,15 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
               children: [
                 Row(
                   children: [
-                    Expanded(
-                      child: Text(
-                        item['name'],
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
+                    Text(
+                      item['name'],
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
                       ),
                     ),
+                    SizedBox(width: AppSizes.sm),
                     Container(
                       padding: EdgeInsets.symmetric(
                         horizontal: AppSizes.xs,
@@ -574,38 +638,63 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
               ],
             ),
           ),
-          PopupMenuButton(
-            icon: Icon(MdiIcons.dotsVertical, color: AppColors.textSecondary),
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: 'edit',
-                child: Row(
-                  children: [
-                    Icon(MdiIcons.pencil, size: AppSizes.iconSm),
-                    SizedBox(width: AppSizes.xs),
-                    Text('수정'),
-                  ],
+          Row(
+            children: [
+              if (_isReorderMode)
+                Padding(
+                  padding: EdgeInsets.only(right: AppSizes.sm),
+                  child: Icon(
+                    MdiIcons.dragVertical,
+                    color: AppColors.textSecondary,
+                    size: AppSizes.iconMd,
+                  ),
                 ),
-              ),
-              PopupMenuItem(
-                value: 'status',
-                child: Row(
-                  children: [
-                    Icon(MdiIcons.checkCircle, size: AppSizes.iconSm, color: AppColors.info),
-                    SizedBox(width: AppSizes.xs),
-                    Text('상태 변경'),
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                value: 'delete',
-                child: Row(
-                  children: [
-                    Icon(MdiIcons.delete, size: AppSizes.iconSm, color: AppColors.error),
-                    SizedBox(width: AppSizes.xs),
-                    Text('삭제', style: TextStyle(color: AppColors.error)),
-                  ],
-                ),
+              PopupMenuButton(
+                icon: Icon(MdiIcons.dotsVertical, color: AppColors.textSecondary),
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'edit',
+                    child: Row(
+                      children: [
+                        Icon(MdiIcons.pencil, size: AppSizes.iconSm),
+                        SizedBox(width: AppSizes.xs),
+                        Text('수정'),
+                      ],
+                    ),
+                  ),
+                  if (_isReorderMode)
+                    PopupMenuItem(
+                      value: 'move',
+                      child: Row(
+                        children: [
+                          Icon(MdiIcons.folderMove, size: AppSizes.iconSm, color: AppColors.primary),
+                          SizedBox(width: AppSizes.xs),
+                          Text('다른 그룹으로 이동'),
+                        ],
+                      ),
+                    ),
+                  PopupMenuItem(
+                    value: 'status',
+                    child: Row(
+                      children: [
+                        Icon(MdiIcons.checkCircle, size: AppSizes.iconSm, color: AppColors.info),
+                        SizedBox(width: AppSizes.xs),
+                        Text('상태 변경'),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Row(
+                      children: [
+                        Icon(MdiIcons.delete, size: AppSizes.iconSm, color: AppColors.error),
+                        SizedBox(width: AppSizes.xs),
+                        Text('삭제', style: TextStyle(color: AppColors.error)),
+                      ],
+                    ),
+                  ),
+                ],
+                onSelected: (value) => _handleMenuItemAction(value, groupIndex, itemIndex),
               ),
             ],
           ),
@@ -928,5 +1017,220 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
     } else {
       return AppColors.textSecondary; // 추가 요금은 회색
     }
+  }
+
+  // 그룹 순서 변경
+  void _onGroupReorder(int oldIndex, int newIndex) {
+    setState(() {
+      if (newIndex > oldIndex) {
+        newIndex -= 1;
+      }
+      final item = _menuGroups.removeAt(oldIndex);
+      _menuGroups.insert(newIndex, item);
+    });
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('그룹 순서가 변경되었습니다.'),
+        backgroundColor: AppColors.success,
+      ),
+    );
+  }
+
+  // 메뉴 아이템 순서 변경
+  void _onMenuItemReorder(int groupIndex, int oldIndex, int newIndex) {
+    setState(() {
+      if (newIndex > oldIndex) {
+        newIndex -= 1;
+      }
+      final List<Map<String, dynamic>> items = List.from(_menuGroups[groupIndex]['items']);
+      final item = items.removeAt(oldIndex);
+      items.insert(newIndex, item);
+      _menuGroups[groupIndex]['items'] = items;
+    });
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('메뉴 순서가 변경되었습니다.'),
+        backgroundColor: AppColors.success,
+      ),
+    );
+  }
+
+  // 메뉴 아이템 액션 처리
+  void _handleMenuItemAction(String action, int groupIndex, int itemIndex) {
+    switch (action) {
+      case 'edit':
+        // 메뉴 수정 기능
+        break;
+      case 'move':
+        _showMoveMenuDialog(groupIndex, itemIndex);
+        break;
+      case 'status':
+        // 상태 변경 기능
+        break;
+      case 'delete':
+        _deleteMenuItem(groupIndex, itemIndex);
+        break;
+    }
+  }
+
+  // 다른 그룹으로 이동 다이얼로그
+  void _showMoveMenuDialog(int fromGroupIndex, int itemIndex) {
+    final item = _menuGroups[fromGroupIndex]['items'][itemIndex];
+    
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(MdiIcons.folderMove, color: AppColors.primary),
+              SizedBox(width: AppSizes.sm),
+              Text(
+                '메뉴 이동',
+                style: TextStyle(fontSize: 20.sp),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '"${item['name']}"을(를) 다른 그룹으로 이동하시겠습니까?',
+                style: TextStyle(fontSize: 16.sp),
+              ),
+              SizedBox(height: AppSizes.lg),
+              Text(
+                '이동할 그룹을 선택하세요:',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(height: AppSizes.md),
+              Container(
+                height: 200.h,
+                width: double.maxFinite,
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.border),
+                  borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                ),
+                child: ListView.builder(
+                  itemCount: _menuGroups.length,
+                  itemBuilder: (context, index) {
+                    if (index == fromGroupIndex) return const SizedBox.shrink();
+                    
+                    final group = _menuGroups[index];
+                    return ListTile(
+                      leading: Icon(MdiIcons.folder, color: AppColors.primary),
+                      title: Text(
+                        group['name'],
+                        style: TextStyle(fontSize: 16.sp),
+                      ),
+                      subtitle: Text(
+                        group['description'],
+                        style: TextStyle(fontSize: 14.sp),
+                      ),
+                      onTap: () {
+                        _moveMenuItem(fromGroupIndex, itemIndex, index);
+                        Navigator.of(context).pop();
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                '취소',
+                style: TextStyle(fontSize: 16.sp),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // 메뉴 아이템을 다른 그룹으로 이동
+  void _moveMenuItem(int fromGroupIndex, int itemIndex, int toGroupIndex) {
+    setState(() {
+      final item = _menuGroups[fromGroupIndex]['items'].removeAt(itemIndex);
+      _menuGroups[toGroupIndex]['items'].add(item);
+    });
+    
+    final fromGroupName = _menuGroups[fromGroupIndex]['name'];
+    final toGroupName = _menuGroups[toGroupIndex]['name'];
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('메뉴가 "$fromGroupName"에서 "$toGroupName"으로 이동되었습니다.'),
+        backgroundColor: AppColors.success,
+      ),
+    );
+  }
+
+  // 메뉴 아이템 삭제
+  void _deleteMenuItem(int groupIndex, int itemIndex) {
+    final item = _menuGroups[groupIndex]['items'][itemIndex];
+    
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(MdiIcons.delete, color: AppColors.error),
+              SizedBox(width: AppSizes.sm),
+              Text(
+                '메뉴 삭제',
+                style: TextStyle(fontSize: 20.sp),
+              ),
+            ],
+          ),
+          content: Text(
+            '"${item['name']}"을(를) 삭제하시겠습니까?\n삭제된 메뉴는 복구할 수 없습니다.',
+            style: TextStyle(fontSize: 16.sp),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                '취소',
+                style: TextStyle(fontSize: 16.sp),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _menuGroups[groupIndex]['items'].removeAt(itemIndex);
+                });
+                Navigator.of(context).pop();
+                
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('메뉴 "${item['name']}"이(가) 삭제되었습니다.'),
+                    backgroundColor: AppColors.success,
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                foregroundColor: Colors.white,
+              ),
+              child: Text(
+                '삭제',
+                style: TextStyle(fontSize: 16.sp),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
