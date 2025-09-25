@@ -806,13 +806,28 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
             validator: validator,
             decoration: InputDecoration(
               hintText: _isEditing ? '$label을(를) 입력하세요' : null,
-              border: _isEditing ? null : InputBorder.none,
-              filled: !_isEditing,
-              fillColor: _isEditing ? null : Colors.transparent,
+              filled: true,
+              fillColor: _isEditing ? null : AppColors.background,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                borderSide: BorderSide(color: AppColors.border),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                borderSide: BorderSide(color: AppColors.border),
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                borderSide: BorderSide(color: AppColors.border.withOpacity(0.5)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                borderSide: BorderSide(color: AppColors.primary, width: 2),
+              ),
             ),
             style: TextStyle(
               fontSize: 14.sp,
-              color: AppColors.textPrimary,
+              color: _isEditing ? AppColors.textPrimary : AppColors.textSecondary,
             ),
           ),
         ],
@@ -851,7 +866,21 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
           if (_isEditing)
             DropdownButtonFormField<String>(
               value: value,
-              decoration: const InputDecoration(),
+              decoration: InputDecoration(
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                  borderSide: BorderSide(color: AppColors.border),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                  borderSide: BorderSide(color: AppColors.border),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                  borderSide: BorderSide(color: AppColors.primary, width: 2),
+                ),
+              ),
               items: items.map((String item) {
                 return DropdownMenuItem<String>(
                   value: item,
@@ -863,12 +892,20 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
           else
             Container(
               width: double.infinity,
-              padding: EdgeInsets.symmetric(vertical: 12.h),
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSizes.md,
+                vertical: AppSizes.md + 4.h,
+              ),
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.border.withOpacity(0.5)),
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                color: AppColors.background,
+              ),
               child: Text(
                 value,
                 style: TextStyle(
                   fontSize: 14.sp,
-                  color: AppColors.textPrimary,
+                  color: AppColors.textSecondary,
                 ),
               ),
             ),
@@ -1203,13 +1240,28 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
                   validator: RequiredValidator(errorText: '비밀번호를 입력하세요'),
                   decoration: InputDecoration(
                     hintText: _isEditing ? '비밀번호를 입력하세요' : null,
-                    border: _isEditing ? null : InputBorder.none,
-                    filled: !_isEditing,
-                    fillColor: _isEditing ? null : Colors.transparent,
+                    filled: true,
+                    fillColor: _isEditing ? null : AppColors.background,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                      borderSide: BorderSide(color: AppColors.border),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                      borderSide: BorderSide(color: AppColors.border),
+                    ),
+                    disabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                      borderSide: BorderSide(color: AppColors.border.withOpacity(0.5)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                      borderSide: BorderSide(color: AppColors.primary, width: 2),
+                    ),
                   ),
                   style: TextStyle(
                     fontSize: 14.sp,
-                    color: AppColors.textPrimary,
+                    color: _isEditing ? AppColors.textPrimary : AppColors.textSecondary,
                   ),
                 ),
               ),
