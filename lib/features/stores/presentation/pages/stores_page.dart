@@ -95,7 +95,7 @@ class _StoresPageState extends State<StoresPage> {
                 controller: _searchController,
                 decoration: InputDecoration(
                   labelText: '검색',
-                  hintText: '매장명, 주소, 사업자명으로 검색',
+                  hintText: '매장명, 주소, 사업자명, 연락처로 검색',
                   prefixIcon: Icon(MdiIcons.magnify),
                   suffixIcon: _searchText.isNotEmpty
                       ? IconButton(
@@ -157,7 +157,8 @@ class _StoresPageState extends State<StoresPage> {
         final searchLower = _searchText.toLowerCase();
         if (!store.storeName.toLowerCase().contains(searchLower) &&
             !store.storeAddress.toLowerCase().contains(searchLower) &&
-            !(store.businessName?.toLowerCase().contains(searchLower) ?? false)) {
+            !(store.businessName?.toLowerCase().contains(searchLower) ?? false) &&
+            !(store.storePhone?.toLowerCase().contains(searchLower) ?? false)) {
           return false;
         }
       }
