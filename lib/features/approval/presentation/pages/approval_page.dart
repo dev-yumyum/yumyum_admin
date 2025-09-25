@@ -690,8 +690,8 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
             borderRadius: BorderRadius.circular(AppSizes.borderRadius),
           ),
           child: Container(
-            width: 800.w,
-            height: 600.h,
+            width: 1200.w, // 800.w -> 1200.w (50% 증가)
+            height: 900.h, // 600.h -> 900.h (50% 증가)
             padding: EdgeInsets.all(AppSizes.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -843,7 +843,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                             borderRadius: BorderRadius.circular(AppSizes.borderRadius),
                           ),
                           child: Text(
-                            'AS-IS (기존)',
+                            '변경 전',
                             style: TextStyle(
                               fontSize: 18.sp, // 16.sp -> 18.sp
                               fontWeight: FontWeight.bold,
@@ -885,7 +885,7 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
                             borderRadius: BorderRadius.circular(AppSizes.borderRadius),
                           ),
                           child: Text(
-                            'TO-BE (변경)',
+                            '변경 후',
                             style: TextStyle(
                               fontSize: 18.sp, // 16.sp -> 18.sp
                               fontWeight: FontWeight.bold,
@@ -937,28 +937,58 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
       crossAxisAlignment: CrossAxisAlignment.start,
       children: data.entries.map((entry) {
         return Padding(
-          padding: EdgeInsets.symmetric(vertical: 4.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                entry.key,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary,
-                ),
+          padding: EdgeInsets.symmetric(vertical: 6.h),
+          child: Card(
+            elevation: 1,
+            margin: EdgeInsets.zero,
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(AppSizes.md),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                border: Border.all(color: AppColors.border.withOpacity(0.3)),
               ),
-              SizedBox(height: 2.h),
-              Text(
-                entry.value.toString(),
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  color: AppColors.textPrimary,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppSizes.sm,
+                      vertical: AppSizes.xs,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(4.r),
+                    ),
+                    child: Text(
+                      entry.key,
+                      style: TextStyle(
+                        fontSize: 16.sp, // 14.sp -> 16.sp
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: AppSizes.sm),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(AppSizes.sm),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[50],
+                      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                    ),
+                    child: Text(
+                      entry.value.toString(),
+                      style: TextStyle(
+                        fontSize: 16.sp, // 14.sp -> 16.sp
+                        color: AppColors.textPrimary,
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: AppSizes.xs),
-            ],
+            ),
           ),
         );
       }).toList(),
