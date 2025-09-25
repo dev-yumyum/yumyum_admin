@@ -67,8 +67,8 @@ class _DashboardPageState extends State<DashboardPage> {
         Expanded(
           child: DashboardStatCard(
             title: '총 매출',
-            value: '₩15,840,000',
-            subtitle: '',
+            value: '₩12,450,000',
+            subtitle: '어제',
             icon: MdiIcons.currencyKrw,
             color: AppColors.success,
           ),
@@ -77,8 +77,8 @@ class _DashboardPageState extends State<DashboardPage> {
         Expanded(
           child: DashboardStatCard(
             title: '신규 주문',
-            value: '1,247',
-            subtitle: '',
+            value: '89',
+            subtitle: '진행중인 주문',
             icon: MdiIcons.cartPlus,
             color: AppColors.info,
           ),
@@ -87,8 +87,8 @@ class _DashboardPageState extends State<DashboardPage> {
         Expanded(
           child: DashboardStatCard(
             title: '가입 사업자',
-            value: '342',
-            subtitle: '',
+            value: '342/5',
+            subtitle: '전체/오늘(신규등록)',
             icon: MdiIcons.domain,
             color: AppColors.primary,
           ),

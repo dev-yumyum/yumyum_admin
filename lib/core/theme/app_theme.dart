@@ -13,23 +13,23 @@ class AppTheme {
       ),
       scaffoldBackgroundColor: AppColors.background,
       
-      // 전체 텍스트 테마 설정 (반응형 폰트 크기로 조정)
+      // 전체 텍스트 테마 설정 (반응형 폰트 크기로 조정 - 25% 증가)
       textTheme: TextTheme(
-        displayLarge: TextStyle(fontSize: 32.sp, fontWeight: FontWeight.w300, color: AppColors.textPrimary),
-        displayMedium: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
-        displaySmall: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
-        headlineLarge: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
-        headlineMedium: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
-        headlineSmall: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
-        titleLarge: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
-        titleMedium: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
-        titleSmall: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
-        bodyLarge: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
-        bodyMedium: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
-        bodySmall: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w400, color: AppColors.textSecondary),
-        labelLarge: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
-        labelMedium: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
-        labelSmall: TextStyle(fontSize: 11.sp, fontWeight: FontWeight.w500, color: AppColors.textSecondary),
+        displayLarge: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.w300, color: AppColors.textPrimary),
+        displayMedium: TextStyle(fontSize: 35.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
+        displaySmall: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
+        headlineLarge: TextStyle(fontSize: 27.5.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
+        headlineMedium: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
+        headlineSmall: TextStyle(fontSize: 22.5.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
+        titleLarge: TextStyle(fontSize: 22.5.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
+        titleMedium: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
+        titleSmall: TextStyle(fontSize: 17.5.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
+        bodyLarge: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
+        bodyMedium: TextStyle(fontSize: 17.5.sp, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
+        bodySmall: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w400, color: AppColors.textSecondary),
+        labelLarge: TextStyle(fontSize: 17.5.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
+        labelMedium: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
+        labelSmall: TextStyle(fontSize: 13.75.sp, fontWeight: FontWeight.w500, color: AppColors.textSecondary),
       ),
       
       appBarTheme: AppBarTheme(
@@ -39,7 +39,7 @@ class AppTheme {
         centerTitle: false,
         titleTextStyle: TextStyle(
           color: AppColors.textPrimary,
-          fontSize: 18.sp, // 반응형 크기로 조정
+          fontSize: 22.5.sp, // 반응형 크기로 조정 (25% 증가)
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -63,7 +63,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(AppSizes.borderRadius),
           ),
           textStyle: TextStyle(
-            fontSize: 14.sp, // 반응형 크기로 조정
+            fontSize: 17.5.sp, // 반응형 크기로 조정 (25% 증가)
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -80,7 +80,7 @@ class AppTheme {
             borderRadius: BorderRadius.circular(AppSizes.borderRadius),
           ),
           textStyle: TextStyle(
-            fontSize: 14.sp, // 반응형 크기로 조정
+            fontSize: 17.5.sp, // 반응형 크기로 조정 (25% 증가)
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -109,11 +109,11 @@ class AppTheme {
         contentPadding: EdgeInsets.all(AppSizes.md),
         hintStyle: TextStyle(
           color: AppColors.textTertiary,
-          fontSize: 14.sp, // 반응형 크기로 조정
+          fontSize: 17.5.sp, // 반응형 크기로 조정 (25% 증가)
         ),
         labelStyle: TextStyle(
           color: AppColors.textSecondary,
-          fontSize: 14.sp, // 반응형 크기로 조정
+          fontSize: 17.5.sp, // 반응형 크기로 조정 (25% 증가)
         ),
       ),
     );
