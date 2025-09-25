@@ -224,6 +224,9 @@ class _StoresPageState extends State<StoresPage> {
           label: Text('매장명'),
         ),
         DataColumn(
+          label: Text('현재운영상태'),
+        ),
+        DataColumn(
           label: Text('사업자'),
         ),
         DataColumn(
@@ -231,9 +234,6 @@ class _StoresPageState extends State<StoresPage> {
         ),
         DataColumn(
           label: Text('매장전화번호'),
-        ),
-        DataColumn(
-          label: Text('현재운영상태'),
         ),
       ],
       rows: stores.map((store) => _buildDataRow(store)).toList(),
@@ -260,6 +260,12 @@ class _StoresPageState extends State<StoresPage> {
               ),
               overflow: TextOverflow.ellipsis,
             ),
+          ),
+        ),
+        DataCell(
+          Container(
+            width: 120.w,
+            child: _buildStatusChip(store.status),
           ),
         ),
         DataCell(
@@ -299,12 +305,6 @@ class _StoresPageState extends State<StoresPage> {
                 color: AppColors.textPrimary,
               ),
             ),
-          ),
-        ),
-        DataCell(
-          Container(
-            width: 120.w,
-            child: _buildStatusChip(store.status),
           ),
         ),
       ],
