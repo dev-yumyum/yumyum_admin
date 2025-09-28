@@ -407,90 +407,65 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '기본 정보',
-              style: TextStyle(
-                fontSize: 24.sp, // 통일화된 카드 제목 크기
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
+            Row(
+              children: [
+                Icon(
+                  MdiIcons.store,
+                  size: AppSizes.iconMd,
+                  color: AppColors.primary,
+                ),
+                SizedBox(width: AppSizes.sm),
+                Text(
+                  '기본 정보',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: AppSizes.lg),
             
             // 사업자 선택
-            _buildInfoRow(
+            _buildDropdownField(
               '사업자',
-              _isEditMode
-                  ? DropdownButtonFormField<String>(
-                      value: _selectedBusinessId,
-                      decoration: const InputDecoration(
-                        labelText: '사업자를 선택하세요',
-                      ),
-                      items: _businessOptions.map((business) {
-                        return DropdownMenuItem<String>(
-                          value: business['id'],
-                          child: Text(
-                            business['name']!,
-                            style: TextStyle(fontSize: 20.sp),
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedBusinessId = value;
-                        });
-                      },
-                      validator: RequiredValidator(errorText: '사업자를 선택해주세요'),
-                    )
-                  : null,
               _getBusinessNameById(_selectedBusinessId ?? ''),
+              _businessOptions.map((business) => business['name']!).toList(),
+              (value) {
+                final selectedBusiness = _businessOptions.firstWhere(
+                  (business) => business['name'] == value,
+                  orElse: () => {'id': '', 'name': ''},
+                );
+                setState(() {
+                  _selectedBusinessId = selectedBusiness['id'];
+                });
+              },
+              isRequired: true,
             ),
 
-            _buildInfoRow(
+            _buildEditableField(
               '매장명',
-              _isEditMode
-                  ? TextFormField(
-                      controller: _storeNameController,
-                      decoration: const InputDecoration(labelText: '매장명'),
-                      validator: RequiredValidator(errorText: '매장명을 입력해주세요'),
-                    )
-                  : null,
-              _store?.storeName ?? '',
+              _storeNameController,
+              isRequired: true,
+              validator: RequiredValidator(errorText: '매장명을 입력해주세요'),
             ),
 
-            _buildInfoRow(
-              '매장주소',
-              _isEditMode
-                  ? TextFormField(
-                      controller: _storeAddressController,
-                      decoration: const InputDecoration(labelText: '매장주소'),
-                      validator: RequiredValidator(errorText: '매장주소를 입력해주세요'),
-                    )
-                  : null,
-              _store?.storeAddress ?? '',
+            _buildEditableField(
+              '매장 주소',
+              _storeAddressController,
+              isRequired: true,
+              validator: RequiredValidator(errorText: '매장주소를 입력해주세요'),
             ),
 
-            _buildInfoRow(
-              '상세주소',
-              _isEditMode
-                  ? TextFormField(
-                      controller: _storeAddressDetailController,
-                      decoration: const InputDecoration(labelText: '상세주소'),
-                    )
-                  : null,
-              _store?.storeAddressDetail ?? '-',
+            _buildEditableField(
+              '상세 주소',
+              _storeAddressDetailController,
             ),
 
-            _buildInfoRow(
+            _buildEditableField(
               '매장 전화번호',
-              _isEditMode
-                  ? TextFormField(
-                      controller: _storePhoneController,
-                      decoration: const InputDecoration(labelText: '매장 전화번호'),
-                      validator: RequiredValidator(errorText: '매장 전화번호를 입력해주세요'),
-                    )
-                  : null,
-              _store?.storePhone ?? '-',
+              _storePhoneController,
+              keyboardType: TextInputType.phone,
             ),
 
             // 좌표 정보
@@ -508,46 +483,35 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '매장 소개',
-              style: TextStyle(
-                fontSize: 24.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
+            Row(
+              children: [
+                Icon(
+                  MdiIcons.cardText,
+                  size: AppSizes.iconMd,
+                  color: AppColors.success,
+                ),
+                SizedBox(width: AppSizes.sm),
+                Text(
+                  '매장 소개',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: AppSizes.lg),
 
-            _buildInfoRow(
+            _buildEditableField(
               '매장소개글',
-              _isEditMode
-                  ? TextFormField(
-                      controller: _storeDescriptionController,
-                      maxLines: 5,
-                      maxLength: 500,
-                      decoration: const InputDecoration(
-                        labelText: '매장소개글',
-                        alignLabelWithHint: true,
-                      ),
-                    )
-                  : null,
-              _storeDescriptionController.text.isEmpty ? '-' : _storeDescriptionController.text,
+              _storeDescriptionController,
+              maxLines: 5,
             ),
 
-            _buildInfoRow(
+            _buildEditableField(
               '공지사항',
-              _isEditMode
-                  ? TextFormField(
-                      controller: _noticeController,
-                      maxLines: 5,
-                      maxLength: 500,
-                      decoration: const InputDecoration(
-                        labelText: '공지사항',
-                        alignLabelWithHint: true,
-                      ),
-                    )
-                  : null,
-              _noticeController.text.isEmpty ? '-' : _noticeController.text,
+              _noticeController,
+              maxLines: 5,
             ),
 
             // 매장소개 이미지
@@ -579,13 +543,22 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '카테고리 및 정보',
-              style: TextStyle(
-                fontSize: 24.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
+            Row(
+              children: [
+                Icon(
+                  MdiIcons.foodForkDrink,
+                  size: AppSizes.iconMd,
+                  color: AppColors.secondary,
+                ),
+                SizedBox(width: AppSizes.sm),
+                Text(
+                  '카테고리 및 정보',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: AppSizes.lg),
 
@@ -653,13 +626,22 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '편의 정보',
-              style: TextStyle(
-                fontSize: 24.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
+            Row(
+              children: [
+                Icon(
+                  MdiIcons.informationOutline,
+                  size: AppSizes.iconMd,
+                  color: AppColors.info,
+                ),
+                SizedBox(width: AppSizes.sm),
+                Text(
+                  '편의 정보',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: AppSizes.lg),
 
@@ -737,6 +719,146 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                       color: AppColors.textPrimary,
                     ),
                   ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEditableField(
+    String label,
+    TextEditingController controller, {
+    bool isRequired = false,
+    String? Function(String?)? validator,
+    TextInputType keyboardType = TextInputType.text,
+    int maxLines = 1,
+  }) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: AppSizes.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                label,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              if (isRequired)
+                Text(
+                  ' *',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: AppColors.error,
+                  ),
+                ),
+            ],
+          ),
+          SizedBox(height: AppSizes.xs),
+          TextFormField(
+            controller: controller,
+            enabled: _isEditMode,
+            keyboardType: keyboardType,
+            maxLines: maxLines,
+            validator: validator,
+            decoration: InputDecoration(
+              hintText: _isEditMode ? '$label을(를) 입력하세요' : null,
+              filled: true,
+              fillColor: _isEditMode ? null : AppColors.background,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                borderSide: BorderSide(color: AppColors.border),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                borderSide: BorderSide(color: AppColors.border),
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                borderSide: BorderSide(color: AppColors.border.withOpacity(0.5)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                borderSide: BorderSide(color: AppColors.primary, width: 2),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                borderSide: BorderSide(color: AppColors.error),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                borderSide: BorderSide(color: AppColors.error, width: 2),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDropdownField(
+    String label,
+    String currentValue,
+    List<String> options,
+    void Function(String?) onChanged, {
+    bool isRequired = false,
+  }) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: AppSizes.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                label,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              if (isRequired)
+                Text(
+                  ' *',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: AppColors.error,
+                  ),
+                ),
+            ],
+          ),
+          SizedBox(height: AppSizes.xs),
+          DropdownButtonFormField<String>(
+            value: currentValue.isNotEmpty ? currentValue : null,
+            onChanged: _isEditMode ? onChanged : null,
+            decoration: InputDecoration(
+              hintText: _isEditMode ? '$label을(를) 선택하세요' : null,
+              filled: true,
+              fillColor: _isEditMode ? null : AppColors.background,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                borderSide: BorderSide(color: AppColors.border),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                borderSide: BorderSide(color: AppColors.border),
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                borderSide: BorderSide(color: AppColors.border.withOpacity(0.5)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                borderSide: BorderSide(color: AppColors.primary, width: 2),
+              ),
+            ),
+            items: options.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
           ),
         ],
       ),
