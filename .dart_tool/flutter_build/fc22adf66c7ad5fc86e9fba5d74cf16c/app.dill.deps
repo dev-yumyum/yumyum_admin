@@ -629,6 +629,7 @@ file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1
 file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/core/constants/app_constants.dart
 file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/core/services/navigation_service.dart
 file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/core/theme/app_theme.dart
+file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/core/utils/responsive_font_utils.dart
 file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/features/approval/data/models/approval_request_model.dart
 file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/features/approval/data/models/approval_request_model.g.dart
 file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/features/approval/presentation/pages/approval_detail_page.dart
@@ -641,6 +642,8 @@ file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1
 file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/features/business/presentation/pages/business_detail_page.dart
 file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/features/business/presentation/pages/business_page.dart
 file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/features/business/presentation/pages/business_register_page.dart
+file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/features/coupons/data/models/customer_coupon_model.dart
+file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/features/coupons/presentation/pages/coupons_page.dart
 file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/features/dashboard/data/services/dashboard_data_service.dart
 file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/features/dashboard/presentation/pages/dashboard_page.dart
 file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/features/dashboard/presentation/widgets/dashboard_stat_card.dart
@@ -682,6 +685,7 @@ file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1
 file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/features/stores/presentation/widgets/option_item_add_dialog.dart
 file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/main.dart
 file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/shared/widgets/crm_layout.dart
+file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/shared/widgets/responsive_text.dart
 file:///Users/dowonjung/Desktop/%E1%84%83%E1%85%A9%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%91%E1%85%B3%E1%84%85%E1%85%A9%E1%84%8C%E1%85%A6%E1%86%A8%E1%84%90%E1%85%B3/yumyum_f/lib/shared/widgets/searchable_dropdown.dart
 file:///opt/homebrew/share/flutter/bin/cache/dart-sdk/lib/libraries.json
 file:///opt/homebrew/share/flutter/bin/cache/flutter_web_sdk/kernel/dart2js_platform.dill

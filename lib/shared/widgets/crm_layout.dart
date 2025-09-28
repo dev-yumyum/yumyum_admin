@@ -237,6 +237,11 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
         route: RouteNames.member,
       ),
       _MenuItem(
+        icon: MdiIcons.ticket,
+        title: '쿠폰 관리',
+        route: '/coupons',
+      ),
+      _MenuItem(
         icon: MdiIcons.accountTie,
         title: AppStrings.managerManagement,
         route: RouteNames.manager,

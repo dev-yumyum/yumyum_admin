@@ -17,6 +17,7 @@ import '../../features/settlements/presentation/pages/settlements_page.dart';
 import '../../features/settlements/presentation/pages/settlement_detail_page.dart';
 import '../../features/members/presentation/pages/members_page.dart';
 import '../../features/members/presentation/pages/member_detail_page.dart';
+import '../../features/coupons/presentation/pages/coupons_page.dart';
 import '../../features/managers/presentation/pages/managers_page.dart';
 
 GoRouter createRouter() {
@@ -132,6 +133,12 @@ GoRouter createRouter() {
           final memberId = state.uri.queryParameters['id'];
           return MemberDetailPage(memberId: memberId);
         },
+      ),
+      
+      // 쿠폰 관리
+      GoRoute(
+        path: '/coupons',
+        builder: (context, state) => const CouponsPage(),
       ),
       
       // 관리자 관리
