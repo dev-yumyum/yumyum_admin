@@ -1580,7 +1580,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
         Text(
           '운영시간 설정',
           style: TextStyle(
-            fontSize: 16.sp,
+            fontSize: 18.sp,
             fontWeight: FontWeight.w500,
             color: AppColors.textSecondary,
           ),
@@ -1592,7 +1592,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               child: RadioListTile<String>(
                 title: Text(
                   '평일/주말 동일',
-                  style: TextStyle(fontSize: 14.sp),
+                  style: TextStyle(fontSize: 16.sp),
                 ),
                 value: 'SAME',
                 groupValue: _operatingHoursType,
@@ -1608,7 +1608,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               child: RadioListTile<String>(
                 title: Text(
                   '평일/주말 다름',
-                  style: TextStyle(fontSize: 14.sp),
+                  style: TextStyle(fontSize: 16.sp),
                 ),
                 value: 'DIFFERENT',
                 groupValue: _operatingHoursType,
@@ -1640,7 +1640,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
           Text(
             '평일/주말 공통 운영시간',
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -1650,9 +1650,9 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
             children: [
               Text(
                 '시작시간:',
-                style: TextStyle(fontSize: 14.sp),
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
               ),
-              SizedBox(width: AppSizes.sm),
+              SizedBox(width: AppSizes.md),
               _buildTimeDropdown(
                 _commonStartHour,
                 _commonStartMinute,
@@ -1671,9 +1671,9 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               SizedBox(width: AppSizes.md),
               Text(
                 '종료시간:',
-                style: TextStyle(fontSize: 14.sp),
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
               ),
-              SizedBox(width: AppSizes.sm),
+              SizedBox(width: AppSizes.md),
               _buildTimeDropdown(
                 _commonEndHour,
                 _commonEndMinute,
@@ -1710,7 +1710,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
           Text(
             '요일별 운영시간',
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -1722,13 +1722,13 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               child: Row(
                 children: [
                   SizedBox(
-                    width: 60.w,
+                    width: 80.w,
                     child: Text(
                       _weekdays[index],
-                      style: TextStyle(fontSize: 14.sp),
+                      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
                     ),
                   ),
-                  SizedBox(width: AppSizes.sm),
+                  SizedBox(width: AppSizes.md),
                   _buildTimeDropdown(
                     _weeklyHours[index]['startHour']!,
                     _weeklyHours[index]['startMinute']!,
@@ -1744,12 +1744,12 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                       });
                     },
                   ),
-                  SizedBox(width: AppSizes.sm),
+                  SizedBox(width: AppSizes.md),
                   Text(
                     '~',
-                    style: TextStyle(fontSize: 14.sp),
+                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(width: AppSizes.sm),
+                  SizedBox(width: AppSizes.md),
                   _buildTimeDropdown(
                     _weeklyHours[index]['endHour']!,
                     _weeklyHours[index]['endMinute']!,
@@ -1791,10 +1791,10 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
       children: [
         // 시간 드롭다운
         Container(
-          padding: EdgeInsets.symmetric(horizontal: AppSizes.sm),
+          padding: EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
           decoration: BoxDecoration(
             border: Border.all(color: AppColors.border),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(6),
           ),
           child: DropdownButton<int>(
             value: selectedHour,
@@ -1809,7 +1809,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               
               return DropdownMenuItem(
                 value: hour,
-                child: Text(displayHour, style: TextStyle(fontSize: 12.sp)),
+                child: Text(displayHour, style: TextStyle(fontSize: 16.sp)),
               );
             }),
             onChanged: (int? value) {
@@ -1819,14 +1819,17 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
             },
           ),
         ),
-        Text(':', style: TextStyle(fontSize: 14.sp)),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: AppSizes.xs),
+          child: Text(':', style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+        ),
         
         // 분 드롭다운
         Container(
-          padding: EdgeInsets.symmetric(horizontal: AppSizes.sm),
+          padding: EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
           decoration: BoxDecoration(
             border: Border.all(color: AppColors.border),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(6),
           ),
           child: DropdownButton<int>(
             value: selectedMinute,
@@ -1836,7 +1839,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                 value: minute,
                 child: Text(
                   minute.toString().padLeft(2, '0'),
-                  style: TextStyle(fontSize: 12.sp),
+                  style: TextStyle(fontSize: 16.sp),
                 ),
               );
             }).toList(),
