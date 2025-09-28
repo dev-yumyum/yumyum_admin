@@ -79,6 +79,16 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
   
   final List<String> _weekdays = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
 
+  // 휴일 설정 관련 변수들
+  String _holidayType = 'NONE'; // NONE (연중무휴) or REGULAR (정기휴일)
+  String _regularHolidayWeek = '매주'; // 매주, 첫째주, 둘째주, 셋째주, 넷째주
+  String _regularHolidayDay = '월요일'; // 월요일 ~ 일요일
+  List<DateTime> _temporaryHolidays = []; // 임시휴일 목록
+
+  // 편의정보 관련 변수들
+  bool _isPackagingAvailable = true; // 포장 가능
+  bool _isDineInAvailable = true; // 매장식사 가능
+
   // 파일 업로드
   List<File?> _findTipImages = [null, null, null];
   List<String?> _findTipImageNames = [null, null, null];
@@ -530,6 +540,10 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
             // 운영시간/휴일설정
             SizedBox(height: AppSizes.lg),
             _buildOperatingHoursSection(),
+            
+            // 휴일설정
+            SizedBox(height: AppSizes.lg),
+            _buildHolidaySection(),
           ],
         ),
       ),
@@ -644,6 +658,13 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               ],
             ),
             SizedBox(height: AppSizes.lg),
+
+            // 포장/매장식사 체크박스
+            if (_isEditMode) 
+              _buildServiceCheckboxes()
+            else
+              _buildServiceDisplay(),
+            SizedBox(height: AppSizes.md),
 
             _buildInfoRow(
               '매장찾기팁',
@@ -1920,6 +1941,393 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
     } else {
       return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
     }
+  }
+
+  // 휴일설정 섹션
+  Widget _buildHolidaySection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '휴일 설정',
+          style: TextStyle(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textSecondary,
+          ),
+        ),
+        SizedBox(height: AppSizes.md),
+        
+        if (_isEditMode) ...[
+          _buildHolidayTypeSelector(),
+          SizedBox(height: AppSizes.md),
+          
+          if (_holidayType == 'REGULAR') 
+            _buildRegularHolidaySection(),
+          
+          SizedBox(height: AppSizes.md),
+          _buildTemporaryHolidaySection(),
+        ] else ...[
+          _buildHolidayDisplay(),
+        ],
+      ],
+    );
+  }
+
+  // 휴일 타입 선택기 (연중무휴 or 정기휴일)
+  Widget _buildHolidayTypeSelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '휴일 설정',
+          style: TextStyle(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textSecondary,
+          ),
+        ),
+        SizedBox(height: AppSizes.sm),
+        Row(
+          children: [
+            Expanded(
+              child: RadioListTile<String>(
+                title: Text(
+                  '연중무휴',
+                  style: TextStyle(fontSize: 16.sp),
+                ),
+                value: 'NONE',
+                groupValue: _holidayType,
+                onChanged: (value) {
+                  setState(() {
+                    _holidayType = value!;
+                  });
+                },
+                dense: true,
+              ),
+            ),
+            Expanded(
+              child: RadioListTile<String>(
+                title: Text(
+                  '정기휴일',
+                  style: TextStyle(fontSize: 16.sp),
+                ),
+                value: 'REGULAR',
+                groupValue: _holidayType,
+                onChanged: (value) {
+                  setState(() {
+                    _holidayType = value!;
+                  });
+                },
+                dense: true,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // 정기휴일 설정
+  Widget _buildRegularHolidaySection() {
+    final weekOptions = ['매주', '첫째주', '둘째주', '셋째주', '넷째주'];
+    
+    return Container(
+      padding: EdgeInsets.all(AppSizes.md),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '정기휴일 설정',
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: AppSizes.md),
+          
+          Row(
+            children: [
+              Text(
+                '주간:',
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
+              ),
+              SizedBox(width: AppSizes.md),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.border),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: DropdownButton<String>(
+                  value: _regularHolidayWeek,
+                  underline: Container(),
+                  items: weekOptions.map((week) {
+                    return DropdownMenuItem(
+                      value: week,
+                      child: Text(week, style: TextStyle(fontSize: 16.sp)),
+                    );
+                  }).toList(),
+                  onChanged: (String? value) {
+                    if (value != null) {
+                      setState(() {
+                        _regularHolidayWeek = value;
+                      });
+                    }
+                  },
+                ),
+              ),
+              SizedBox(width: AppSizes.lg),
+              Text(
+                '요일:',
+                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
+              ),
+              SizedBox(width: AppSizes.md),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.border),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: DropdownButton<String>(
+                  value: _regularHolidayDay,
+                  underline: Container(),
+                  items: _weekdays.map((day) {
+                    return DropdownMenuItem(
+                      value: day,
+                      child: Text(day, style: TextStyle(fontSize: 16.sp)),
+                    );
+                  }).toList(),
+                  onChanged: (String? value) {
+                    if (value != null) {
+                      setState(() {
+                        _regularHolidayDay = value;
+                      });
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 임시휴일 설정
+  Widget _buildTemporaryHolidaySection() {
+    return Container(
+      padding: EdgeInsets.all(AppSizes.md),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                '임시휴일',
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Spacer(),
+              if (_isEditMode)
+                ElevatedButton.icon(
+                  onPressed: _addTemporaryHoliday,
+                  icon: Icon(Icons.add, size: 16.sp),
+                  label: Text('휴일 추가', style: TextStyle(fontSize: 14.sp)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(horizontal: AppSizes.sm, vertical: AppSizes.xs),
+                  ),
+                ),
+            ],
+          ),
+          SizedBox(height: AppSizes.md),
+          
+          if (_temporaryHolidays.isNotEmpty) ...[
+            Wrap(
+              spacing: AppSizes.xs,
+              runSpacing: AppSizes.xs,
+              children: _temporaryHolidays.map((date) {
+                return Chip(
+                  label: Text(
+                    '${date.year}.${date.month.toString().padLeft(2, '0')}.${date.day.toString().padLeft(2, '0')}',
+                    style: TextStyle(fontSize: 14.sp),
+                  ),
+                  deleteIcon: _isEditMode ? Icon(Icons.close, size: 16.sp) : null,
+                  onDeleted: _isEditMode ? () {
+                    setState(() {
+                      _temporaryHolidays.remove(date);
+                    });
+                  } : null,
+                  backgroundColor: AppColors.error.withOpacity(0.1),
+                  deleteIconColor: AppColors.error,
+                );
+              }).toList(),
+            ),
+          ] else ...[
+            Text(
+              '설정된 임시휴일이 없습니다.',
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // 휴일 표시 (보기 모드)
+  Widget _buildHolidayDisplay() {
+    return Container(
+      padding: EdgeInsets.all(AppSizes.md),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildInfoRow(
+            '휴일 설정',
+            null,
+            _holidayType == 'NONE' ? '연중무휴' : '정기휴일',
+          ),
+          
+          if (_holidayType == 'REGULAR') ...[
+            SizedBox(height: AppSizes.sm),
+            _buildInfoRow(
+              '정기휴일',
+              null,
+              '$_regularHolidayWeek $_regularHolidayDay',
+            ),
+          ],
+          
+          if (_temporaryHolidays.isNotEmpty) ...[
+            SizedBox(height: AppSizes.sm),
+            Text(
+              '임시휴일',
+              style: TextStyle(
+                fontSize: 16.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            SizedBox(height: AppSizes.xs),
+            Wrap(
+              spacing: AppSizes.xs,
+              runSpacing: AppSizes.xs,
+              children: _temporaryHolidays.map((date) {
+                return Chip(
+                  label: Text(
+                    '${date.year}.${date.month.toString().padLeft(2, '0')}.${date.day.toString().padLeft(2, '0')}',
+                    style: TextStyle(fontSize: 14.sp),
+                  ),
+                  backgroundColor: AppColors.error.withOpacity(0.1),
+                );
+              }).toList(),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // 임시휴일 추가
+  Future<void> _addTemporaryHoliday() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(Duration(days: 365)),
+      locale: const Locale('ko', 'KR'),
+    );
+    
+    if (picked != null && !_temporaryHolidays.contains(picked)) {
+      setState(() {
+        _temporaryHolidays.add(picked);
+        _temporaryHolidays.sort();
+      });
+    }
+  }
+
+  // 포장/매장식사 체크박스 (편집 모드)
+  Widget _buildServiceCheckboxes() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '서비스 옵션',
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textSecondary,
+          ),
+        ),
+        SizedBox(height: AppSizes.sm),
+        Row(
+          children: [
+            Expanded(
+              child: CheckboxListTile(
+                title: Text(
+                  '포장',
+                  style: TextStyle(fontSize: 16.sp),
+                ),
+                value: _isPackagingAvailable,
+                onChanged: (bool? value) {
+                  setState(() {
+                    _isPackagingAvailable = value ?? false;
+                  });
+                },
+                dense: true,
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
+            Expanded(
+              child: CheckboxListTile(
+                title: Text(
+                  '매장식사',
+                  style: TextStyle(fontSize: 16.sp),
+                ),
+                value: _isDineInAvailable,
+                onChanged: (bool? value) {
+                  setState(() {
+                    _isDineInAvailable = value ?? false;
+                  });
+                },
+                dense: true,
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // 포장/매장식사 표시 (보기 모드)
+  Widget _buildServiceDisplay() {
+    List<String> services = [];
+    if (_isPackagingAvailable) services.add('포장');
+    if (_isDineInAvailable) services.add('매장식사');
+    
+    return _buildInfoRow(
+      '서비스 옵션',
+      null,
+      services.isEmpty ? '-' : services.join(', '),
+    );
   }
 }
 
