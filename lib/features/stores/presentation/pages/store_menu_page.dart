@@ -2363,11 +2363,15 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
         return OptionGroupEditDialog(
           initialName: group['name'],
           initialDescription: group['description'] ?? '',
-          initialMaxSelection: group['maxSelection'],
-          onEdit: (String name, String description, int maxSelection) {
+          initialIsRequired: group['isRequired'] ?? false,
+          initialMinSelection: group['minSelection'] ?? 0,
+          initialMaxSelection: group['maxSelection'] ?? 1,
+          onEdit: (String name, String description, bool isRequired, int minSelection, int maxSelection) {
             setState(() {
               _optionGroups[groupIndex]['name'] = name;
               _optionGroups[groupIndex]['description'] = description;
+              _optionGroups[groupIndex]['isRequired'] = isRequired;
+              _optionGroups[groupIndex]['minSelection'] = minSelection;
               _optionGroups[groupIndex]['maxSelection'] = maxSelection;
             });
             
