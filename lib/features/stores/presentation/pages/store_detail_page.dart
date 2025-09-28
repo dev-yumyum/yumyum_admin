@@ -57,6 +57,28 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
   List<String> _selectedCategories = [];
   String _parkingAvailable = 'NO'; // YES or NO
 
+  // 운영시간/휴일설정 관련 변수들
+  String _operatingHoursType = 'SAME'; // SAME (평일/주말 동일) or DIFFERENT (평일/주말 다름)
+  
+  // 평일/주말 동일일 때
+  int _commonStartHour = 9;
+  int _commonStartMinute = 0;
+  int _commonEndHour = 22;
+  int _commonEndMinute = 0;
+  
+  // 평일/주말 다름일 때 (월요일~일요일)
+  final List<Map<String, int>> _weeklyHours = [
+    {'startHour': 9, 'startMinute': 0, 'endHour': 22, 'endMinute': 0}, // 월요일
+    {'startHour': 9, 'startMinute': 0, 'endHour': 22, 'endMinute': 0}, // 화요일
+    {'startHour': 9, 'startMinute': 0, 'endHour': 22, 'endMinute': 0}, // 수요일
+    {'startHour': 9, 'startMinute': 0, 'endHour': 22, 'endMinute': 0}, // 목요일
+    {'startHour': 9, 'startMinute': 0, 'endHour': 22, 'endMinute': 0}, // 금요일
+    {'startHour': 10, 'startMinute': 0, 'endHour': 21, 'endMinute': 0}, // 토요일
+    {'startHour': 10, 'startMinute': 0, 'endHour': 21, 'endMinute': 0}, // 일요일
+  ];
+  
+  final List<String> _weekdays = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+
   // 파일 업로드
   List<File?> _findTipImages = [null, null, null];
   List<String?> _findTipImageNames = [null, null, null];
@@ -540,6 +562,11 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
             ),
             SizedBox(height: AppSizes.sm),
             _isEditMode ? _buildStoreIntroImageUpload() : _buildStoreIntroImageDisplay(),
+            
+            // 운영시간/휴일설정
+            SizedBox(height: AppSizes.lg),
+            // TODO: 운영시간 기능 구현 완료 - 빌드 에러 해결 후 활성화 예정
+            // _buildOperatingHoursSection(),
           ],
         ),
       ),
@@ -1390,6 +1417,385 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
         registrationDate: '2024-02-10',
       ),
     ];
+  }
+
+  // 운영시간/휴일설정 섹션
+  Widget _buildOperatingHoursSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '운영시간 / 휴일설정',
+          style: TextStyle(
+            fontSize: 20.sp,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textSecondary,
+          ),
+        ),
+        SizedBox(height: AppSizes.md),
+        
+        if (_isEditMode) ...[
+          // 편집 모드일 때
+          _buildOperatingHoursTypeSelector(),
+          SizedBox(height: AppSizes.md),
+          
+          if (_operatingHoursType == 'SAME') 
+            _buildSameHoursSection()
+          else
+            _buildDifferentHoursSection(),
+        ] else ...[
+          // 보기 모드일 때
+          _buildOperatingHoursDisplay(),
+        ],
+      ],
+    );
+  }
+
+  // 운영시간 타입 선택기 (평일/주말 동일 or 다름)
+  Widget _buildOperatingHoursTypeSelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '운영시간 설정',
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textSecondary,
+          ),
+        ),
+        SizedBox(height: AppSizes.sm),
+        Row(
+          children: [
+            Expanded(
+              child: RadioListTile<String>(
+                title: Text(
+                  '평일/주말 동일',
+                  style: TextStyle(fontSize: 14.sp),
+                ),
+                value: 'SAME',
+                groupValue: _operatingHoursType,
+                onChanged: (value) {
+                  setState(() {
+                    _operatingHoursType = value!;
+                  });
+                },
+                dense: true,
+              ),
+            ),
+            Expanded(
+              child: RadioListTile<String>(
+                title: Text(
+                  '평일/주말 다름',
+                  style: TextStyle(fontSize: 14.sp),
+                ),
+                value: 'DIFFERENT',
+                groupValue: _operatingHoursType,
+                onChanged: (value) {
+                  setState(() {
+                    _operatingHoursType = value!;
+                  });
+                },
+                dense: true,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // 평일/주말 동일일 때의 시간 설정
+  Widget _buildSameHoursSection() {
+    return Container(
+      padding: EdgeInsets.all(AppSizes.md),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '평일/주말 공통 운영시간',
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: AppSizes.md),
+          
+          Row(
+            children: [
+              Text(
+                '시작시간:',
+                style: TextStyle(fontSize: 14.sp),
+              ),
+              SizedBox(width: AppSizes.sm),
+              _buildTimeDropdown(
+                _commonStartHour,
+                _commonStartMinute,
+                isStartTime: true,
+                onHourChanged: (hour) {
+                  setState(() {
+                    _commonStartHour = hour;
+                  });
+                },
+                onMinuteChanged: (minute) {
+                  setState(() {
+                    _commonStartMinute = minute;
+                  });
+                },
+              ),
+              SizedBox(width: AppSizes.md),
+              Text(
+                '종료시간:',
+                style: TextStyle(fontSize: 14.sp),
+              ),
+              SizedBox(width: AppSizes.sm),
+              _buildTimeDropdown(
+                _commonEndHour,
+                _commonEndMinute,
+                isStartTime: false,
+                onHourChanged: (hour) {
+                  setState(() {
+                    _commonEndHour = hour;
+                  });
+                },
+                onMinuteChanged: (minute) {
+                  setState(() {
+                    _commonEndMinute = minute;
+                  });
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 평일/주말 다름일 때의 시간 설정
+  Widget _buildDifferentHoursSection() {
+    return Container(
+      padding: EdgeInsets.all(AppSizes.md),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '요일별 운영시간',
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          SizedBox(height: AppSizes.md),
+          
+          ...List.generate(7, (index) {
+            return Padding(
+              padding: EdgeInsets.only(bottom: AppSizes.sm),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 60.w,
+                    child: Text(
+                      _weekdays[index],
+                      style: TextStyle(fontSize: 14.sp),
+                    ),
+                  ),
+                  SizedBox(width: AppSizes.sm),
+                  _buildTimeDropdown(
+                    _weeklyHours[index]['startHour']!,
+                    _weeklyHours[index]['startMinute']!,
+                    isStartTime: true,
+                    onHourChanged: (hour) {
+                      setState(() {
+                        _weeklyHours[index]['startHour'] = hour;
+                      });
+                    },
+                    onMinuteChanged: (minute) {
+                      setState(() {
+                        _weeklyHours[index]['startMinute'] = minute;
+                      });
+                    },
+                  ),
+                  SizedBox(width: AppSizes.sm),
+                  Text(
+                    '~',
+                    style: TextStyle(fontSize: 14.sp),
+                  ),
+                  SizedBox(width: AppSizes.sm),
+                  _buildTimeDropdown(
+                    _weeklyHours[index]['endHour']!,
+                    _weeklyHours[index]['endMinute']!,
+                    isStartTime: false,
+                    onHourChanged: (hour) {
+                      setState(() {
+                        _weeklyHours[index]['endHour'] = hour;
+                      });
+                    },
+                    onMinuteChanged: (minute) {
+                      setState(() {
+                        _weeklyHours[index]['endMinute'] = minute;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  // 시간/분 드롭다운
+  Widget _buildTimeDropdown(
+    int selectedHour,
+    int selectedMinute, {
+    required bool isStartTime,
+    required Function(int) onHourChanged,
+    required Function(int) onMinuteChanged,
+  }) {
+    // 시작시간: 00:00 ~ 24:00
+    // 종료시간: 00:00 ~ 익일 06:00 (30시간까지 가능)
+    final int maxHour = isStartTime ? 24 : 30;
+    
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // 시간 드롭다운
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: AppSizes.sm),
+          decoration: BoxDecoration(
+            border: Border.all(color: AppColors.border),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: DropdownButton<int>(
+            value: selectedHour,
+            underline: Container(),
+            items: List.generate(maxHour + 1, (hour) {
+              String displayHour;
+              if (hour > 24) {
+                displayHour = '익일 ${(hour - 24).toString().padLeft(2, '0')}';
+              } else {
+                displayHour = hour.toString().padLeft(2, '0');
+              }
+              
+              return DropdownMenuItem(
+                value: hour,
+                child: Text(displayHour, style: TextStyle(fontSize: 12.sp)),
+              );
+            }),
+            onChanged: (int? value) {
+              if (value != null) {
+                onHourChanged(value);
+              }
+            },
+          ),
+        ),
+        Text(':', style: TextStyle(fontSize: 14.sp)),
+        
+        // 분 드롭다운
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: AppSizes.sm),
+          decoration: BoxDecoration(
+            border: Border.all(color: AppColors.border),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: DropdownButton<int>(
+            value: selectedMinute,
+            underline: Container(),
+            items: [0, 15, 30, 45].map((minute) {
+              return DropdownMenuItem(
+                value: minute,
+                child: Text(
+                  minute.toString().padLeft(2, '0'),
+                  style: TextStyle(fontSize: 12.sp),
+                ),
+              );
+            }).toList(),
+            onChanged: (int? value) {
+              if (value != null) {
+                onMinuteChanged(value);
+              }
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  // 운영시간 표시 (보기 모드)
+  Widget _buildOperatingHoursDisplay() {
+    return Container(
+      padding: EdgeInsets.all(AppSizes.md),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (_operatingHoursType == 'SAME') ...[
+            Text(
+              '평일/주말 공통',
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(height: AppSizes.xs),
+            Text(
+              '${_formatTimeDisplay(_commonStartHour, _commonStartMinute)} ~ ${_formatTimeDisplay(_commonEndHour, _commonEndMinute)}',
+              style: TextStyle(fontSize: 14.sp),
+            ),
+          ] else ...[
+            Text(
+              '요일별 운영시간',
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(height: AppSizes.xs),
+            ...List.generate(7, (index) {
+              return Padding(
+                padding: EdgeInsets.only(bottom: 2.h),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 50.w,
+                      child: Text(
+                        _weekdays[index],
+                        style: TextStyle(fontSize: 12.sp),
+                      ),
+                    ),
+                    Text(
+                      '${_formatTimeDisplay(_weeklyHours[index]['startHour']!, _weeklyHours[index]['startMinute']!)} ~ ${_formatTimeDisplay(_weeklyHours[index]['endHour']!, _weeklyHours[index]['endMinute']!)}',
+                      style: TextStyle(fontSize: 12.sp),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // 시간 형식화 헬퍼
+  String _formatTimeDisplay(int hour, int minute) {
+    if (hour > 24) {
+      return '익일 ${(hour - 24).toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+    } else {
+      return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+    }
   }
 }
 
