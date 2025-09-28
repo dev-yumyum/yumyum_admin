@@ -565,8 +565,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
             
             // 운영시간/휴일설정
             SizedBox(height: AppSizes.lg),
-            // TODO: 운영시간 기능 구현 완료 - 빌드 에러 해결 후 활성화 예정
-            // _buildOperatingHoursSection(),
+            _buildOperatingHoursSection(),
           ],
         ),
       ),
