@@ -5,7 +5,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import '../../../../core/constants/app_constants.dart';
 
 class OptionGroupAddDialog extends StatefulWidget {
-  final Function(String name, String description, int maxSelection) onAdd;
+  final Function(String name, String description, bool isRequired, int minSelection, int maxSelection) onAdd;
   
   const OptionGroupAddDialog({super.key, required this.onAdd});
 
@@ -17,6 +17,12 @@ class _OptionGroupAddDialogState extends State<OptionGroupAddDialog> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
+  
+  // 옵션 타입 (필수/선택)
+  bool _isRequired = true; // true: 필수옵션, false: 선택옵션
+  
+  // 선택 개수 설정
+  int _minSelection = 1;
   int _maxSelection = 1;
 
   @override
@@ -106,61 +112,225 @@ class _OptionGroupAddDialogState extends State<OptionGroupAddDialog> {
               
               SizedBox(height: AppSizes.md),
               
-              // 최대 선택 개수
+              // 옵션 타입 선택 (필수/선택)
               Text(
-                '최대 선택 개수 *',
+                '옵션 타입 *',
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
                 ),
               ),
-              SizedBox(height: AppSizes.xs),
+              SizedBox(height: AppSizes.sm),
               Row(
                 children: [
                   Expanded(
-                    child: Slider(
-                      value: _maxSelection.toDouble(),
-                      min: 1,
-                      max: 10,
-                      divisions: 9,
-                      label: '$_maxSelection개',
-                      onChanged: (value) {
+                    child: RadioListTile<bool>(
+                      title: Text(
+                        '필수 옵션',
+                        style: TextStyle(fontSize: 16.sp),
+                      ),
+                      value: true,
+                      groupValue: _isRequired,
+                      onChanged: (bool? value) {
                         setState(() {
-                          _maxSelection = value.round();
+                          _isRequired = value!;
+                          // 필수옵션으로 변경 시 최소값을 1로 설정
+                          if (_isRequired && _minSelection < 1) {
+                            _minSelection = 1;
+                          }
                         });
                       },
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
                     ),
                   ),
-                  Container(
-                    width: 80.w,
-                    padding: EdgeInsets.all(AppSizes.sm),
-                    decoration: BoxDecoration(
-                      color: AppColors.background,
-                      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-                      border: Border.all(color: AppColors.border),
-                    ),
-                    child: Text(
-                      '$_maxSelection개',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
+                  Expanded(
+                    child: RadioListTile<bool>(
+                      title: Text(
+                        '선택 옵션',
+                        style: TextStyle(fontSize: 16.sp),
                       ),
+                      value: false,
+                      groupValue: _isRequired,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _isRequired = value!;
+                          // 선택옵션으로 변경 시 최소값을 0으로 설정
+                          if (!_isRequired) {
+                            _minSelection = 0;
+                          }
+                        });
+                      },
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
                     ),
                   ),
                 ],
               ),
               
-              SizedBox(height: AppSizes.sm),
+              SizedBox(height: AppSizes.md),
+              
+              // 선택 개수 설정
               Text(
-                '고객이 이 옵션 그룹에서 최대 몇 개까지 선택할 수 있는지 설정하세요.',
+                '선택 개수 설정 *',
                 style: TextStyle(
-                  fontSize: 16.sp,
-                  color: AppColors.textTertiary,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
                 ),
               ),
+              SizedBox(height: AppSizes.sm),
+              
+              if (_isRequired) ...[
+                // 필수 옵션일 때 - 최소/최대 선택 개수
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '최소 선택',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                          SizedBox(height: AppSizes.xs),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: AppColors.border),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: DropdownButton<int>(
+                              value: _minSelection,
+                              isExpanded: true,
+                              underline: Container(),
+                              items: List.generate(15, (index) => index + 1).map((count) {
+                                return DropdownMenuItem(
+                                  value: count,
+                                  child: Text('${count}개', style: TextStyle(fontSize: 16.sp)),
+                                );
+                              }).toList(),
+                              onChanged: (int? value) {
+                                if (value != null) {
+                                  setState(() {
+                                    _minSelection = value;
+                                    // 최소값이 최대값보다 큰 경우 최대값을 조정
+                                    if (_minSelection > _maxSelection) {
+                                      _maxSelection = _minSelection;
+                                    }
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: AppSizes.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '최대 선택',
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                          SizedBox(height: AppSizes.xs),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: AppColors.border),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: DropdownButton<int>(
+                              value: _maxSelection,
+                              isExpanded: true,
+                              underline: Container(),
+                              items: List.generate(15, (index) => index + 1).map((count) {
+                                return DropdownMenuItem(
+                                  value: count,
+                                  child: Text('${count}개', style: TextStyle(fontSize: 16.sp)),
+                                );
+                              }).toList(),
+                              onChanged: (int? value) {
+                                if (value != null) {
+                                  setState(() {
+                                    _maxSelection = value;
+                                    // 최대값이 최소값보다 작은 경우 최소값을 조정
+                                    if (_maxSelection < _minSelection) {
+                                      _minSelection = _maxSelection;
+                                    }
+                                  });
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: AppSizes.sm),
+                Text(
+                  '고객이 이 옵션 그룹에서 최소 ${_minSelection}개부터 최대 ${_maxSelection}개까지 선택해야 합니다.',
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: AppColors.textTertiary,
+                  ),
+                ),
+              ] else ...[
+                // 선택 옵션일 때 - 최대 선택 개수만
+                Row(
+                  children: [
+                    Text(
+                      '최대 선택:',
+                      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
+                    ),
+                    SizedBox(width: AppSizes.md),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: AppColors.border),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: DropdownButton<int>(
+                        value: _maxSelection,
+                        underline: Container(),
+                        items: List.generate(15, (index) => index + 1).map((count) {
+                          return DropdownMenuItem(
+                            value: count,
+                            child: Text('${count}개', style: TextStyle(fontSize: 16.sp)),
+                          );
+                        }).toList(),
+                        onChanged: (int? value) {
+                          if (value != null) {
+                            setState(() {
+                              _maxSelection = value;
+                            });
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: AppSizes.sm),
+                Text(
+                  '고객이 이 옵션 그룹에서 최대 ${_maxSelection}개까지 선택할 수 있습니다. (선택하지 않을 수도 있음)',
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: AppColors.textTertiary,
+                  ),
+                ),
+              ],
             ],
           ),
         ),
@@ -205,6 +375,8 @@ class _OptionGroupAddDialogState extends State<OptionGroupAddDialog> {
       widget.onAdd(
         _nameController.text.trim(),
         _descriptionController.text.trim(),
+        _isRequired,
+        _minSelection,
         _maxSelection,
       );
       Navigator.of(context).pop();

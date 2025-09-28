@@ -800,19 +800,39 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          group['name'],
-                          style: TextStyle(
-                            fontSize: 20.sp,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textPrimary,
-                          ),
+                        Row(
+                          children: [
+                            Text(
+                              group['name'],
+                              style: TextStyle(
+                                fontSize: 20.sp,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            SizedBox(width: AppSizes.sm),
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: AppSizes.xs, vertical: AppSizes.xs / 2),
+                              decoration: BoxDecoration(
+                                color: (group['isRequired'] ?? false) ? AppColors.error : AppColors.info,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                (group['isRequired'] ?? false) ? '필수' : '선택',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         SizedBox(height: AppSizes.xs),
                         Text(
-                          '선택 최대 ${group['maxSelection']}개',
+                          _getSelectionCountText(group),
                           style: TextStyle(
-                            fontSize: 16.sp,
+                            fontSize: 14.sp,
                             color: AppColors.textTertiary,
                           ),
                         ),
@@ -982,12 +1002,14 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
       context: context,
       builder: (BuildContext context) {
         return OptionGroupAddDialog(
-          onAdd: (String name, String description, int maxSelection) {
+          onAdd: (String name, String description, bool isRequired, int minSelection, int maxSelection) {
             setState(() {
               _optionGroups.add({
                 'id': DateTime.now().millisecondsSinceEpoch.toString(),
                 'name': name,
                 'description': description,
+                'isRequired': isRequired,
+                'minSelection': minSelection,
                 'maxSelection': maxSelection,
                 'items': [],
               });
@@ -995,7 +1017,7 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
             
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('옵션 그룹 "$name"이 추가되었습니다.'),
+                content: Text('${isRequired ? '필수' : '선택'} 옵션 그룹 "$name"이 추가되었습니다.'),
                 backgroundColor: AppColors.success,
               ),
             );
@@ -2764,5 +2786,22 @@ class _StoreMenuPageState extends State<StoreMenuPage> with TickerProviderStateM
       }).length;
       return total + count;
     });
+  }
+
+  // 옵션 그룹 선택 개수 텍스트 생성
+  String _getSelectionCountText(Map<String, dynamic> group) {
+    final bool isRequired = group['isRequired'] ?? false;
+    final int minSelection = group['minSelection'] ?? 0;
+    final int maxSelection = group['maxSelection'] ?? 1;
+    
+    if (isRequired) {
+      if (minSelection == maxSelection) {
+        return '${minSelection}개 선택 (필수)';
+      } else {
+        return '${minSelection}~${maxSelection}개 선택 (필수)';
+      }
+    } else {
+      return '최대 ${maxSelection}개 선택 (선택사항)';
+    }
   }
 }
