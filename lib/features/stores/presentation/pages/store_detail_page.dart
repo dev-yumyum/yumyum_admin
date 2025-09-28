@@ -89,6 +89,9 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
   bool _isPackagingAvailable = true; // 포장 가능
   bool _isDineInAvailable = true; // 매장식사 가능
 
+  // 메뉴 준비시간 관련 변수들
+  int _menuPreparationTime = 20; // 기본값 20분
+
   // 파일 업로드
   List<File?> _findTipImages = [null, null, null];
   List<String?> _findTipImageNames = [null, null, null];
@@ -522,6 +525,13 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               '공지사항',
               _noticeController,
               maxLines: 5,
+            ),
+
+            // 메뉴 준비시간
+            _buildInfoRow(
+              '메뉴 준비시간',
+              _isEditMode ? _buildPreparationTimeDropdown() : null,
+              '${_menuPreparationTime}분',
             ),
 
             // 매장소개 이미지
@@ -2327,6 +2337,44 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
       '서비스 옵션',
       null,
       services.isEmpty ? '-' : services.join(', '),
+    );
+  }
+
+  // 메뉴 준비시간 드롭다운
+  Widget _buildPreparationTimeDropdown() {
+    // 15분부터 60분까지 5분 단위로 생성
+    final List<int> preparationTimeOptions = [];
+    for (int i = 15; i <= 60; i += 5) {
+      preparationTimeOptions.add(i);
+    }
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: DropdownButton<int>(
+        value: _menuPreparationTime,
+        isExpanded: true,
+        underline: Container(),
+        items: preparationTimeOptions.map((time) {
+          return DropdownMenuItem(
+            value: time,
+            child: Text(
+              '${time}분',
+              style: TextStyle(fontSize: 16.sp),
+            ),
+          );
+        }).toList(),
+        onChanged: (int? value) {
+          if (value != null) {
+            setState(() {
+              _menuPreparationTime = value;
+            });
+          }
+        },
+      ),
     );
   }
 }
