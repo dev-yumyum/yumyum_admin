@@ -1660,10 +1660,10 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
   // 평일/주말 동일일 때의 시간 설정
   Widget _buildSameHoursSection() {
     return Container(
-      padding: EdgeInsets.all(AppSizes.md),
+      padding: EdgeInsets.all(AppSizes.lg),
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.border),
-        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.border, width: 1.5),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1671,19 +1671,19 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
           Text(
             '평일/주말 공통 운영시간',
             style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w500,
+              fontSize: 22.sp,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(height: AppSizes.md),
+          SizedBox(height: AppSizes.lg),
           
           Row(
             children: [
               Text(
                 '시작시간:',
-                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500),
               ),
-              SizedBox(width: AppSizes.md),
+              SizedBox(width: AppSizes.lg),
               _buildTimeDropdown(
                 _commonStartHour,
                 _commonStartMinute,
@@ -1702,9 +1702,9 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               SizedBox(width: AppSizes.md),
               Text(
                 '종료시간:',
-                style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500),
               ),
-              SizedBox(width: AppSizes.md),
+              SizedBox(width: AppSizes.lg),
               _buildTimeDropdown(
                 _commonEndHour,
                 _commonEndMinute,
@@ -1730,10 +1730,10 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
   // 평일/주말 다름일 때의 시간 설정
   Widget _buildDifferentHoursSection() {
     return Container(
-      padding: EdgeInsets.all(AppSizes.md),
+      padding: EdgeInsets.all(AppSizes.lg),
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.border),
-        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.border, width: 1.5),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1741,25 +1741,25 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
           Text(
             '요일별 운영시간',
             style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w500,
+              fontSize: 22.sp,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(height: AppSizes.md),
+          SizedBox(height: AppSizes.lg),
           
           ...List.generate(7, (index) {
             return Padding(
-              padding: EdgeInsets.only(bottom: AppSizes.sm),
+              padding: EdgeInsets.only(bottom: AppSizes.md),
               child: Row(
                 children: [
                   SizedBox(
-                    width: 80.w,
+                    width: 100.w,
                     child: Text(
                       _weekdays[index],
-                      style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
+                      style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w500),
                     ),
                   ),
-                  SizedBox(width: AppSizes.md),
+                  SizedBox(width: AppSizes.lg),
                   _buildTimeDropdown(
                     _weeklyHours[index]['startHour']!,
                     _weeklyHours[index]['startMinute']!,
@@ -1775,12 +1775,12 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                       });
                     },
                   ),
-                  SizedBox(width: AppSizes.md),
+                  SizedBox(width: AppSizes.lg),
                   Text(
                     '~',
-                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(width: AppSizes.md),
+                  SizedBox(width: AppSizes.lg),
                   _buildTimeDropdown(
                     _weeklyHours[index]['endHour']!,
                     _weeklyHours[index]['endMinute']!,
@@ -1822,10 +1822,10 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
       children: [
         // 시간 드롭다운
         Container(
-          padding: EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
+          padding: EdgeInsets.symmetric(horizontal: AppSizes.lg, vertical: AppSizes.sm),
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.border),
-            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: AppColors.border, width: 1.5),
+            borderRadius: BorderRadius.circular(8),
           ),
           child: DropdownButton<int>(
             value: selectedHour,
@@ -1840,7 +1840,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               
               return DropdownMenuItem(
                 value: hour,
-                child: Text(displayHour, style: TextStyle(fontSize: 16.sp)),
+                child: Text(displayHour, style: TextStyle(fontSize: 18.sp)),
               );
             }),
             onChanged: (int? value) {
@@ -1857,10 +1857,10 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
         
         // 분 드롭다운
         Container(
-          padding: EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
+          padding: EdgeInsets.symmetric(horizontal: AppSizes.lg, vertical: AppSizes.sm),
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.border),
-            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: AppColors.border, width: 1.5),
+            borderRadius: BorderRadius.circular(8),
           ),
           child: DropdownButton<int>(
             value: selectedMinute,
@@ -1870,7 +1870,7 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
                 value: minute,
                 child: Text(
                   minute.toString().padLeft(2, '0'),
-                  style: TextStyle(fontSize: 16.sp),
+                  style: TextStyle(fontSize: 18.sp),
                 ),
               );
             }).toList(),
@@ -1888,10 +1888,11 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
   // 운영시간 표시 (보기 모드)
   Widget _buildOperatingHoursDisplay() {
     return Container(
-      padding: EdgeInsets.all(AppSizes.md),
+      padding: EdgeInsets.all(AppSizes.xl),
       decoration: BoxDecoration(
         color: AppColors.background,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border, width: 1.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1900,39 +1901,41 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
             Text(
               '평일/주말 공통',
               style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
               ),
             ),
-            SizedBox(height: AppSizes.xs),
+            SizedBox(height: AppSizes.sm),
             Text(
               '${_formatTimeDisplay(_commonStartHour, _commonStartMinute)} ~ ${_formatTimeDisplay(_commonEndHour, _commonEndMinute)}',
-              style: TextStyle(fontSize: 14.sp),
+              style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w500),
             ),
           ] else ...[
             Text(
               '요일별 운영시간',
               style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
               ),
             ),
-            SizedBox(height: AppSizes.xs),
+            SizedBox(height: AppSizes.sm),
             ...List.generate(7, (index) {
               return Padding(
-                padding: EdgeInsets.only(bottom: 2.h),
+                padding: EdgeInsets.only(bottom: AppSizes.sm),
                 child: Row(
                   children: [
                     SizedBox(
-                      width: 50.w,
+                      width: 80.w,
                       child: Text(
                         _weekdays[index],
-                        style: TextStyle(fontSize: 12.sp),
+                        style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
                       ),
                     ),
                     Text(
                       '${_formatTimeDisplay(_weeklyHours[index]['startHour']!, _weeklyHours[index]['startMinute']!)} ~ ${_formatTimeDisplay(_weeklyHours[index]['endHour']!, _weeklyHours[index]['endMinute']!)}',
-                      style: TextStyle(fontSize: 12.sp),
+                      style: TextStyle(fontSize: 16.sp),
                     ),
                   ],
                 ),
