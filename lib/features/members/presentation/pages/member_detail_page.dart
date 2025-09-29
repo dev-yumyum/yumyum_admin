@@ -6,6 +6,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import '../../../../core/constants/app_constants.dart';
 import '../../../../shared/widgets/crm_layout.dart';
 import '../../data/models/member_model.dart';
+import '../../data/models/customer_address_model.dart';
+import '../../data/models/customer_modification_history_model.dart';
 
 class MemberDetailPage extends StatefulWidget {
   final String? memberId;
@@ -25,6 +27,12 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
   int _totalEarned = 15670;
   int _totalUsed = 13220;
 
+  // 주소록 데이터 (최대 5개)
+  List<CustomerAddressModel> _addressBook = [];
+
+  // 정보 수정 기록 데이터
+  List<CustomerModificationHistoryModel> _modificationHistory = [];
+
   @override
   void initState() {
     super.initState();
@@ -43,6 +51,8 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
     if (mounted) {
       setState(() {
         _member = member;
+        _addressBook = _getSampleAddressBook(member.id);
+        _modificationHistory = _getSampleModificationHistory(member.id);
         _isLoading = false;
       });
     }
@@ -69,6 +79,10 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
                   _buildJoinInfoSection(),
                   SizedBox(height: AppSizes.lg),
                   _buildPointSection(),
+                  SizedBox(height: AppSizes.lg),
+                  _buildAddressBookSection(),
+                  SizedBox(height: AppSizes.lg),
+                  _buildModificationHistorySection(),
                 ],
               ),
             ),
@@ -591,6 +605,594 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
         registrationType: '애플',
       ),
     ];
+  }
+
+  // 샘플 주소록 데이터 생성 (최대 5개)
+  List<CustomerAddressModel> _getSampleAddressBook(String memberId) {
+    return [
+      CustomerAddressModel(
+        id: 'addr_001',
+        addressName: '집',
+        fullAddress: '서울특별시 강남구 테헤란로 427',
+        detailAddress: '위워크타워 15층',
+        postalCode: '06158',
+        latitude: 37.5066,
+        longitude: 127.0536,
+        isDefault: true,
+        createdAt: DateTime.now().subtract(const Duration(days: 30)),
+        updatedAt: DateTime.now().subtract(const Duration(days: 5)),
+        deliveryInstructions: '경비실에 맡겨주세요',
+      ),
+      CustomerAddressModel(
+        id: 'addr_002',
+        addressName: '회사',
+        fullAddress: '서울특별시 서초구 서초대로 396',
+        detailAddress: '강남빌딩 12층',
+        postalCode: '06621',
+        latitude: 37.4969,
+        longitude: 127.0298,
+        isDefault: false,
+        createdAt: DateTime.now().subtract(const Duration(days: 20)),
+        updatedAt: DateTime.now().subtract(const Duration(days: 20)),
+        deliveryInstructions: '부재시 문앞에 놓아주세요',
+      ),
+      CustomerAddressModel(
+        id: 'addr_003',
+        addressName: '부모님댁',
+        fullAddress: '경기도 성남시 분당구 판교역로 235',
+        detailAddress: '에이치스퀘어 N동 2301호',
+        postalCode: '13494',
+        latitude: 37.3954,
+        longitude: 127.1114,
+        isDefault: false,
+        createdAt: DateTime.now().subtract(const Duration(days: 15)),
+        updatedAt: DateTime.now().subtract(const Duration(days: 15)),
+        deliveryInstructions: '초인종 눌러주세요',
+      ),
+    ];
+  }
+
+  // 샘플 정보 수정 기록 데이터 생성
+  List<CustomerModificationHistoryModel> _getSampleModificationHistory(String memberId) {
+    return [
+      CustomerModificationHistoryModel(
+        id: 'hist_001',
+        memberId: memberId,
+        fieldName: 'phone',
+        fieldDisplayName: '연락처',
+        valueBefore: '010-1234-5678',
+        valueAfter: '010-9876-5432',
+        modifiedAt: DateTime.now().subtract(const Duration(days: 3)),
+        modifiedBy: 'CUSTOMER',
+        ipAddress: '192.168.1.100',
+      ),
+      CustomerModificationHistoryModel(
+        id: 'hist_002',
+        memberId: memberId,
+        fieldName: 'email',
+        fieldDisplayName: '이메일',
+        valueBefore: 'old@example.com',
+        valueAfter: 'new@example.com',
+        modifiedAt: DateTime.now().subtract(const Duration(days: 7)),
+        modifiedBy: 'CUSTOMER',
+        ipAddress: '192.168.1.100',
+      ),
+      CustomerModificationHistoryModel(
+        id: 'hist_003',
+        memberId: memberId,
+        fieldName: 'memberName',
+        fieldDisplayName: '회원명',
+        valueBefore: '김철수',
+        valueAfter: '김철민',
+        modifiedAt: DateTime.now().subtract(const Duration(days: 10)),
+        modifiedBy: 'ADMIN',
+        adminId: 'admin_001',
+        reason: '고객 요청으로 인한 정정',
+        ipAddress: '10.0.0.1',
+      ),
+      CustomerModificationHistoryModel(
+        id: 'hist_004',
+        memberId: memberId,
+        fieldName: 'address',
+        fieldDisplayName: '기본 배송지',
+        valueBefore: '서울시 강남구 역삼동 123-45',
+        valueAfter: '서울시 강남구 테헤란로 427',
+        modifiedAt: DateTime.now().subtract(const Duration(days: 12)),
+        modifiedBy: 'CUSTOMER',
+        ipAddress: '192.168.1.100',
+      ),
+      CustomerModificationHistoryModel(
+        id: 'hist_005',
+        memberId: memberId,
+        fieldName: 'nickname',
+        fieldDisplayName: '닉네임',
+        valueBefore: '맛집탐방러',
+        valueAfter: '미식가철수',
+        modifiedAt: DateTime.now().subtract(const Duration(days: 18)),
+        modifiedBy: 'CUSTOMER',
+        ipAddress: '192.168.1.100',
+      ),
+    ];
+  }
+
+  // 주소록 섹션
+  Widget _buildAddressBookSection() {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppSizes.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  MdiIcons.mapMarker,
+                  color: AppColors.primary,
+                  size: AppSizes.iconMd,
+                ),
+                SizedBox(width: AppSizes.sm),
+                Text(
+                  '배송지 주소록',
+                  style: TextStyle(
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                Spacer(),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppSizes.sm,
+                    vertical: AppSizes.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.info.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '${_addressBook.length}/5',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.info,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: AppSizes.md),
+            
+            if (_addressBook.isEmpty) 
+              _buildEmptyAddressState()
+            else 
+              ..._addressBook.map((address) => _buildAddressCard(address)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 빈 주소록 상태
+  Widget _buildEmptyAddressState() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(AppSizes.xl),
+      decoration: BoxDecoration(
+        color: AppColors.background.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            MdiIcons.mapMarkerOff,
+            size: 48.r,
+            color: AppColors.textTertiary,
+          ),
+          SizedBox(height: AppSizes.md),
+          Text(
+            '등록된 배송지가 없습니다',
+            style: TextStyle(
+              fontSize: 18.sp,
+              color: AppColors.textTertiary,
+            ),
+          ),
+          SizedBox(height: AppSizes.xs),
+          Text(
+            '고객이 앱에서 배송지를 등록하면 여기에 표시됩니다',
+            style: TextStyle(
+              fontSize: 14.sp,
+              color: AppColors.textTertiary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 주소 카드
+  Widget _buildAddressCard(CustomerAddressModel address) {
+    return Container(
+      margin: EdgeInsets.only(bottom: AppSizes.sm),
+      padding: EdgeInsets.all(AppSizes.md),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: address.isDefault ? AppColors.primary : AppColors.border,
+          width: address.isDefault ? 2 : 1,
+        ),
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+        color: address.isDefault ? AppColors.primary.withOpacity(0.05) : null,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSizes.sm,
+                  vertical: AppSizes.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: address.isDefault ? AppColors.primary : AppColors.secondary,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  address.addressName,
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              if (address.isDefault) ...[
+                SizedBox(width: AppSizes.xs),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppSizes.sm,
+                    vertical: AppSizes.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.success,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '기본배송지',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+              Spacer(),
+              Text(
+                '등록: ${address.createdAt.year}.${address.createdAt.month.toString().padLeft(2, '0')}.${address.createdAt.day.toString().padLeft(2, '0')}',
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: AppColors.textTertiary,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: AppSizes.sm),
+          Text(
+            address.fullAddress,
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          if (address.detailAddress.isNotEmpty) ...[
+            SizedBox(height: AppSizes.xs),
+            Text(
+              address.detailAddress,
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+          if (address.deliveryInstructions != null && address.deliveryInstructions!.isNotEmpty) ...[
+            SizedBox(height: AppSizes.sm),
+            Container(
+              padding: EdgeInsets.all(AppSizes.sm),
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    MdiIcons.messageText,
+                    size: AppSizes.iconSm,
+                    color: AppColors.info,
+                  ),
+                  SizedBox(width: AppSizes.xs),
+                  Expanded(
+                    child: Text(
+                      address.deliveryInstructions!,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // 정보 수정 기록 섹션
+  Widget _buildModificationHistorySection() {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppSizes.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  MdiIcons.history,
+                  color: AppColors.warning,
+                  size: AppSizes.iconMd,
+                ),
+                SizedBox(width: AppSizes.sm),
+                Text(
+                  '정보 수정 기록',
+                  style: TextStyle(
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                Spacer(),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppSizes.sm,
+                    vertical: AppSizes.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.warning.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '총 ${_modificationHistory.length}건',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.warning,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: AppSizes.md),
+            
+            if (_modificationHistory.isEmpty) 
+              _buildEmptyHistoryState()
+            else 
+              ..._modificationHistory.take(10).map((history) => _buildHistoryCard(history)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 빈 수정 기록 상태
+  Widget _buildEmptyHistoryState() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(AppSizes.xl),
+      decoration: BoxDecoration(
+        color: AppColors.background.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            MdiIcons.clockOutline,
+            size: 48.r,
+            color: AppColors.textTertiary,
+          ),
+          SizedBox(height: AppSizes.md),
+          Text(
+            '정보 수정 기록이 없습니다',
+            style: TextStyle(
+              fontSize: 18.sp,
+              color: AppColors.textTertiary,
+            ),
+          ),
+          SizedBox(height: AppSizes.xs),
+          Text(
+            '고객의 정보 변경 시 기록이 표시됩니다',
+            style: TextStyle(
+              fontSize: 14.sp,
+              color: AppColors.textTertiary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 수정 기록 카드
+  Widget _buildHistoryCard(CustomerModificationHistoryModel history) {
+    return Container(
+      margin: EdgeInsets.only(bottom: AppSizes.sm),
+      padding: EdgeInsets.all(AppSizes.md),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSizes.sm,
+                  vertical: AppSizes.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: history.isCustomerModified ? AppColors.info : AppColors.warning,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  history.isCustomerModified ? '고객 수정' : '관리자 수정',
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(width: AppSizes.sm),
+              Text(
+                history.fieldDisplayName,
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              Spacer(),
+              Text(
+                '${history.modifiedAt.year}.${history.modifiedAt.month.toString().padLeft(2, '0')}.${history.modifiedAt.day.toString().padLeft(2, '0')} ${history.modifiedAt.hour.toString().padLeft(2, '0')}:${history.modifiedAt.minute.toString().padLeft(2, '0')}',
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: AppColors.textTertiary,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: AppSizes.sm),
+          
+          // 변경 전후 내용
+          Container(
+            padding: EdgeInsets.all(AppSizes.sm),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      MdiIcons.arrowLeft,
+                      size: AppSizes.iconSm,
+                      color: AppColors.error,
+                    ),
+                    SizedBox(width: AppSizes.xs),
+                    Text(
+                      '변경 전:',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.error,
+                      ),
+                    ),
+                    SizedBox(width: AppSizes.xs),
+                    Expanded(
+                      child: Text(
+                        history.valueBefore ?? '없음',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: AppColors.textSecondary,
+                          decoration: TextDecoration.lineThrough,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: AppSizes.xs),
+                Row(
+                  children: [
+                    Icon(
+                      MdiIcons.arrowRight,
+                      size: AppSizes.iconSm,
+                      color: AppColors.success,
+                    ),
+                    SizedBox(width: AppSizes.xs),
+                    Text(
+                      '변경 후:',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.success,
+                      ),
+                    ),
+                    SizedBox(width: AppSizes.xs),
+                    Expanded(
+                      child: Text(
+                        history.valueAfter ?? '없음',
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          
+          // 관리자 수정 시 추가 정보
+          if (history.isAdminModified && history.reason != null) ...[
+            SizedBox(height: AppSizes.sm),
+            Container(
+              padding: EdgeInsets.all(AppSizes.sm),
+              decoration: BoxDecoration(
+                color: AppColors.warning.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    MdiIcons.accountTie,
+                    size: AppSizes.iconSm,
+                    color: AppColors.warning,
+                  ),
+                  SizedBox(width: AppSizes.xs),
+                  Text(
+                    '관리자 수정 사유:',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.warning,
+                    ),
+                  ),
+                  SizedBox(width: AppSizes.xs),
+                  Expanded(
+                    child: Text(
+                      history.reason!,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
   }
 
 }
