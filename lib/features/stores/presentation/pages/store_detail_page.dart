@@ -10,6 +10,7 @@ import 'dart:math' as math;
 import '../../../../core/constants/app_constants.dart';
 import '../../../../shared/widgets/crm_layout.dart';
 import '../../data/models/store_model.dart';
+import '../../data/models/store_modification_history_model.dart';
 
 class StoreDetailPage extends StatefulWidget {
   final String? storeId;
@@ -112,6 +113,14 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
     {'id': '4', 'name': '햄버거킹'},
   ];
 
+  // 앱 업로드 관련 상태
+  bool _isAppUploaded = false; // 앱에 업로드 여부
+  DateTime? _lastUploadedAt; // 마지막 업로드 시간
+  bool _isAppActionLoading = false; // 앱 업로드/내리기 로딩 상태
+
+  // 매장 수정 기록
+  List<StoreModificationHistoryModel> _modificationHistory = [];
+
   @override
   void initState() {
     super.initState();
@@ -146,6 +155,9 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
     if (mounted) {
       setState(() {
         _store = store;
+        _modificationHistory = _getSampleStoreModificationHistory(store.id);
+        _isAppUploaded = store.id == '1' || store.id == '2'; // 샘플: 일부만 업로드됨
+        _lastUploadedAt = _isAppUploaded ? DateTime.now().subtract(const Duration(days: 2)) : null;
         _isLoading = false;
       });
       _updateControllers();
@@ -292,6 +304,10 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
               _buildCategoryInfoSection(),
               SizedBox(height: AppSizes.lg),
               _buildConvenienceSection(),
+              SizedBox(height: AppSizes.lg),
+              _buildAppStatusSection(),
+              SizedBox(height: AppSizes.lg),
+              _buildStoreModificationHistorySection(),
               if (_isEditMode) ...[
                 SizedBox(height: AppSizes.xl),
                 _buildEditActions(),
@@ -2379,6 +2395,684 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
         },
       ),
     );
+  }
+
+  // 샘플 매장 수정 기록 데이터 생성
+  List<StoreModificationHistoryModel> _getSampleStoreModificationHistory(String storeId) {
+    return [
+      StoreModificationHistoryModel(
+        id: 'hist_001',
+        storeId: storeId,
+        actionType: 'UPLOAD',
+        actionDisplayName: '앱에 업로드',
+        modifiedAt: DateTime.now().subtract(const Duration(days: 2)),
+        modifiedBy: 'ADMIN',
+        adminId: 'admin_001',
+        reason: '매장 정보 검토 완료 후 공개',
+      ),
+      StoreModificationHistoryModel(
+        id: 'hist_002',
+        storeId: storeId,
+        actionType: 'MODIFY',
+        actionDisplayName: '매장 정보 수정',
+        fieldName: 'storeName',
+        fieldDisplayName: '매장명',
+        valueBefore: '맛집 본점',
+        valueAfter: '맛집 강남본점',
+        modifiedAt: DateTime.now().subtract(const Duration(days: 5)),
+        modifiedBy: 'ADMIN',
+        adminId: 'admin_001',
+        reason: '매장명 변경 요청',
+      ),
+    ];
+  }
+
+  // 앱 업로드 상태 섹션
+  Widget _buildAppStatusSection() {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppSizes.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  _isAppUploaded ? MdiIcons.cellphone : MdiIcons.cellphoneOff,
+                  color: _isAppUploaded ? AppColors.success : AppColors.error,
+                  size: AppSizes.iconMd,
+                ),
+                SizedBox(width: AppSizes.sm),
+                Text(
+                  'YumYum 앱 연동 상태',
+                  style: TextStyle(
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                Spacer(),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppSizes.sm,
+                    vertical: AppSizes.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: (_isAppUploaded ? AppColors.success : AppColors.error).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    _isAppUploaded ? '앱에 공개됨' : '앱에서 비공개',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: _isAppUploaded ? AppColors.success : AppColors.error,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: AppSizes.md),
+            
+            // 앱 상태 정보
+            Container(
+              padding: EdgeInsets.all(AppSizes.md),
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (_isAppUploaded) ...[
+                    Row(
+                      children: [
+                        Icon(
+                          MdiIcons.checkCircle,
+                          color: AppColors.success,
+                          size: AppSizes.iconSm,
+                        ),
+                        SizedBox(width: AppSizes.xs),
+                        Text(
+                          '앱에서 고객들이 이 매장을 볼 수 있습니다',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: AppColors.success,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ] else ...[
+                    Row(
+                      children: [
+                        Icon(
+                          MdiIcons.alertCircle,
+                          color: AppColors.warning,
+                          size: AppSizes.iconSm,
+                        ),
+                        SizedBox(width: AppSizes.xs),
+                        Text(
+                          '현재 앱에서 이 매장이 비공개 상태입니다',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: AppColors.warning,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: AppSizes.sm),
+                    Text(
+                      '매장 정보 및 메뉴 등록 완료 후 앱에 업로드할 수 있습니다.',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: AppColors.textTertiary,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            
+            SizedBox(height: AppSizes.lg),
+            
+            // 액션 버튼들
+            Row(
+              children: [
+                if (!_isAppUploaded) ...[
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: _isAppActionLoading ? null : _uploadToApp,
+                      icon: _isAppActionLoading
+                          ? SizedBox(
+                              width: AppSizes.iconSm,
+                              height: AppSizes.iconSm,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            )
+                          : Icon(MdiIcons.upload, size: AppSizes.iconSm),
+                      label: Text(
+                        _isAppActionLoading ? '업로드 중...' : '앱에 업로드하기',
+                        style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.success,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppSizes.xl,
+                          vertical: AppSizes.md,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                        ),
+                      ),
+                    ),
+                  ),
+                ] else ...[
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: _isAppActionLoading ? null : _takedownFromApp,
+                      icon: _isAppActionLoading
+                          ? SizedBox(
+                              width: AppSizes.iconSm,
+                              height: AppSizes.iconSm,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(AppColors.error),
+                              ),
+                            )
+                          : Icon(MdiIcons.download, size: AppSizes.iconSm),
+                      label: Text(
+                        _isAppActionLoading ? '내리는 중...' : '앱에서 내리기',
+                        style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.error,
+                        side: BorderSide(color: AppColors.error, width: 2),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppSizes.xl,
+                          vertical: AppSizes.md,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: AppSizes.md),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: _isAppActionLoading ? null : _syncToApp,
+                      icon: Icon(MdiIcons.cached, size: AppSizes.iconSm),
+                      label: Text(
+                        '앱과 동기화',
+                        style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.info,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppSizes.xl,
+                          vertical: AppSizes.md,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 매장 수정 기록 섹션
+  Widget _buildStoreModificationHistorySection() {
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppSizes.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  MdiIcons.history,
+                  color: AppColors.warning,
+                  size: AppSizes.iconMd,
+                ),
+                SizedBox(width: AppSizes.sm),
+                Text(
+                  '매장 수정 기록',
+                  style: TextStyle(
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                Spacer(),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppSizes.sm,
+                    vertical: AppSizes.xs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.warning.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '총 ${_modificationHistory.length}건',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.warning,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: AppSizes.md),
+            
+            if (_modificationHistory.isEmpty) 
+              _buildEmptyStoreHistoryState()
+            else 
+              ..._modificationHistory.take(10).map((history) => _buildStoreHistoryCard(history)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 빈 매장 수정 기록 상태
+  Widget _buildEmptyStoreHistoryState() {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(AppSizes.xl),
+      decoration: BoxDecoration(
+        color: AppColors.background.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Column(
+        children: [
+          Icon(
+            MdiIcons.clockOutline,
+            size: 48.r,
+            color: AppColors.textTertiary,
+          ),
+          SizedBox(height: AppSizes.md),
+          Text(
+            '매장 수정 기록이 없습니다',
+            style: TextStyle(
+              fontSize: 18.sp,
+              color: AppColors.textTertiary,
+            ),
+          ),
+          SizedBox(height: AppSizes.xs),
+          Text(
+            '매장 정보 변경 시 기록이 표시됩니다',
+            style: TextStyle(
+              fontSize: 14.sp,
+              color: AppColors.textTertiary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 매장 수정 기록 카드
+  Widget _buildStoreHistoryCard(StoreModificationHistoryModel history) {
+    Color actionColor;
+    switch (history.actionColorType) {
+      case 'SUCCESS':
+        actionColor = AppColors.success;
+        break;
+      case 'ERROR':
+        actionColor = AppColors.error;
+        break;
+      case 'WARNING':
+        actionColor = AppColors.warning;
+        break;
+      case 'INFO':
+      default:
+        actionColor = AppColors.info;
+        break;
+    }
+
+    return Container(
+      margin: EdgeInsets.only(bottom: AppSizes.sm),
+      padding: EdgeInsets.all(AppSizes.md),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.border),
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                history.actionIcon,
+                style: TextStyle(fontSize: 20.sp),
+              ),
+              SizedBox(width: AppSizes.sm),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSizes.sm,
+                  vertical: AppSizes.xs,
+                ),
+                decoration: BoxDecoration(
+                  color: actionColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  history.isAdminAction ? '관리자' : '시스템',
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              SizedBox(width: AppSizes.sm),
+              Text(
+                history.actionDisplayName,
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              Spacer(),
+              Text(
+                '${history.modifiedAt.year}.${history.modifiedAt.month.toString().padLeft(2, '0')}.${history.modifiedAt.day.toString().padLeft(2, '0')} ${history.modifiedAt.hour.toString().padLeft(2, '0')}:${history.modifiedAt.minute.toString().padLeft(2, '0')}',
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: AppColors.textTertiary,
+                ),
+              ),
+            ],
+          ),
+          
+          if (history.fieldDisplayName != null || history.changeSummary.isNotEmpty) ...[
+            SizedBox(height: AppSizes.sm),
+            Container(
+              padding: EdgeInsets.all(AppSizes.sm),
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                history.changeSummary,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+          ],
+          
+          // 관리자 수정 시 추가 정보
+          if (history.isAdminAction && history.reason != null) ...[
+            SizedBox(height: AppSizes.sm),
+            Container(
+              padding: EdgeInsets.all(AppSizes.sm),
+              decoration: BoxDecoration(
+                color: AppColors.info.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    MdiIcons.accountTie,
+                    size: AppSizes.iconSm,
+                    color: AppColors.info,
+                  ),
+                  SizedBox(width: AppSizes.xs),
+                  Text(
+                    '사유:',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.info,
+                    ),
+                  ),
+                  SizedBox(width: AppSizes.xs),
+                  Expanded(
+                    child: Text(
+                      history.reason!,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  // 앱 업로드 액션
+  Future<void> _uploadToApp() async {
+    setState(() {
+      _isAppActionLoading = true;
+    });
+
+    try {
+      // 실제로는 API 호출
+      await Future.delayed(const Duration(seconds: 2));
+      
+      setState(() {
+        _isAppUploaded = true;
+        _lastUploadedAt = DateTime.now();
+        _isAppActionLoading = false;
+      });
+
+      // 수정 기록 추가
+      _addModificationHistory(
+        actionType: 'UPLOAD',
+        actionDisplayName: '앱에 업로드',
+        reason: '관리자가 매장을 앱에 공개했습니다',
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '매장이 성공적으로 YumYum 앱에 업로드되었습니다!',
+            style: TextStyle(fontSize: 16.sp),
+          ),
+          backgroundColor: AppColors.success,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    } catch (e) {
+      setState(() {
+        _isAppActionLoading = false;
+      });
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '업로드 중 오류가 발생했습니다.',
+            style: TextStyle(fontSize: 16.sp),
+          ),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
+  }
+
+  // 앱에서 내리기 액션
+  Future<void> _takedownFromApp() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          '앱에서 내리기',
+          style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          '정말로 이 매장을 앱에서 내리시겠습니까?\n고객들이 더 이상 이 매장을 볼 수 없게 됩니다.',
+          style: TextStyle(fontSize: 16.sp),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('취소'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.error,
+              foregroundColor: Colors.white,
+            ),
+            child: Text('내리기'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    setState(() {
+      _isAppActionLoading = true;
+    });
+
+    try {
+      // 실제로는 API 호출
+      await Future.delayed(const Duration(seconds: 2));
+      
+      setState(() {
+        _isAppUploaded = false;
+        _lastUploadedAt = null;
+        _isAppActionLoading = false;
+      });
+
+      // 수정 기록 추가
+      _addModificationHistory(
+        actionType: 'TAKEDOWN',
+        actionDisplayName: '앱에서 내림',
+        reason: '관리자가 매장을 앱에서 비공개로 설정했습니다',
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '매장이 YumYum 앱에서 내려졌습니다.',
+            style: TextStyle(fontSize: 16.sp),
+          ),
+          backgroundColor: AppColors.warning,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    } catch (e) {
+      setState(() {
+        _isAppActionLoading = false;
+      });
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '내리기 중 오류가 발생했습니다.',
+            style: TextStyle(fontSize: 16.sp),
+          ),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
+  }
+
+  // 앱과 동기화 액션
+  Future<void> _syncToApp() async {
+    setState(() {
+      _isAppActionLoading = true;
+    });
+
+    try {
+      // 실제로는 API 호출
+      await Future.delayed(const Duration(seconds: 1));
+      
+      setState(() {
+        _lastUploadedAt = DateTime.now();
+        _isAppActionLoading = false;
+      });
+
+      // 수정 기록 추가
+      _addModificationHistory(
+        actionType: 'MODIFY',
+        actionDisplayName: '앱 정보 동기화',
+        reason: '최신 매장 정보를 앱에 동기화했습니다',
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '매장 정보가 YumYum 앱과 동기화되었습니다!',
+            style: TextStyle(fontSize: 16.sp),
+          ),
+          backgroundColor: AppColors.info,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    } catch (e) {
+      setState(() {
+        _isAppActionLoading = false;
+      });
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '동기화 중 오류가 발생했습니다.',
+            style: TextStyle(fontSize: 16.sp),
+          ),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
+  }
+
+  // 수정 기록 추가
+  void _addModificationHistory({
+    required String actionType,
+    required String actionDisplayName,
+    String? fieldName,
+    String? fieldDisplayName,
+    String? valueBefore,
+    String? valueAfter,
+    String? reason,
+  }) {
+    final newHistory = StoreModificationHistoryModel(
+      id: 'hist_${DateTime.now().millisecondsSinceEpoch}',
+      storeId: _store?.id ?? '',
+      actionType: actionType,
+      actionDisplayName: actionDisplayName,
+      fieldName: fieldName,
+      fieldDisplayName: fieldDisplayName,
+      valueBefore: valueBefore,
+      valueAfter: valueAfter,
+      modifiedAt: DateTime.now(),
+      modifiedBy: 'ADMIN',
+      adminId: 'current_admin', // 실제로는 현재 로그인한 관리자 ID
+      reason: reason,
+      ipAddress: '192.168.1.100', // 실제로는 현재 IP
+    );
+
+    setState(() {
+      _modificationHistory.insert(0, newHistory); // 최신 기록을 맨 앞에
+    });
   }
 }
 
