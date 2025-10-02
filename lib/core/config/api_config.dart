@@ -32,3 +32,4 @@ class ApiConfig {
   static bool get isDevelopment => true; // 개발 환경으로 설정
   static String get currentBaseUrl => isDevelopment ? devBaseUrl : prodBaseUrl;
 }
+

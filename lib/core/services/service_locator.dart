@@ -4,6 +4,8 @@ import 'stores_service.dart';
 import 'orders_service.dart';
 import 'members_service.dart';
 import 'dashboard_service.dart';
+import 'nicknames_service.dart';
+import 'banned_words_service.dart';
 
 class ServiceLocator {
   static final ServiceLocator _instance = ServiceLocator._internal();
@@ -17,6 +19,8 @@ class ServiceLocator {
   late final OrdersService _ordersService;
   late final MembersService _membersService;
   late final DashboardService _dashboardService;
+  late final NicknamesService _nicknamesService;
+  late final BannedWordsService _bannedWordsService;
 
   // 초기화
   void initialize() {
@@ -28,6 +32,8 @@ class ServiceLocator {
     _ordersService = OrdersService();
     _membersService = MembersService();
     _dashboardService = DashboardService();
+    _nicknamesService = NicknamesService();
+    _bannedWordsService = BannedWordsService();
   }
 
   // 서비스 인스턴스 접근자들
@@ -37,4 +43,7 @@ class ServiceLocator {
   OrdersService get ordersService => _ordersService;
   MembersService get membersService => _membersService;
   DashboardService get dashboardService => _dashboardService;
+  NicknamesService get nicknamesService => _nicknamesService;
+  BannedWordsService get bannedWordsService => _bannedWordsService;
 }
+

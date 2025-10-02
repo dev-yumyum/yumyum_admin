@@ -18,6 +18,8 @@ import '../../features/settlements/presentation/pages/settlement_detail_page.dar
 import '../../features/members/presentation/pages/members_page.dart';
 import '../../features/members/presentation/pages/member_detail_page.dart';
 import '../../features/managers/presentation/pages/managers_page.dart';
+import '../../features/nicknames/presentation/pages/nickname_management_page.dart';
+import '../../features/nicknames/presentation/pages/banned_words_page.dart';
 
 GoRouter createRouter() {
   return GoRouter(
@@ -138,6 +140,18 @@ GoRouter createRouter() {
       GoRoute(
         path: RouteNames.manager,
         builder: (context, state) => const ManagersPage(),
+      ),
+      
+      // 닉네임 관리
+      GoRoute(
+        path: '/nickname-management',
+        builder: (context, state) => const NicknameManagementPage(),
+      ),
+      
+      // 금칙어 관리
+      GoRoute(
+        path: '/banned-words',
+        builder: (context, state) => const BannedWordsPage(),
       ),
     ],
   );

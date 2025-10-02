@@ -241,6 +241,16 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
         title: AppStrings.managerManagement,
         route: RouteNames.manager,
       ),
+      _MenuItem(
+        icon: MdiIcons.account,
+        title: '닉네임 관리',
+        route: '/nickname-management',
+      ),
+      _MenuItem(
+        icon: MdiIcons.shieldAlert,
+        title: '금칙어 관리',
+        route: '/banned-words',
+      ),
     ];
 
     return ListView.builder(

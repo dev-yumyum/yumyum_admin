@@ -5,6 +5,8 @@ import '../services/stores_service.dart';
 import '../services/orders_service.dart';
 import '../services/members_service.dart';
 import '../services/dashboard_service.dart';
+import '../services/nicknames_service.dart';
+import '../services/banned_words_service.dart';
 
 // 서비스 로케이터 프로바이더
 final serviceLocatorProvider = Provider<ServiceLocator>((ref) {
@@ -31,3 +33,12 @@ final membersServiceProvider = Provider<MembersService>((ref) {
 final dashboardServiceProvider = Provider<DashboardService>((ref) {
   return ref.watch(serviceLocatorProvider).dashboardService;
 });
+
+final nicknamesServiceProvider = Provider<NicknamesService>((ref) {
+  return ref.watch(serviceLocatorProvider).nicknamesService;
+});
+
+final bannedWordsServiceProvider = Provider<BannedWordsService>((ref) {
+  return ref.watch(serviceLocatorProvider).bannedWordsService;
+});
+
