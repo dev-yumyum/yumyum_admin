@@ -7,10 +7,14 @@ import 'package:go_router/go_router.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'core/services/navigation_service.dart';
+import 'core/services/service_locator.dart';
 import 'core/theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // 서비스 로케이터 초기화
+  ServiceLocator().initialize();
   
   // 웹에서 URL의 # 제거 (깔끔한 URL)
   if (kIsWeb) {

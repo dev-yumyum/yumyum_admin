@@ -57,6 +57,28 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
   List<String> _selectedCategories = [];
   String _parkingAvailable = 'NO'; // YES or NO
 
+  // 운영시간/휴일설정 관련 변수들
+  String _operatingHoursType = 'SAME'; // SAME (평일/주말 동일) or DIFFERENT (평일/주말 다름)
+  
+  // 평일/주말 동일일 때
+  int _commonStartHour = 9;
+  int _commonStartMinute = 0;
+  int _commonEndHour = 22;
+  int _commonEndMinute = 0;
+  
+  // 평일/주말 다름일 때 (월요일~일요일)
+  final List<Map<String, int>> _weeklyHours = [
+    {'startHour': 9, 'startMinute': 0, 'endHour': 22, 'endMinute': 0}, // 월요일
+    {'startHour': 9, 'startMinute': 0, 'endHour': 22, 'endMinute': 0}, // 화요일
+    {'startHour': 9, 'startMinute': 0, 'endHour': 22, 'endMinute': 0}, // 수요일
+    {'startHour': 9, 'startMinute': 0, 'endHour': 22, 'endMinute': 0}, // 목요일
+    {'startHour': 9, 'startMinute': 0, 'endHour': 22, 'endMinute': 0}, // 금요일
+    {'startHour': 10, 'startMinute': 0, 'endHour': 21, 'endMinute': 0}, // 토요일
+    {'startHour': 10, 'startMinute': 0, 'endHour': 21, 'endMinute': 0}, // 일요일
+  ];
+  
+  final List<String> _weekdays = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
+
   // 파일 업로드
   List<File?> _findTipImages = [null, null, null];
   List<String?> _findTipImageNames = [null, null, null];
@@ -540,6 +562,10 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
             ),
             SizedBox(height: AppSizes.sm),
             _isEditMode ? _buildStoreIntroImageUpload() : _buildStoreIntroImageDisplay(),
+            
+            // 운영시간/휴일설정
+            SizedBox(height: AppSizes.lg),
+            _buildOperatingHoursSection(),
           ],
         ),
       ),
