@@ -330,6 +330,222 @@ class _MembersPageState extends State<MembersPage> {
     final endIndex = startIndex + _itemsPerPage;
     final currentPageMembers = _filteredMembers.skip(startIndex).take(_itemsPerPage).toList();
     
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: AppSizes.sm, vertical: AppSizes.md),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '회원 목록',
+                style: TextStyle(
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              DropdownButton<int>(
+                value: _itemsPerPage,
+                items: const [
+                  DropdownMenuItem(value: 25, child: Text('25개씩 보기')),
+                  DropdownMenuItem(value: 50, child: Text('50개씩 보기')),
+                  DropdownMenuItem(value: 100, child: Text('100개씩 보기')),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _itemsPerPage = value!;
+                    _currentPage = 1;
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: AppSizes.sm),
+            itemCount: currentPageMembers.length,
+            itemBuilder: (context, index) {
+              return _buildMemberCard(currentPageMembers[index]);
+            },
+          ),
+        ),
+        _buildPagination(),
+      ],
+    );
+  }
+
+  Widget _buildMemberCard(MemberModel member) {
+    return Container(
+      margin: EdgeInsets.only(bottom: AppSizes.md),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: Colors.grey.withOpacity(0.15),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            context.go('${RouteNames.memberDetail}?id=${member.id}');
+          },
+          borderRadius: BorderRadius.circular(12.r),
+          child: Padding(
+            padding: EdgeInsets.all(20.r),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(10.r),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Icon(
+                        MdiIcons.account,
+                        size: 22.sp,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    SizedBox(width: AppSizes.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                member.memberName ?? '-',
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              SizedBox(width: AppSizes.sm),
+                              _buildStatusChip(member.status),
+                              if (member.registrationType != null) ...[
+                                SizedBox(width: AppSizes.xs),
+                                _buildRegistrationTypeChip(member.registrationType!),
+                              ],
+                            ],
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            member.memberId,
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: AppSizes.md),
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildMemberInfoRow(
+                            MdiIcons.phone,
+                            '연락처',
+                            member.phone ?? '-',
+                          ),
+                        ),
+                        SizedBox(width: AppSizes.lg),
+                        Expanded(
+                          child: _buildMemberInfoRow(
+                            MdiIcons.email,
+                            '이메일',
+                            member.email ?? '-',
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: AppSizes.sm),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildMemberInfoRow(
+                            MdiIcons.calendar,
+                            '가입일',
+                            member.registrationDate,
+                          ),
+                        ),
+                        SizedBox(width: AppSizes.lg),
+                        Expanded(
+                          child: _buildMemberInfoRow(
+                            MdiIcons.clockOutline,
+                            '최근접속',
+                            member.lastLoginDate ?? '-',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMemberInfoRow(IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: 16.sp,
+          color: AppColors.textSecondary,
+        ),
+        SizedBox(width: AppSizes.xs),
+        Text(
+          '$label: ',
+          style: TextStyle(
+            fontSize: 13.sp,
+            color: AppColors.textSecondary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: 13.sp,
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w600,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildOldTable() {
+    final startIndex = (_currentPage - 1) * _itemsPerPage;
+    final endIndex = startIndex + _itemsPerPage;
+    final currentPageMembers = _filteredMembers.skip(startIndex).take(_itemsPerPage).toList();
+    
     return Card(
       child: Padding(
         padding: EdgeInsets.all(AppSizes.md),
@@ -369,7 +585,7 @@ class _MembersPageState extends State<MembersPage> {
                 scrollDirection: Axis.horizontal,
                 child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    minWidth: MediaQuery.of(context).size.width - 140.w, // 화면 폭에서 여백 제외
+                    minWidth: MediaQuery.of(context).size.width - 140.w,
                   ),
                   child: DataTable(
                     showCheckboxColumn: false, // 체크박스 제거
