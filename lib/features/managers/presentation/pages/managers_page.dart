@@ -223,64 +223,228 @@ class _ManagersPageState extends State<ManagersPage> {
   }
 
   Widget _buildAdminTable() {
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(AppSizes.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '구성원 목록 (${_admins.length}명)',
-              style: TextStyle(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: AppSizes.sm, vertical: AppSizes.md),
+          child: Text(
+            '구성원 목록 (${_admins.length}명)',
+            style: TextStyle(
+              fontSize: 22.sp,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimary,
             ),
-            SizedBox(height: AppSizes.md),
-            Expanded(
-              child: DataTable(
-                columns: [
-                  DataColumn(label: Text('관리자 ID', style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text('이름', style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text('부서', style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text('직책', style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text('권한', style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text('이메일', style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text('상태', style: TextStyle(fontWeight: FontWeight.bold))),
-                  DataColumn(label: Text('관리', style: TextStyle(fontWeight: FontWeight.bold))),
-                ],
-                rows: _admins.map((admin) => DataRow(
-                  cells: [
-                    DataCell(Text(admin.adminId)),
-                    DataCell(Text(admin.name)),
-                    DataCell(Text(admin.department)),
-                    DataCell(Text(admin.position)),
-                    DataCell(_buildRoleChip(admin.role)),
-                    DataCell(Text(admin.email)),
-                    DataCell(_buildStatusChip(admin.status)),
-                    DataCell(
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: AppSizes.sm),
+            itemCount: _admins.length,
+            itemBuilder: (context, index) {
+              return _buildAdminCard(_admins[index]);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAdminCard(AdminModel admin) {
+    return Container(
+      margin: EdgeInsets.only(bottom: AppSizes.md),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            AppColors.primary.withOpacity(0.02),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.06),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _showAdminDialog(admin: admin),
+          borderRadius: BorderRadius.circular(16.r),
+          child: Padding(
+            padding: EdgeInsets.all(20.r),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(12.r),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            AppColors.primary.withOpacity(0.15),
+                            AppColors.primary.withOpacity(0.08),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Icon(
+                        MdiIcons.account,
+                        size: 24.sp,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    SizedBox(width: AppSizes.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          IconButton(
-                            onPressed: () => _showAdminDialog(admin: admin),
-                            icon: Icon(MdiIcons.pencil, size: 18.r),
+                          Row(
+                            children: [
+                              Text(
+                                admin.name,
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              SizedBox(width: AppSizes.sm),
+                              _buildRoleChip(admin.role),
+                              SizedBox(width: AppSizes.xs),
+                              _buildStatusChip(admin.status),
+                            ],
                           ),
-                          IconButton(
-                            onPressed: () => _deleteAdmin(admin),
-                            icon: Icon(MdiIcons.delete, size: 18.r, color: AppColors.error),
+                          SizedBox(height: 4.h),
+                          Text(
+                            admin.adminId,
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: AppColors.textSecondary,
+                            ),
                           ),
                         ],
                       ),
                     ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: IconButton(
+                            onPressed: () => _showAdminDialog(admin: admin),
+                            icon: Icon(MdiIcons.pencil, size: 20.sp),
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        SizedBox(width: AppSizes.xs),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.error.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: IconButton(
+                            onPressed: () => _deleteAdmin(admin),
+                            icon: Icon(MdiIcons.delete, size: 20.sp),
+                            color: AppColors.error,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
-                )).toList(),
-              ),
+                ),
+                SizedBox(height: AppSizes.md),
+                Container(
+                  padding: EdgeInsets.all(16.r),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.05),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildInfoRow(
+                              MdiIcons.domain,
+                              '부서',
+                              admin.department,
+                            ),
+                          ),
+                          SizedBox(width: AppSizes.lg),
+                          Expanded(
+                            child: _buildInfoRow(
+                              MdiIcons.badgeAccount,
+                              '직책',
+                              admin.position,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: AppSizes.sm),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildInfoRow(
+                              MdiIcons.email,
+                              '이메일',
+                              admin.email,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String label, String value) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: 16.sp,
+          color: AppColors.textSecondary,
+        ),
+        SizedBox(width: AppSizes.xs),
+        Text(
+          '$label: ',
+          style: TextStyle(
+            fontSize: 13.sp,
+            color: AppColors.textSecondary,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: 13.sp,
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w600,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 
