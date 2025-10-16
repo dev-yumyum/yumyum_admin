@@ -561,6 +561,10 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
         return AppStrings.memberManagement;
       case RouteNames.manager:
         return AppStrings.managerManagement;
+      case '/nickname-management':
+        return '닉네임 관리';
+      case '/banned-words':
+        return '금칙어 관리';
       default:
         return AppStrings.appName;
     }

@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:data_table_2/data_table_2.dart';
 
-import '../../../core/providers/api_providers.dart';
-import '../../../shared/widgets/crm_layout.dart';
-import '../../../core/models/pagination_model.dart';
+import '../../../../core/providers/api_providers.dart';
+import '../../../../shared/widgets/crm_layout.dart';
+import '../../../../core/models/pagination_model.dart';
 import '../widgets/banned_word_severity_chip.dart';
 import '../widgets/banned_word_dialog.dart';
 
@@ -63,7 +63,7 @@ class _BannedWordsPageState extends ConsumerState<BannedWordsPage> {
   @override
   Widget build(BuildContext context) {
     return CrmLayout(
-      title: '금칙어 관리',
+      currentRoute: '/banned-words',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -215,12 +215,12 @@ class _BannedWordsPageState extends ConsumerState<BannedWordsPage> {
         return Padding(
           padding: const EdgeInsets.only(right: 8),
           child: FilterChip(
-            label: Text(option['label']!),
+            label: Text(option['label']! as String),
             selected: isSelected,
             onSelected: (selected) {
               if (selected) {
                 setState(() {
-                  _selectedSeverity = option['value']!;
+                  _selectedSeverity = option['value']! as String;
                 });
                 _onFilterChanged();
               }
@@ -369,13 +369,13 @@ class _BannedWordsPageState extends ConsumerState<BannedWordsPage> {
         cells: [
           DataCell(
             Text(
-              data['word']!,
+              data['word']! as String,
               style: const TextStyle(fontWeight: FontWeight.w500),
             ),
           ),
-          DataCell(_buildTypeChip(data['type']!)),
+          DataCell(_buildTypeChip(data['type']! as String)),
           DataCell(
-            BannedWordSeverityChip(severity: data['severity']!),
+            BannedWordSeverityChip(severity: data['severity']! as String),
           ),
           DataCell(Text(data['usageCount'].toString())),
           DataCell(
@@ -392,7 +392,7 @@ class _BannedWordsPageState extends ConsumerState<BannedWordsPage> {
                   : Colors.grey.withOpacity(0.1),
             ),
           ),
-          DataCell(Text(data['createdAt']!)),
+          DataCell(Text(data['createdAt']! as String)),
           DataCell(
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -433,7 +433,7 @@ class _BannedWordsPageState extends ConsumerState<BannedWordsPage> {
     final info = typeInfo[type]!;
     return Chip(
       label: Text(
-        info['label']!,
+        info['label']! as String,
         style: TextStyle(
           color: info['color'] as Color,
           fontWeight: FontWeight.w500,

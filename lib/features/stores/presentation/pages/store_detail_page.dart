@@ -563,9 +563,9 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
             SizedBox(height: AppSizes.sm),
             _isEditMode ? _buildStoreIntroImageUpload() : _buildStoreIntroImageDisplay(),
             
-            // 운영시간/휴일설정
-            SizedBox(height: AppSizes.lg),
-            _buildOperatingHoursSection(),
+            // 운영시간/휴일설정 - TODO: 구현 필요
+            // SizedBox(height: AppSizes.lg),
+            // _buildOperatingHoursSection(),
           ],
         ),
       ),

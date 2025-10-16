@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:data_table_2/data_table_2.dart';
 
-import '../../../core/providers/api_providers.dart';
-import '../../../shared/widgets/crm_layout.dart';
-import '../../../core/models/pagination_model.dart';
+import '../../../../core/providers/api_providers.dart';
+import '../../../../shared/widgets/crm_layout.dart';
+import '../../../../core/models/pagination_model.dart';
 import '../widgets/nickname_status_chip.dart';
 import '../widgets/nickname_action_dialog.dart';
 
@@ -63,7 +63,7 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
   @override
   Widget build(BuildContext context) {
     return CrmLayout(
-      title: '닉네임 관리',
+      currentRoute: '/nickname-management',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -171,11 +171,11 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
         return Padding(
           padding: const EdgeInsets.only(right: 8),
           child: FilterChip(
-            label: Text(option['label']!),
+            label: Text(option['label']! as String),
             selected: isSelected,
             onSelected: (selected) {
               if (selected) {
-                _onStatusFilterChanged(option['value']!);
+                _onStatusFilterChanged(option['value']! as String);
               }
             },
             backgroundColor: Colors.grey[100],
