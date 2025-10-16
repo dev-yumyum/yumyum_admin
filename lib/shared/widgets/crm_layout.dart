@@ -282,39 +282,8 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
         vertical: AppSizes.xs,
       ),
       decoration: BoxDecoration(
-        gradient: isActive
-            ? LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  AppColors.primary.withOpacity(0.15),
-                  AppColors.primary.withOpacity(0.08),
-                ],
-              )
-            : LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withOpacity(0.8),
-                  Colors.white.withOpacity(0.4),
-                ],
-              ),
-        borderRadius: BorderRadius.circular(12.r),
-        boxShadow: isActive
-            ? [
-                BoxShadow(
-                  color: AppColors.primary.withOpacity(0.2),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ]
-            : [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.03),
-                  blurRadius: 4,
-                  offset: const Offset(0, 1),
-                ),
-              ],
+        color: isActive ? AppColors.primary.withOpacity(0.08) : Colors.transparent,
+        borderRadius: BorderRadius.circular(10.r),
       ),
       child: Material(
         color: Colors.transparent,
@@ -326,81 +295,34 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
               Navigator.of(context).pop();
             }
           },
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(10.r),
           // 웹에서 호버 효과
           hoverColor: kIsWeb ? AppColors.primary.withOpacity(0.05) : null,
-          highlightColor: AppColors.primary.withOpacity(0.08),
-          splashColor: AppColors.primary.withOpacity(0.15),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
+          child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: AppSizes.md,
-              vertical: 12.h,
+              vertical: 10.h,
             ),
             child: Row(
               children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: EdgeInsets.all(8.r),
-                  decoration: BoxDecoration(
-                    gradient: isActive
-                        ? LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              AppColors.primary.withOpacity(0.2),
-                              AppColors.primary.withOpacity(0.15),
-                            ],
-                          )
-                        : null,
-                    color: isActive ? null : Colors.grey.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  child: Icon(
-                    icon,
-                    size: 20.sp,
-                    color: isActive ? AppColors.primary : AppColors.textSecondary,
-                  ),
+                Icon(
+                  icon,
+                  size: 20.sp,
+                  color: isActive ? AppColors.primary : AppColors.textSecondary,
                 ),
                 if (!_isCollapsed) ...[
-                  SizedBox(width: AppSizes.sm),
+                  SizedBox(width: AppSizes.md),
                   Expanded(
-                    child: AnimatedDefaultTextStyle(
-                      duration: const Duration(milliseconds: 200),
+                    child: Text(
+                      title,
                       style: TextStyle(
-                        fontSize: 15.sp,
-                        fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                        fontSize: 14.sp,
+                        fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
                         color: isActive ? AppColors.primary : AppColors.textPrimary,
-                        letterSpacing: -0.2,
                       ),
-                      child: Text(title),
                     ),
                   ),
                 ],
-                // 활성 상태 표시
-                if (isActive && !_isCollapsed)
-                  Container(
-                    width: 3.w,
-                    height: 20.h,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          AppColors.primary,
-                          AppColors.primary.withOpacity(0.6),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(2.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withOpacity(0.4),
-                          blurRadius: 4,
-                          offset: const Offset(0, 1),
-                        ),
-                      ],
-                    ),
-                  ),
               ],
             ),
           ),

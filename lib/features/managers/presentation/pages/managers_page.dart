@@ -254,21 +254,17 @@ class _ManagersPageState extends State<ManagersPage> {
     return Container(
       margin: EdgeInsets.only(bottom: AppSizes.md),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white,
-            AppColors.primary.withOpacity(0.02),
-          ],
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: Colors.grey.withOpacity(0.15),
+          width: 1,
         ),
-        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-            spreadRadius: 0,
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -276,7 +272,7 @@ class _ManagersPageState extends State<ManagersPage> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () => _showAdminDialog(admin: admin),
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(12.r),
           child: Padding(
             padding: EdgeInsets.all(20.r),
             child: Column(
@@ -285,22 +281,15 @@ class _ManagersPageState extends State<ManagersPage> {
                 Row(
                   children: [
                     Container(
-                      padding: EdgeInsets.all(12.r),
+                      padding: EdgeInsets.all(10.r),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            AppColors.primary.withOpacity(0.15),
-                            AppColors.primary.withOpacity(0.08),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(12.r),
+                        color: Colors.grey.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(10.r),
                       ),
                       child: Icon(
                         MdiIcons.account,
-                        size: 24.sp,
-                        color: AppColors.primary,
+                        size: 22.sp,
+                        color: AppColors.textSecondary,
                       ),
                     ),
                     SizedBox(width: AppSizes.md),
@@ -338,75 +327,55 @@ class _ManagersPageState extends State<ManagersPage> {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
-                          child: IconButton(
-                            onPressed: () => _showAdminDialog(admin: admin),
-                            icon: Icon(MdiIcons.pencil, size: 20.sp),
-                            color: AppColors.primary,
-                          ),
+                        IconButton(
+                          onPressed: () => _showAdminDialog(admin: admin),
+                          icon: Icon(MdiIcons.pencil, size: 20.sp),
+                          color: AppColors.textSecondary,
                         ),
-                        SizedBox(width: AppSizes.xs),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: AppColors.error.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
-                          child: IconButton(
-                            onPressed: () => _deleteAdmin(admin),
-                            icon: Icon(MdiIcons.delete, size: 20.sp),
-                            color: AppColors.error,
-                          ),
+                        IconButton(
+                          onPressed: () => _deleteAdmin(admin),
+                          icon: Icon(MdiIcons.delete, size: 20.sp),
+                          color: AppColors.error,
                         ),
                       ],
                     ),
                   ],
                 ),
                 SizedBox(height: AppSizes.md),
-                Container(
-                  padding: EdgeInsets.all(16.r),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.05),
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildInfoRow(
-                              MdiIcons.domain,
-                              '부서',
-                              admin.department,
-                            ),
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildInfoRow(
+                            MdiIcons.domain,
+                            '부서',
+                            admin.department,
                           ),
-                          SizedBox(width: AppSizes.lg),
-                          Expanded(
-                            child: _buildInfoRow(
-                              MdiIcons.badgeAccount,
-                              '직책',
-                              admin.position,
-                            ),
+                        ),
+                        SizedBox(width: AppSizes.lg),
+                        Expanded(
+                          child: _buildInfoRow(
+                            MdiIcons.badgeAccount,
+                            '직책',
+                            admin.position,
                           ),
-                        ],
-                      ),
-                      SizedBox(height: AppSizes.sm),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildInfoRow(
-                              MdiIcons.email,
-                              '이메일',
-                              admin.email,
-                            ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: AppSizes.sm),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildInfoRow(
+                            MdiIcons.email,
+                            '이메일',
+                            admin.email,
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ],
             ),
