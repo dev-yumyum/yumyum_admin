@@ -48,9 +48,28 @@ class _OrderStatusChartWidgetState extends State<OrderStatusChartWidget> {
   
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            AppColors.info.withOpacity(0.02),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+            spreadRadius: 0,
+          ),
+        ],
+      ),
       child: Padding(
-        padding: EdgeInsets.all(AppSizes.lg),
+        padding: EdgeInsets.all(24.r),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
