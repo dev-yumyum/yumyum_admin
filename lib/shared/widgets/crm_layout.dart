@@ -254,7 +254,7 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
     ];
 
     return ListView.builder(
-      padding: EdgeInsets.symmetric(vertical: AppSizes.sm),
+      padding: EdgeInsets.symmetric(vertical: AppSizes.md, horizontal: AppSizes.xs),
       itemCount: menuItems.length,
       itemBuilder: (context, index) {
         final item = menuItems[index];
@@ -278,12 +278,46 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
   }) {
     return Container(
       margin: EdgeInsets.symmetric(
-        horizontal: AppSizes.xs,
-        vertical: AppSizes.xs / 2,
+        horizontal: AppSizes.sm,
+        vertical: AppSizes.xs,
+      ),
+      decoration: BoxDecoration(
+        gradient: isActive
+            ? LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.primary.withOpacity(0.15),
+                  AppColors.primary.withOpacity(0.08),
+                ],
+              )
+            : LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white.withOpacity(0.8),
+                  Colors.white.withOpacity(0.4),
+                ],
+              ),
+        borderRadius: BorderRadius.circular(12.r),
+        boxShadow: isActive
+            ? [
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(0.2),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.03),
+                  blurRadius: 4,
+                  offset: const Offset(0, 1),
+                ),
+              ],
       ),
       child: Material(
-        color: isActive ? AppColors.primary.withOpacity(0.1) : Colors.transparent,
-        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+        color: Colors.transparent,
         child: InkWell(
           onTap: () {
             context.go(route);
@@ -292,36 +326,52 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
               Navigator.of(context).pop();
             }
           },
-          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+          borderRadius: BorderRadius.circular(12.r),
           // 웹에서 호버 효과
           hoverColor: kIsWeb ? AppColors.primary.withOpacity(0.05) : null,
-          highlightColor: AppColors.primary.withOpacity(0.1),
-          splashColor: AppColors.primary.withOpacity(0.2),
+          highlightColor: AppColors.primary.withOpacity(0.08),
+          splashColor: AppColors.primary.withOpacity(0.15),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             padding: EdgeInsets.symmetric(
               horizontal: AppSizes.md,
-              vertical: AppSizes.md,
+              vertical: 12.h,
             ),
             child: Row(
               children: [
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
+                  padding: EdgeInsets.all(8.r),
+                  decoration: BoxDecoration(
+                    gradient: isActive
+                        ? LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              AppColors.primary.withOpacity(0.2),
+                              AppColors.primary.withOpacity(0.15),
+                            ],
+                          )
+                        : null,
+                    color: isActive ? null : Colors.grey.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
                   child: Icon(
                     icon,
-                    size: AppSizes.iconMd,
+                    size: 20.sp,
                     color: isActive ? AppColors.primary : AppColors.textSecondary,
                   ),
                 ),
                 if (!_isCollapsed) ...[
-                  SizedBox(width: AppSizes.md),
+                  SizedBox(width: AppSizes.sm),
                   Expanded(
                     child: AnimatedDefaultTextStyle(
                       duration: const Duration(milliseconds: 200),
                       style: TextStyle(
-                        fontSize: 18.sp,
-                        fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+                        fontSize: 15.sp,
+                        fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
                         color: isActive ? AppColors.primary : AppColors.textPrimary,
+                        letterSpacing: -0.2,
                       ),
                       child: Text(title),
                     ),
@@ -330,11 +380,25 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
                 // 활성 상태 표시
                 if (isActive && !_isCollapsed)
                   Container(
-                    width: 4.w,
+                    width: 3.w,
                     height: 20.h,
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(2),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppColors.primary,
+                          AppColors.primary.withOpacity(0.6),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(2.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withOpacity(0.4),
+                          blurRadius: 4,
+                          offset: const Offset(0, 1),
+                        ),
+                      ],
                     ),
                   ),
               ],
