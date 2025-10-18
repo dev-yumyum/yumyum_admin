@@ -711,33 +711,37 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
 
   Widget _buildInfoRow(String label, Widget? editWidget, String displayValue) {
     return Padding(
-      padding: EdgeInsets.only(bottom: AppSizes.md),
-      child: Row(
+      padding: EdgeInsets.only(bottom: AppSizes.lg),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 150.w,
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w500,
-                color: AppColors.textSecondary,
-              ),
+          Text(
+            '$label *',
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(width: AppSizes.lg),
-          Expanded(
-            child: _isEditMode && editWidget != null
-                ? editWidget
-                : Text(
+          SizedBox(height: AppSizes.sm),
+          _isEditMode && editWidget != null
+              ? editWidget
+              : Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(AppSizes.md),
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                    border: Border.all(color: AppColors.border.withOpacity(0.3)),
+                  ),
+                  child: Text(
                     displayValue,
                     style: TextStyle(
                       fontSize: 20.sp,
                       color: AppColors.textPrimary,
                     ),
                   ),
-          ),
+                ),
         ],
       ),
     );
@@ -1280,23 +1284,27 @@ class _StoreDetailPageState extends State<StoreDetailPage> {
     final longitude = _store?.longitude ?? 126.9780;
     
     return Padding(
-      padding: EdgeInsets.only(bottom: AppSizes.md),
-      child: Row(
+      padding: EdgeInsets.only(bottom: AppSizes.lg),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 150.w,
-            child: Text(
-              '좌표',
-              style: TextStyle(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w500,
-                color: AppColors.textSecondary,
-              ),
+          Text(
+            '좌표',
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(width: AppSizes.lg),
-          Expanded(
+          SizedBox(height: AppSizes.sm),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(AppSizes.md),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+              border: Border.all(color: AppColors.border.withOpacity(0.3)),
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

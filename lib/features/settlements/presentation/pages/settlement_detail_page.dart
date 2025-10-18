@@ -133,36 +133,32 @@ class _SettlementDetailPageState extends State<SettlementDetailPage> {
   }
 
   Widget _buildInfoRow(String label, String value) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: AppSizes.md),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: AppColors.border.withOpacity(0.3),
-            width: 1,
-          ),
-        ),
-      ),
-      child: Row(
+    return Padding(
+      padding: EdgeInsets.only(bottom: AppSizes.lg),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 120.w,
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 20.sp, // 가독성 개선
-                fontWeight: FontWeight.w500,
-                color: AppColors.textSecondary,
-              ),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(width: AppSizes.lg),
-          Expanded(
+          SizedBox(height: AppSizes.sm),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(AppSizes.md),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+              border: Border.all(color: AppColors.border.withOpacity(0.3)),
+            ),
             child: Text(
               value,
               style: TextStyle(
-                fontSize: 20.sp, // 가독성 개선
+                fontSize: 20.sp,
                 color: AppColors.textPrimary,
               ),
             ),

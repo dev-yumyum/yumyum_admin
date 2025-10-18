@@ -811,27 +811,33 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
 
   Widget _buildInfoRow(String label, String value) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 4.h),
-      child: Row(
+      padding: EdgeInsets.only(bottom: AppSizes.md),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 80.w,
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: AppColors.textSecondary,
-                fontWeight: FontWeight.w600,
-              ),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 16.sp,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          Expanded(
+          SizedBox(height: AppSizes.xs),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: AppSizes.sm, vertical: AppSizes.xs),
+            decoration: BoxDecoration(
+              color: AppColors.background.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(AppSizes.borderRadius / 2),
+              border: Border.all(color: AppColors.border.withOpacity(0.2)),
+            ),
             child: Text(
               value,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 16.sp,
                 color: AppColors.textPrimary,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),

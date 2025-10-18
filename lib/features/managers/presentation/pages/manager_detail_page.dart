@@ -354,12 +354,12 @@ class _ManagerDetailPageState extends State<ManagerDetailPage> {
         Text(
           title,
           style: TextStyle(
-            fontSize: 18.sp,
+            fontSize: 24.sp,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
           ),
         ),
-        SizedBox(height: AppSizes.md),
+        SizedBox(height: AppSizes.lg),
         ...children,
       ],
     );
@@ -372,28 +372,32 @@ class _ManagerDetailPageState extends State<ManagerDetailPage> {
         : value.toString();
         
     return Padding(
-      padding: EdgeInsets.only(bottom: AppSizes.md),
-      child: Row(
+      padding: EdgeInsets.only(bottom: AppSizes.lg),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 120.w,
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: AppColors.textSecondary,
-                fontWeight: FontWeight.w500,
-              ),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
             ),
           ),
-          Expanded(
+          SizedBox(height: AppSizes.sm),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(AppSizes.md),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+              border: Border.all(color: AppColors.border.withOpacity(0.3)),
+            ),
             child: Text(
               displayValue,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 20.sp,
                 color: AppColors.textPrimary,
-                fontWeight: FontWeight.w600,
               ),
             ),
           ),

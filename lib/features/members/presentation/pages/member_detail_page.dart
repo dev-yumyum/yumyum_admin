@@ -214,32 +214,16 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
         Text(
           '기본 정보',
           style: TextStyle(
-            fontSize: 18.sp,
+            fontSize: 24.sp,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
           ),
         ),
-        SizedBox(height: AppSizes.md),
-        Row(
-          children: [
-            Expanded(
-              child: _buildInfoCard('고유번호:', _member!.memberId),
-            ),
-            SizedBox(width: AppSizes.lg),
-            Expanded(
-              child: _buildInfoCard('연락처:', _member!.phone ?? '010-1234-5678'),
-            ),
-            SizedBox(width: AppSizes.lg),
-            Expanded(
-              child: _buildInfoCard('이메일:', _member!.email ?? 'minsu.kim@example.com'),
-            ),
-            SizedBox(width: AppSizes.lg),
-            Expanded(
-              child: _buildInfoCard('아이디:', 'minsu_kim2024'),
-            ),
-          ],
-        ),
-        SizedBox(height: AppSizes.md),
+        SizedBox(height: AppSizes.lg),
+        _buildInfoField('고유번호', _member!.memberId),
+        _buildInfoField('연락처', _member!.phone ?? '010-1234-5678'),
+        _buildInfoField('이메일', _member!.email ?? 'minsu.kim@example.com'),
+        _buildInfoField('아이디', 'minsu_kim2024'),
         _buildPasswordRow(),
       ],
     );
@@ -254,32 +238,52 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
         Text(
           '가입 정보',
           style: TextStyle(
-            fontSize: 18.sp,
+            fontSize: 24.sp,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
           ),
         ),
-        SizedBox(height: AppSizes.md),
-        Row(
-          children: [
-            Expanded(
-              child: _buildInfoCard('가입일:', '2024년 9월 1일 (14일 전)'),
-            ),
-            SizedBox(width: AppSizes.lg),
-            Expanded(
-              child: _buildInfoCardWithChip('가입형식:', '카카오톡', Colors.yellow),
-            ),
-            SizedBox(width: AppSizes.lg),
-            Expanded(
-              child: _buildInfoCardWithChip('마케팅 수신동의:', '동의', AppColors.success),
-            ),
-            SizedBox(width: AppSizes.lg),
-            Expanded(
-              child: _buildInfoCard('최근 접속:', '2024년 9월 14일 18:32'),
-            ),
-          ],
-        ),
+        SizedBox(height: AppSizes.lg),
+        _buildInfoField('가입일', _member!.registrationDate),
+        _buildInfoField('최근접속', _member!.lastLoginDate ?? '-'),
+        _buildInfoField('가입유형', _member!.registrationType == 'EMAIL' ? '이메일' : _member!.registrationType ?? '-'),
       ],
+    );
+  }
+
+  Widget _buildInfoField(String label, String value) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: AppSizes.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          SizedBox(height: AppSizes.sm),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(AppSizes.md),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+              border: Border.all(color: AppColors.border.withOpacity(0.3)),
+            ),
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 20.sp,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
