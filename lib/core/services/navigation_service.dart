@@ -18,12 +18,13 @@ import '../../features/settlements/presentation/pages/settlement_detail_page.dar
 import '../../features/members/presentation/pages/members_page.dart';
 import '../../features/members/presentation/pages/member_detail_page.dart';
 import '../../features/managers/presentation/pages/managers_page.dart';
+import '../../features/managers/presentation/pages/manager_detail_page.dart';
 import '../../features/nicknames/presentation/pages/nickname_management_page.dart';
 import '../../features/nicknames/presentation/pages/banned_words_page.dart';
 
 GoRouter createRouter() {
   return GoRouter(
-    initialLocation: RouteNames.dashboard,
+    initialLocation: RouteNames.login,
     routes: [
       // 인증
       GoRoute(
@@ -140,6 +141,13 @@ GoRouter createRouter() {
       GoRoute(
         path: RouteNames.manager,
         builder: (context, state) => const ManagersPage(),
+      ),
+      GoRoute(
+        path: RouteNames.managerDetail,
+        builder: (context, state) {
+          final managerId = state.uri.queryParameters['id'];
+          return ManagerDetailPage(managerId: managerId);
+        },
       ),
       
       // 닉네임 관리

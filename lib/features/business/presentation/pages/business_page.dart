@@ -143,148 +143,246 @@ class _BusinessPageState extends State<BusinessPage> {
               .contains(_searchText.toLowerCase());
     }).toList();
 
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(AppSizes.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '사업자 목록 (${filteredBusinesses.length}개)',
-              style: TextStyle(
-                fontSize: 24.sp, // 18.sp -> 24.sp (가독성 개선)
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            SizedBox(height: AppSizes.md),
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minWidth: MediaQuery.of(context).size.width - 64,
-                  ),
-                  child: SingleChildScrollView(
-                    child: _buildBusinessTable(filteredBusinesses),
-                  ),
-                ),
-              ),
-            ),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '사업자 목록 (${filteredBusinesses.length}개)',
+          style: TextStyle(
+            fontSize: 24.sp,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildBusinessTable(List<BusinessModel> businesses) {
-    return DataTable(
-      showCheckboxColumn: false, // 체크박스 제거
-      headingRowHeight: 60.h,
-      dataRowHeight: 80.h,
-      columnSpacing: 40.w,
-      horizontalMargin: 20.w,
-      headingTextStyle: TextStyle(
-        fontSize: 22.sp, // 가독성 개선
-        fontWeight: FontWeight.bold,
-        color: AppColors.textPrimary,
-      ),
-      dataTextStyle: TextStyle(
-        fontSize: 20.sp, // 가독성 개선
-        color: AppColors.textPrimary,
-      ),
-      columns: [
-        DataColumn(
-          label: Text('사업자명'),
-        ),
-        DataColumn(
-          label: Text('사업자번호'),
-        ),
-        DataColumn(
-          label: Text('대표자'),
-        ),
-        DataColumn(
-          label: Text('소재지'),
-        ),
-        DataColumn(
-          label: Text('등록일'),
+        SizedBox(height: AppSizes.md),
+        Expanded(
+          child: ListView.builder(
+            itemCount: filteredBusinesses.length,
+            itemBuilder: (context, index) {
+              return _buildBusinessCard(filteredBusinesses[index]);
+            },
+          ),
         ),
       ],
-      rows: businesses.map((business) => _buildDataRow(business)).toList(),
     );
   }
 
-  DataRow _buildDataRow(BusinessModel business) {
-    return DataRow(
-      onSelectChanged: (selected) {
-        if (selected == true) {
-          context.go('${RouteNames.businessDetail}?id=${business.id}');
-        }
-      },
-      cells: [
-        DataCell(
-          Container(
-            width: 200.w,
-            child: Text(
-              business.businessName,
-              style: TextStyle(
-                fontSize: 20.sp, // 가독성 개선
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
-              overflow: TextOverflow.ellipsis,
+  Widget _buildBusinessCard(BusinessModel business) {
+    return Container(
+      margin: EdgeInsets.only(bottom: AppSizes.md),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: Colors.grey.withOpacity(0.15),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            context.go('${RouteNames.businessDetail}?id=${business.id}');
+          },
+          borderRadius: BorderRadius.circular(12.r),
+          child: Padding(
+            padding: EdgeInsets.all(20.r),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(10.r),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Icon(
+                        MdiIcons.domain,
+                        size: 22.sp,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    SizedBox(width: AppSizes.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                business.businessName,
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              SizedBox(width: AppSizes.sm),
+                              _buildStatusChip(business.status),
+                            ],
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            business.businessNumber,
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: AppSizes.md),
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildInfoRow(
+                            MdiIcons.account,
+                            '대표자',
+                            business.ownerName,
+                          ),
+                        ),
+                        SizedBox(width: AppSizes.lg),
+                        Expanded(
+                          child: _buildInfoRow(
+                            MdiIcons.phone,
+                            '연락처',
+                            business.ownerPhone ?? '-',
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: AppSizes.sm),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildInfoRow(
+                            MdiIcons.mapMarker,
+                            '소재지',
+                            business.businessLocation ?? '-',
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: AppSizes.sm),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildInfoRow(
+                            MdiIcons.calendar,
+                            '등록일',
+                            business.registrationDate,
+                          ),
+                        ),
+                        SizedBox(width: AppSizes.lg),
+                        Expanded(
+                          child: _buildInfoRow(
+                            MdiIcons.tag,
+                            '업종',
+                            business.businessItem ?? '-',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
-        DataCell(
-          Container(
-            width: 180.w,
-            child: Text(
-              business.businessNumber,
-              style: TextStyle(
-                fontSize: 20.sp, // 가독성 개선
-                color: AppColors.textPrimary,
-              ),
-            ),
-          ),
+      ),
+    );
+  }
+
+  Widget _buildStatusChip(String status) {
+    Color color;
+    String label;
+
+    switch (status) {
+      case 'APPROVED':
+        color = AppColors.success;
+        label = '승인완료';
+        break;
+      case 'PENDING':
+        color = AppColors.warning;
+        label = '승인대기';
+        break;
+      case 'REJECTED':
+        color = AppColors.error;
+        label = '반려';
+        break;
+      default:
+        color = AppColors.textSecondary;
+        label = status;
+    }
+
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: 8.w,
+        vertical: 4.h,
+      ),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(4.r),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          fontSize: 12.sp,
+          fontWeight: FontWeight.w600,
+          color: color,
         ),
-        DataCell(
-          Container(
-            width: 120.w,
-            child: Text(
-              business.ownerName,
-              style: TextStyle(
-                fontSize: 20.sp, // 가독성 개선
-                color: AppColors.textPrimary,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          icon,
+          size: 16.sp,
+          color: AppColors.textSecondary,
         ),
-        DataCell(
-          Container(
-            width: 300.w,
-            child: Text(
-              business.businessLocation ?? '-',
-              style: TextStyle(
-                fontSize: 20.sp, // 가독성 개선
-                color: AppColors.textPrimary,
+        SizedBox(width: 6.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-            ),
-          ),
-        ),
-        DataCell(
-          Container(
-            width: 120.w,
-            child: Text(
-              business.registrationDate,
-              style: TextStyle(
-                fontSize: 20.sp, // 가독성 개선
-                color: AppColors.textPrimary,
+              SizedBox(height: 2.h),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w500,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-            ),
+            ],
           ),
         ),
       ],

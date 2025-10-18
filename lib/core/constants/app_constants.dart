@@ -118,6 +118,7 @@ class RouteNames {
   
   // 관리자 관리
   static const String manager = '/manager';
+  static const String managerDetail = '/manager/detail';
 }
 
 /// 앱에서 사용되는 문자열 상수

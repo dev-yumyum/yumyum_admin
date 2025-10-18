@@ -170,142 +170,176 @@ class _StoresPageState extends State<StoresPage> {
       return true;
     }).toList();
 
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(AppSizes.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '매장 목록 (${filteredStores.length}개)',
-              style: TextStyle(
-                fontSize: 24.sp, // 22.sp -> 24.sp (가독성 개선)
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            SizedBox(height: AppSizes.md),
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minWidth: MediaQuery.of(context).size.width - 64,
-                  ),
-                  child: SingleChildScrollView(
-                    child: _buildStoreTable(filteredStores),
-                  ),
-                ),
-              ),
-            ),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '매장 목록 (${filteredStores.length}개)',
+          style: TextStyle(
+            fontSize: 24.sp,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textPrimary,
+          ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildStoreTable(List<StoreModel> stores) {
-    return DataTable(
-      showCheckboxColumn: false, // 체크박스 제거
-      headingRowHeight: 60.h,
-      dataRowHeight: 80.h,
-      columnSpacing: 40.w,
-      horizontalMargin: 20.w,
-      headingTextStyle: TextStyle(
-        fontSize: 22.sp, // 가독성 개선
-        fontWeight: FontWeight.bold,
-        color: AppColors.textPrimary,
-      ),
-      dataTextStyle: TextStyle(
-        fontSize: 20.sp, // 가독성 개선
-        color: AppColors.textPrimary,
-      ),
-      columns: [
-        DataColumn(
-          label: Text('매장명'),
-        ),
-        DataColumn(
-          label: Text('현재운영상태'),
-        ),
-        DataColumn(
-          label: Text('사업자'),
-        ),
-        DataColumn(
-          label: Text('주소'),
-        ),
-        DataColumn(
-          label: Text('매장전화번호'),
+        SizedBox(height: AppSizes.md),
+        Expanded(
+          child: ListView.builder(
+            itemCount: filteredStores.length,
+            itemBuilder: (context, index) {
+              return _buildStoreCard(filteredStores[index]);
+            },
+          ),
         ),
       ],
-      rows: stores.map((store) => _buildDataRow(store)).toList(),
     );
   }
 
-  DataRow _buildDataRow(StoreModel store) {
-    return DataRow(
-      onSelectChanged: (selected) {
-        if (selected == true) {
-          context.go('${RouteNames.storeDetail}?id=${store.id}');
-        }
-      },
-      cells: [
-        DataCell(
-          Container(
-            width: 200.w,
-            child: Text(
-              store.storeName,
-              style: TextStyle(
-                fontSize: 20.sp, // 가독성 개선
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
-              overflow: TextOverflow.ellipsis,
+  Widget _buildStoreCard(StoreModel store) {
+    return Container(
+      margin: EdgeInsets.only(bottom: AppSizes.md),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: Colors.grey.withOpacity(0.15),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            context.go('${RouteNames.storeDetail}?id=${store.id}');
+          },
+          borderRadius: BorderRadius.circular(12.r),
+          child: Padding(
+            padding: EdgeInsets.all(20.r),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(10.r),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Icon(
+                        MdiIcons.store,
+                        size: 22.sp,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    SizedBox(width: AppSizes.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                store.storeName,
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              SizedBox(width: AppSizes.sm),
+                              _buildStatusChip(store.status),
+                            ],
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            store.businessName ?? '-',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: AppSizes.md),
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildInfoRow(
+                            MdiIcons.mapMarker,
+                            '주소',
+                            '${store.storeAddress}${store.storeAddressDetail != null ? ' ${store.storeAddressDetail}' : ''}',
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: AppSizes.sm),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildInfoRow(
+                            MdiIcons.phone,
+                            '매장전화',
+                            store.storePhone ?? '-',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
-        DataCell(
-          Container(
-            width: 120.w,
-            child: _buildStatusChip(store.status),
-          ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          icon,
+          size: 16.sp,
+          color: AppColors.textSecondary,
         ),
-        DataCell(
-          Container(
-            width: 180.w,
-            child: Text(
-              store.businessName ?? '-',
-              style: TextStyle(
-                fontSize: 20.sp, // 가독성 개선
-                color: AppColors.textPrimary,
+        SizedBox(width: 6.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ),
-        DataCell(
-          Container(
-            width: 320.w,
-            child: Text(
-              '${store.storeAddress}${store.storeAddressDetail != null ? ' ${store.storeAddressDetail}' : ''}',
-              style: TextStyle(
-                fontSize: 20.sp, // 가독성 개선
-                color: AppColors.textPrimary,
+              SizedBox(height: 2.h),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w500,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-            ),
-          ),
-        ),
-        DataCell(
-          Container(
-            width: 150.w,
-            child: Text(
-              store.storePhone ?? '-',
-              style: TextStyle(
-                fontSize: 20.sp, // 가독성 개선
-                color: AppColors.textPrimary,
-              ),
-            ),
+            ],
           ),
         ),
       ],

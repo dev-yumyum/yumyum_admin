@@ -303,168 +303,245 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
   Widget _buildSettlementTable() {
     final filteredSettlements = _getFilteredSettlements();
     
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(AppSizes.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '정산 요청 목록',
-                  style: TextStyle(
-                    fontSize: 24.sp, // 22.sp -> 24.sp
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: _exportToExcel,
-                  icon: Icon(MdiIcons.fileExcel, size: AppSizes.iconSm),
-                  label: const Text('엑셀다운로드'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey[800],
-                    foregroundColor: Colors.white,
-                  ),
-                ),
-              ],
+            Text(
+              '정산 요청 목록',
+              style: TextStyle(
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
             ),
-            SizedBox(height: AppSizes.md),
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minWidth: MediaQuery.of(context).size.width - 140.w, // 화면 폭에서 여백 제외
-                  ),
-                  child: DataTable(
-                    showCheckboxColumn: false, // 체크박스 제거
-                    columnSpacing: 25.w, // 컬럼 간격을 더 넓게
-                    dataRowMinHeight: 52.h,
-                    dataRowMaxHeight: 60.h,
-                  columns: [
-                    DataColumn(
-                      label: Text(
-                        '사업자명',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22.sp, // 20.sp -> 22.sp (가독성 개선)
-                        ),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        '은행명',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22.sp, // 가독성 개선
-                        ),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        '계좌번호',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22.sp, // 가독성 개선
-                        ),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        '예금주',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22.sp, // 가독성 개선
-                        ),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        '요청금액',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22.sp, // 20.sp -> 22.sp (가독성 개선)
-                        ),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        '요청일',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22.sp, // 20.sp -> 22.sp (가독성 개선)
-                        ),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        '상태',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22.sp, // 20.sp -> 22.sp (가독성 개선)
-                        ),
-                      ),
-                    ),
-                  ],
-                  rows: filteredSettlements.map((settlement) => _buildDataRow(settlement)).toList(),
-                  ),
-                ),
+            ElevatedButton.icon(
+              onPressed: _exportToExcel,
+              icon: Icon(MdiIcons.fileExcel, size: AppSizes.iconSm),
+              label: const Text('엑셀다운로드'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey[800],
+                foregroundColor: Colors.white,
               ),
             ),
           ],
+        ),
+        SizedBox(height: AppSizes.md),
+        Expanded(
+          child: ListView.builder(
+            itemCount: filteredSettlements.length,
+            itemBuilder: (context, index) {
+              return _buildSettlementCard(filteredSettlements[index]);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSettlementCard(SettlementModel settlement) {
+    final grossAmount = int.tryParse(settlement.settlementAmount) ?? 0;
+    final paymentFee = (grossAmount * 0.033).round();
+    final brokerageFee = (grossAmount * 0.01).round();
+    final netAmount = grossAmount - paymentFee - brokerageFee;
+
+    return Container(
+      margin: EdgeInsets.only(bottom: AppSizes.md),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: Colors.grey.withOpacity(0.15),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => context.go('/settlement/detail/${settlement.id}'),
+          borderRadius: BorderRadius.circular(12.r),
+          child: Padding(
+            padding: EdgeInsets.all(20.r),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(10.r),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Icon(
+                        MdiIcons.bankTransfer,
+                        size: 22.sp,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    SizedBox(width: AppSizes.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                settlement.businessName ?? settlement.storeName ?? '-',
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              SizedBox(width: AppSizes.sm),
+                              _buildStatusChip(settlement.status),
+                            ],
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            '${settlement.bankName ?? '-'} · ${settlement.accountHolder ?? '-'}',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '${_formatCurrency(netAmount.toString())}원',
+                          style: TextStyle(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.success,
+                          ),
+                        ),
+                        Text(
+                          '실제 정산액',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (settlement.status == 'PENDING') ...[
+                      SizedBox(width: AppSizes.md),
+                      ElevatedButton(
+                        onPressed: () => _showSettlementConfirmDialog(settlement),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.success,
+                          foregroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 8.h,
+                          ),
+                        ),
+                        child: Text(
+                          '정산완료',
+                          style: TextStyle(fontSize: 14.sp),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                SizedBox(height: AppSizes.md),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildSettlementInfoRow(
+                        MdiIcons.bank,
+                        '계좌번호',
+                        settlement.accountNumber ?? '-',
+                      ),
+                    ),
+                    SizedBox(width: AppSizes.lg),
+                    Expanded(
+                      child: _buildSettlementInfoRow(
+                        MdiIcons.cashMultiple,
+                        '요청금액',
+                        '${_formatCurrency(settlement.settlementAmount)}원',
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: AppSizes.sm),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildSettlementInfoRow(
+                        MdiIcons.calendar,
+                        '요청일',
+                        settlement.settlementDate,
+                      ),
+                    ),
+                    SizedBox(width: AppSizes.lg),
+                    Expanded(
+                      child: _buildSettlementInfoRow(
+                        MdiIcons.percent,
+                        '수수료',
+                        '${_formatCurrency((paymentFee + brokerageFee).toString())}원',
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
-  DataRow _buildDataRow(SettlementModel settlement) {
-    return DataRow(
-      onSelectChanged: (selected) {
-        if (selected == true) {
-          context.go('/settlement/detail/${settlement.id}');
-        }
-      },
-      cells: [
-        DataCell(
-          Text(
-            settlement.businessName ?? settlement.storeName ?? '-',
-            style: TextStyle(fontSize: 20.sp), // 18.sp -> 20.sp (가독성 개선)
+  Widget _buildSettlementInfoRow(IconData icon, String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          icon,
+          size: 16.sp,
+          color: AppColors.textSecondary,
+        ),
+        SizedBox(width: 6.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(height: 2.h),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w500,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
         ),
-        DataCell(
-          Text(
-            settlement.bankName ?? '-',
-            style: TextStyle(fontSize: 20.sp), // 가독성 개선
-          ),
-        ),
-        DataCell(
-          Text(
-            settlement.accountNumber ?? '-',
-            style: TextStyle(fontSize: 20.sp), // 가독성 개선
-          ),
-        ),
-        DataCell(
-          Text(
-            settlement.accountHolder ?? '-',
-            style: TextStyle(fontSize: 20.sp), // 가독성 개선
-          ),
-        ),
-        DataCell(
-          Text(
-            '${_formatCurrency(settlement.settlementAmount)}원',
-            style: TextStyle(fontSize: 20.sp), // 14.sp -> 20.sp (가독성 개선)
-          ),
-        ),
-        DataCell(
-          Text(
-            settlement.settlementDate,
-            style: TextStyle(fontSize: 20.sp), // 14.sp -> 20.sp (가독성 개선)
-          ),
-        ),
-        DataCell(_buildStatusChip(settlement.status)),
       ],
     );
   }

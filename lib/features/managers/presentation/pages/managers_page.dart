@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../shared/widgets/crm_layout.dart';
 import '../../../../core/constants/app_constants.dart';
@@ -271,7 +272,7 @@ class _ManagersPageState extends State<ManagersPage> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => _showAdminDialog(admin: admin),
+          onTap: () => context.go('${RouteNames.managerDetail}?id=${admin.id}'),
           borderRadius: BorderRadius.circular(12.r),
           child: Padding(
             padding: EdgeInsets.all(20.r),

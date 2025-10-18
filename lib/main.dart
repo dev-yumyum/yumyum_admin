@@ -56,13 +56,13 @@ class MyApp extends StatelessWidget {
           
           // 웹 최적화 설정 및 폰트 스케일 제한
           builder: (context, child) {
-            // 폰트 스케일 팩터 제한 (0.8 ~ 1.2)
+            // 폰트 스케일 팩터 30% 증가 (1.3배)
             final mediaQueryData = MediaQuery.of(context);
-            final constrainedTextScaleFactor = mediaQueryData.textScaleFactor.clamp(0.8, 1.2);
+            final scaledTextScaleFactor = mediaQueryData.textScaleFactor * 1.3;
             
             Widget constrainedChild = MediaQuery(
               data: mediaQueryData.copyWith(
-                textScaleFactor: constrainedTextScaleFactor,
+                textScaleFactor: scaledTextScaleFactor,
               ),
               child: child!,
             );

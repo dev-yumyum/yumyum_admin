@@ -408,214 +408,242 @@ class _ApprovalPageState extends State<ApprovalPage> with TickerProviderStateMix
   Widget _buildApprovalTable(String requestType) {
     final filteredRequests = _getFilteredRequestsByType(requestType);
     
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(AppSizes.md),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '승인 요청 목록',
-                  style: TextStyle(
-                    fontSize: 24.sp, // 22.sp -> 24.sp
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-                Text(
-                  '총 ${filteredRequests.length}건',
-                  style: TextStyle(
-                    fontSize: 20.sp, // 18.sp -> 20.sp
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
+            Text(
+              '승인 요청 목록',
+              style: TextStyle(
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
             ),
-            SizedBox(height: AppSizes.md),
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minWidth: MediaQuery.of(context).size.width - 140.w, // 화면 폭에서 여백 제외
-                  ),
-                  child: DataTable(
-                    showCheckboxColumn: false, // 체크박스 제거
-                    columnSpacing: 25.w, // 컬럼 간격을 더 넓게
-                    dataRowMinHeight: 52.h,
-                    dataRowMaxHeight: 60.h,
-                    columns: [
-                      DataColumn(
-                        label: Text(
-                          '요청번호',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.sp, // 18.sp -> 20.sp
-                          ),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          '요청유형',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.sp, // 18.sp -> 20.sp
-                          ),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          '요청자',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.sp, // 18.sp -> 20.sp
-                          ),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          '요청내용',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.sp, // 18.sp -> 20.sp
-                          ),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          '요청일',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.sp, // 18.sp -> 20.sp
-                          ),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          '상태',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.sp, // 18.sp -> 20.sp
-                          ),
-                        ),
-                      ),
-                      DataColumn(
-                        label: Text(
-                          '작업',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.sp, // 18.sp -> 20.sp
-                          ),
-                        ),
-                      ),
-                    ],
-                    rows: filteredRequests.map((request) => _buildDataRow(request)).toList(),
-                  ),
-                ),
+            Text(
+              '총 ${filteredRequests.length}건',
+              style: TextStyle(
+                fontSize: 20.sp,
+                color: AppColors.textSecondary,
               ),
             ),
           ],
+        ),
+        SizedBox(height: AppSizes.md),
+        Expanded(
+          child: ListView.builder(
+            itemCount: filteredRequests.length,
+            itemBuilder: (context, index) {
+              return _buildApprovalCard(filteredRequests[index]);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildApprovalCard(ApprovalRequestModel request) {
+    return Container(
+      margin: EdgeInsets.only(bottom: AppSizes.md),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: Colors.grey.withOpacity(0.15),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _showApprovalDetailDialog(request),
+          borderRadius: BorderRadius.circular(12.r),
+          child: Padding(
+            padding: EdgeInsets.all(20.r),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(10.r),
+                      decoration: BoxDecoration(
+                        color: _getTypeColor(request.requestType).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Icon(
+                        _getTypeIcon(request.requestType),
+                        size: 22.sp,
+                        color: _getTypeColor(request.requestType),
+                      ),
+                    ),
+                    SizedBox(width: AppSizes.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                request.requestNumber,
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              SizedBox(width: AppSizes.sm),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 8.w,
+                                  vertical: 4.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: _getTypeColor(request.requestType).withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(4.r),
+                                ),
+                                child: Text(
+                                  request.displayRequestType,
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: _getTypeColor(request.requestType),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(width: AppSizes.xs),
+                              _buildStatusChip(request.status),
+                            ],
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            request.requester,
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (request.status == 'PENDING')
+                      ElevatedButton(
+                        onPressed: () => _showApprovalDetailDialog(request),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 8.h,
+                          ),
+                        ),
+                        child: Text(
+                          '처리',
+                          style: TextStyle(fontSize: 14.sp),
+                        ),
+                      ),
+                  ],
+                ),
+                SizedBox(height: AppSizes.md),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildApprovalInfoRow(
+                        MdiIcons.textBox,
+                        '요청내용',
+                        request.requestContent,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: AppSizes.sm),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildApprovalInfoRow(
+                        MdiIcons.calendar,
+                        '요청일',
+                        request.requestDate,
+                      ),
+                    ),
+                    if (request.processedDate != null) ...[
+                      SizedBox(width: AppSizes.lg),
+                      Expanded(
+                        child: _buildApprovalInfoRow(
+                          MdiIcons.checkCircle,
+                          '처리일',
+                          request.processedDate!,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
-  DataRow _buildDataRow(ApprovalRequestModel request) {
-    return DataRow(
-      onSelectChanged: (_) => _showApprovalDetailDialog(request),
-      cells: [
-        DataCell(
-          InkWell(
-            onTap: () => _showApprovalDetailDialog(request),
-            child:             Text(
-            request.requestNumber,
-              style: TextStyle(
-                fontSize: 18.sp, // 16.sp -> 18.sp
-                color: AppColors.primary,
-                decoration: TextDecoration.underline,
-              ),
-            ),
-          ),
+  IconData _getTypeIcon(String type) {
+    switch (type) {
+      case 'BUSINESS_INFO':
+        return MdiIcons.domain;
+      case 'STORE_INFO':
+        return MdiIcons.store;
+      case 'BANK_ACCOUNT':
+        return MdiIcons.bankTransfer;
+      case 'MENU_ITEM':
+        return MdiIcons.silverware;
+      default:
+        return MdiIcons.fileDocument;
+    }
+  }
+
+  Widget _buildApprovalInfoRow(IconData icon, String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          icon,
+          size: 16.sp,
+          color: AppColors.textSecondary,
         ),
-        DataCell(
-          InkWell(
-            onTap: () => _showApprovalDetailDialog(request),
-            child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppSizes.sm,
-              vertical: AppSizes.xs,
-            ),
-            decoration: BoxDecoration(
-              color: _getTypeColor(request.requestType).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-            ),
-              child:               Text(
-              request.displayRequestType,
-              style: TextStyle(
-                  fontSize: 16.sp, // 14.sp -> 16.sp
-                fontWeight: FontWeight.w600,
-                color: _getTypeColor(request.requestType),
+        SizedBox(width: 6.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-            ),
-          ),
-        ),
-        DataCell(
-          InkWell(
-            onTap: () => _showApprovalDetailDialog(request),
-            child:             Text(
-            request.requester,
-              style: TextStyle(fontSize: 18.sp), // 16.sp -> 18.sp
-            ),
-          ),
-        ),
-        DataCell(
-          InkWell(
-            onTap: () => _showApprovalDetailDialog(request),
-            child: SizedBox(
-            width: 200.w,
-              child:               Text(
-              request.requestContent,
-                style: TextStyle(fontSize: 18.sp), // 16.sp -> 18.sp
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+              SizedBox(height: 2.h),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w500,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-            ),
-          ),
-        ),
-        DataCell(
-          InkWell(
-            onTap: () => _showApprovalDetailDialog(request),
-            child:             Text(
-            request.requestDate,
-              style: TextStyle(fontSize: 18.sp), // 16.sp -> 18.sp
-            ),
-          ),
-        ),
-        DataCell(
-          InkWell(
-            onTap: () => _showApprovalDetailDialog(request),
-            child: _buildStatusChip(request.status),
-          ),
-        ),
-        DataCell(
-          ElevatedButton(
-            onPressed: () => _showApprovalDetailDialog(request),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(
-                horizontal: AppSizes.md,
-                vertical: AppSizes.xs,
-              ),
-            ),
-            child:             Text(
-              '상세보기',
-              style: TextStyle(fontSize: 16.sp), // 14.sp -> 16.sp
-            ),
+            ],
           ),
         ),
       ],

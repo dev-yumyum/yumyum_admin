@@ -442,10 +442,7 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
     final sales = _getSampleSales();
     final period = _getDisplayPeriod();
     
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(AppSizes.lg),
-        child: Column(
+    return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -470,140 +467,199 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
             ),
             SizedBox(height: AppSizes.lg),
             Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minWidth: MediaQuery.of(context).size.width - 140.w, // 화면 폭에서 여백 제외
-                  ),
-                  child: DataTable(
-                    showCheckboxColumn: false, // 체크박스 제거
-                    headingRowColor: MaterialStateProperty.all(
-                      AppColors.backgroundSecondary,
-                    ),
-                    columnSpacing: 25.w, // 컬럼 간격을 더 넓게
-                    dataRowMinHeight: 52.h,
-                    dataRowMaxHeight: 60.h,
-                  columns: [
-                    DataColumn(
-                      label: Text(
-                        '주문번호',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
+          child: ListView.builder(
+            itemCount: _filteredSales.length,
+            itemBuilder: (context, index) {
+              return _buildSalesCard(_filteredSales[index]);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSalesCard(SalesModel sale) {
+    return Container(
+      margin: EdgeInsets.only(bottom: AppSizes.md),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: Colors.grey.withOpacity(0.15),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _showOrderDetail(sale),
+          borderRadius: BorderRadius.circular(12.r),
+          child: Padding(
+            padding: EdgeInsets.all(20.r),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(10.r),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Icon(
+                        MdiIcons.receiptText,
+                        size: 22.sp,
+                        color: AppColors.textSecondary,
                       ),
                     ),
-                    DataColumn(
-                      label: Text(
-                        '매장명',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
+                    SizedBox(width: AppSizes.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                sale.orderNumber,
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
                           color: AppColors.textPrimary,
                         ),
+                              ),
+                              SizedBox(width: AppSizes.sm),
+                              _buildStatusChip(sale.status),
+                            ],
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            sale.storeName ?? '-',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    DataColumn(
-                      label: Text(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '${_formatCurrency(sale.paymentAmount.toString())}원',
+                          style: TextStyle(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: AppSizes.md),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildSalesInfoRow(
+                        MdiIcons.account,
                         '고객명',
-                        style: TextStyle(
-                          fontSize: 22.sp, // 18.sp -> 22.sp (가독성 개선)
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
+                        sale.customerName ?? sale.memberName ?? '-',
                       ),
                     ),
-                    DataColumn(
-                      label: Text(
-                        '결제금액',
-                        style: TextStyle(
-                          fontSize: 22.sp, // 18.sp -> 22.sp (가독성 개선)
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        '주문상태',
-                        style: TextStyle(
-                          fontSize: 22.sp, // 18.sp -> 22.sp (가독성 개선)
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        '최종변경시간',
-                        style: TextStyle(
-                          fontSize: 22.sp, // 18.sp -> 22.sp (가독성 개선)
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
-                        ),
+                    SizedBox(width: AppSizes.lg),
+                    Expanded(
+                      child: _buildSalesInfoRow(
+                        MdiIcons.silverware,
+                        '주문내용',
+                        sale.menuItems ?? '-',
                       ),
                     ),
                   ],
-                  rows: _filteredSales.map((sale) => _buildDataRow(sale)).toList(),
-                  ),
                 ),
-              ),
+                SizedBox(height: AppSizes.sm),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildSalesInfoRow(
+                        MdiIcons.calendar,
+                        '주문시간',
+                        sale.orderDate,
+                      ),
+                    ),
+                    SizedBox(width: AppSizes.lg),
+                    Expanded(
+                      child: _buildSalesInfoRow(
+                        MdiIcons.creditCard,
+                        '결제방법',
+                        _getPaymentMethodLabel(sale.paymentMethod),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  DataRow _buildDataRow(SalesModel sale) {
-    return DataRow(
-      onSelectChanged: (_) => _showOrderDetail(sale),
-      cells: [
-        DataCell(
+  String _getPaymentMethodLabel(String method) {
+    switch (method) {
+      case 'CARD':
+        return '카드';
+      case 'MOBILE_PAY':
+        return '모바일';
+      case 'CASH':
+        return '현금';
+      default:
+        return method;
+    }
+  }
+
+  Widget _buildSalesInfoRow(IconData icon, String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          icon,
+          size: 16.sp,
+          color: AppColors.textSecondary,
+        ),
+        SizedBox(width: 6.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
           Text(
-            sale.orderNumber,
+                label,
             style: TextStyle(
-              fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
-              color: AppColors.textPrimary,
+                  fontSize: 12.sp,
+                  color: AppColors.textSecondary,
+                  fontWeight: FontWeight.w500,
             ),
           ),
-        ),
-        DataCell(
+              SizedBox(height: 2.h),
           Text(
-            sale.storeName ?? '',
+                value,
             style: TextStyle(
-              fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
+                  fontSize: 14.sp,
               color: AppColors.textPrimary,
-            ),
-          ),
-        ),
-        DataCell(
-          Text(
-            sale.customerName ?? sale.memberName ?? '',
-            style: TextStyle(
-              fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
-              color: AppColors.textPrimary,
-            ),
-          ),
-        ),
-        DataCell(
-          Text(
-            '${_formatCurrency(sale.paymentAmount.toString())}원',
-            style: TextStyle(
-              fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        DataCell(_buildStatusChip(sale.status)),
-        DataCell(
-          Text(
-            sale.orderDate,
-            style: TextStyle(
-              fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
-              color: AppColors.textSecondary,
-            ),
+                  fontWeight: FontWeight.w500,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
         ),
       ],
