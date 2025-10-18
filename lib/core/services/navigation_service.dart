@@ -17,6 +17,7 @@ import '../../features/settlements/presentation/pages/settlements_page.dart';
 import '../../features/settlements/presentation/pages/settlement_detail_page.dart';
 import '../../features/members/presentation/pages/members_page.dart';
 import '../../features/members/presentation/pages/member_detail_page.dart';
+import '../../features/reviews/presentation/pages/reviews_page.dart';
 import '../../features/managers/presentation/pages/managers_page.dart';
 import '../../features/managers/presentation/pages/manager_detail_page.dart';
 import '../../features/nicknames/presentation/pages/nickname_management_page.dart';
@@ -135,6 +136,12 @@ GoRouter createRouter() {
           final memberId = state.uri.queryParameters['id'];
           return MemberDetailPage(memberId: memberId);
         },
+      ),
+      
+      // 리뷰 관리
+      GoRoute(
+        path: RouteNames.review,
+        builder: (context, state) => const ReviewsPage(),
       ),
       
       // 관리자 관리

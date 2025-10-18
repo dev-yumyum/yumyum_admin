@@ -237,6 +237,11 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
         route: RouteNames.member,
       ),
       _MenuItem(
+        icon: MdiIcons.commentMultiple,
+        title: '리뷰 관리',
+        route: RouteNames.review,
+      ),
+      _MenuItem(
         icon: MdiIcons.accountTie,
         title: AppStrings.managerManagement,
         route: RouteNames.manager,
@@ -545,6 +550,8 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
         return AppStrings.settlementManagement;
       case RouteNames.member:
         return AppStrings.memberManagement;
+      case RouteNames.review:
+        return '리뷰 관리';
       case RouteNames.manager:
         return AppStrings.managerManagement;
       case '/nickname-management':

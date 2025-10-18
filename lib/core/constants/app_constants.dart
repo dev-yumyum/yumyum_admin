@@ -116,6 +116,9 @@ class RouteNames {
   static const String member = '/member';
   static const String memberDetail = '/member/detail';
   
+  // 리뷰 관리
+  static const String review = '/review';
+  
   // 관리자 관리
   static const String manager = '/manager';
   static const String managerDetail = '/manager/detail';
