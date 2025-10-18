@@ -11,6 +11,8 @@ class ReviewModel {
   final String content;
   final String createdAt;
   final List<String>? imageUrls;
+  final String? storeReply;
+  final String? storeReplyDate;
 
   ReviewModel({
     required this.id,
@@ -25,6 +27,8 @@ class ReviewModel {
     required this.content,
     required this.createdAt,
     this.imageUrls,
+    this.storeReply,
+    this.storeReplyDate,
   });
 
   factory ReviewModel.fromJson(Map<String, dynamic> json) {
@@ -43,6 +47,8 @@ class ReviewModel {
       imageUrls: json['imageUrls'] != null 
           ? List<String>.from(json['imageUrls']) 
           : null,
+      storeReply: json['storeReply'],
+      storeReplyDate: json['storeReplyDate'],
     );
   }
 
@@ -60,6 +66,8 @@ class ReviewModel {
       'content': content,
       'createdAt': createdAt,
       'imageUrls': imageUrls,
+      'storeReply': storeReply,
+      'storeReplyDate': storeReplyDate,
     };
   }
 }

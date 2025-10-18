@@ -383,6 +383,69 @@ class _ReviewsPageState extends State<ReviewsPage> {
                 }).toList(),
               ),
             ],
+            
+            // 매장 답글이 있는 경우
+            if (review.storeReply != null && review.storeReply!.isNotEmpty) ...[
+              SizedBox(height: AppSizes.md),
+              Container(
+                padding: EdgeInsets.all(AppSizes.md),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(8.r),
+                  border: Border.all(
+                    color: AppColors.primary.withOpacity(0.2),
+                    width: 1,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(6.r),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(6.r),
+                          ),
+                          child: Icon(
+                            MdiIcons.store,
+                            size: 16.sp,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        SizedBox(width: AppSizes.sm),
+                        Text(
+                          '${review.storeName} 답글',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        SizedBox(width: AppSizes.sm),
+                        Text(
+                          review.storeReplyDate ?? '',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: AppSizes.sm),
+                    Text(
+                      review.storeReply!,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: AppColors.textPrimary,
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -539,6 +602,74 @@ class _ReviewsPageState extends State<ReviewsPage> {
                       ),
                     ),
                   ),
+                  
+                  // 매장 답글이 있는 경우
+                  if (review.storeReply != null && review.storeReply!.isNotEmpty) ...[
+                    SizedBox(height: AppSizes.md),
+                    Text(
+                      '매장 답글',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    SizedBox(height: AppSizes.sm),
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(AppSizes.md),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.05),
+                        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                        border: Border.all(
+                          color: AppColors.primary.withOpacity(0.2),
+                          width: 1,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                MdiIcons.store,
+                                size: 16.sp,
+                                color: AppColors.primary,
+                              ),
+                              SizedBox(width: AppSizes.xs),
+                              Text(
+                                review.storeName,
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                              if (review.storeReplyDate != null) ...[
+                                SizedBox(width: AppSizes.sm),
+                                Text(
+                                  review.storeReplyDate!,
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                          SizedBox(height: AppSizes.sm),
+                          Text(
+                            review.storeReply!,
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              height: 1.5,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -606,6 +737,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
   List<ReviewModel> _getSampleReviews() {
     return List.generate(75, (index) {
       final rating = 3 + (index % 3);
+      final hasReply = index % 3 == 0; // 3개 중 1개는 답글이 있음
+      
       return ReviewModel(
         id: 'review_${index + 1}',
         customerId: 'customer_${index + 1}',
@@ -631,6 +764,18 @@ class _ReviewsPageState extends State<ReviewsPage> {
         imageUrls: index % 3 == 0 
             ? ['image1.jpg', 'image2.jpg'] 
             : null,
+        storeReply: hasReply ? [
+          '소중한 리뷰 감사합니다! 앞으로도 더 맛있는 음식으로 보답하겠습니다 😊',
+          '좋은 평가 감사드립니다. 고객님의 재방문을 기다리겠습니다!',
+          '피드백 감사합니다. 양에 대해서는 개선할 수 있도록 노력하겠습니다.',
+          '감사합니다! 단골 고객이 되어주세요 ❤️',
+          '아쉬운 부분 말씀해주셔서 감사합니다. 더 나은 서비스로 찾아뵙겠습니다.',
+        ][index % 5] : null,
+        storeReplyDate: hasReply ? DateTime.now()
+            .subtract(Duration(days: index, hours: 5))
+            .toString()
+            .substring(0, 19)
+            .replaceAll('T', ' ') : null,
       );
     });
   }
