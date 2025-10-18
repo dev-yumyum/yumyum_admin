@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <base href="/">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+  <!-- SEO 최적화 -->
+  <meta name="description" content="YumYum 포장 서비스 CRM 관리자 페이지 - 사업자, 매장, 주문, 정산 관리">
+  <meta name="keywords" content="포장, CRM, 관리자, 사업자관리, 매장관리, 주문관리, 정산관리">
+  <meta name="author" content="YumYum">
+  <meta name="robots" content="noindex, nofollow">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="YumYum CRM - 포장 서비스 관리자">
+  <meta property="og:description" content="YumYum 포장 서비스 CRM 관리자 페이지">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="icons/Icon-512.png">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="YumYum CRM">
+  <meta name="twitter:description" content="YumYum 포장 서비스 CRM 관리자 페이지">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="YumYum CRM">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+
+  <title>YumYum CRM - 포장 서비스 관리자</title>
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- 웹 성능 최적화 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="//fonts.googleapis.com">
+  
+  <!-- CSS 최적화 -->
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #f5f5f5;
+      overflow: hidden;
+    }
+    
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    .loading-text {
+      color: white;
+      margin-top: 20px;
+      font-size: 16px;
+      text-align: center;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* 스크롤바 커스터마이징 */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
+    }
+  </style>
+
+  <script>
+    // The value below is injected by flutter build, do not touch.
+    const serviceWorkerVersion = "911962230";
+  </script>
+  <!-- This script adds the flutter initialization JS code -->
+  <script src="flutter.js" defer></script>
+</head>
+<body>
+  <!-- 로딩 스크린 -->
+  <div id="loading" class="loading">
+    <div style="text-align: center;">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">
+        <div>YumYum CRM 로딩 중...</div>
+        <div style="font-size: 12px; margin-top: 8px; opacity: 0.8;">잠시만 기다려주세요</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flutter 앱 컨테이너 -->
+  <div id="app"></div>
+
+  <script>
+    // 웹 성능 최적화를 위한 설정
+    const config = {
+      // CanvasKit을 사용하여 성능 향상 (웹 최적화)
+      renderer: "canvaskit",
+      // 자동 감지를 통한 최적화
+      canvasKitBaseUrl: "/canvaskit/",
+    };
+
+    // 로딩 화면 제거 함수
+    function removeLoading() {
+      const loading = document.getElementById('loading');
+      if (loading) {
+        loading.style.opacity = '0';
+        setTimeout(() => {
+          loading.remove();
+        }, 300);
+      }
+    }
+
+    // Flutter 앱 로드
+    window.addEventListener('load', function(ev) {
+      // Download main.dart.js
+      _flutter.loader.loadEntrypoint({
+        serviceWorker: {
+          serviceWorkerVersion: serviceWorkerVersion,
+        },
+        onEntrypointLoaded: function(engineInitializer) {
+          engineInitializer.initializeEngine(config).then(function(appRunner) {
+            // 앱 실행 후 로딩 화면 제거
+            appRunner.runApp();
+            // 약간의 지연 후 로딩 화면 제거 (부드러운 전환)
+            setTimeout(removeLoading, 1000);
+          });
+        }
+      });
+    });
+
+    // 에러 처리
+    window.addEventListener('error', function(e) {
+      console.error('Flutter 앱 로드 중 오류:', e);
+      removeLoading();
+    });
+
+    // 웹 성능 모니터링
+    if ('performance' in window) {
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          const perfData = performance.timing;
+          const loadTime = perfData.loadEventEnd - perfData.navigationStart;
+          console.log('페이지 로드 시간:', loadTime + 'ms');
+        }, 0);
+      });
+    }
+  </script>
+</body>
+</html>
