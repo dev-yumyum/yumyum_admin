@@ -17,9 +17,9 @@ class OrderDetailDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
-      child: Container(
+      child:       Container(
         width: 900.w,
-        height: 1050.h,
+        height: MediaQuery.of(context).size.height * 0.9,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppSizes.borderRadius),
@@ -96,10 +96,10 @@ class OrderDetailDialog extends StatelessWidget {
           ),
         ),
         SizedBox(height: AppSizes.md),
-        _buildInfoRow('주문번호:', order.orderNumber),
-        _buildInfoRow('매장명:', order.storeName ?? '-'),
-        _buildInfoRow('고객명:', order.customerName ?? '-'),
-        _buildInfoRow('고객연락처:', order.customerPhone ?? '-'),
+        _buildInfoRow('주문번호', order.orderNumber),
+        _buildInfoRow('매장명', order.storeName ?? '-'),
+        _buildInfoRow('고객명', order.customerName ?? '-'),
+        _buildInfoRow('고객연락처', order.customerPhone ?? '-'),
       ],
     );
   }
@@ -122,15 +122,15 @@ class OrderDetailDialog extends StatelessWidget {
           ),
         ),
         SizedBox(height: AppSizes.md),
-        _buildInfoRow('주문메뉴:', order.menuItems ?? '치킨 버거 세트, 콜라 추가'),
-        _buildInfoRow('주문금액:', '${_formatCurrency(order.orderAmount)}원'),
-        _buildInfoRow('할인금액:', '${_formatCurrency(order.discountAmount ?? 0)}원'),
-        _buildInfoRow('결제금액:', '${_formatCurrency(order.paymentAmount)}원'),
+        _buildInfoRow('주문메뉴', order.menuItems ?? '치킨 버거 세트, 콜라 추가'),
+        _buildInfoRow('주문금액', '${_formatCurrency(order.orderAmount)}원'),
+        _buildInfoRow('할인금액', '${_formatCurrency(order.discountAmount ?? 0)}원'),
+        _buildInfoRow('결제금액', '${_formatCurrency(order.paymentAmount)}원'),
         Divider(height: AppSizes.lg),
-        _buildInfoRow('결제수수료 (3.3%):', '${_formatCurrency(paymentFee)}원', isHighlight: true),
-        _buildInfoRow('중개수수료 (1.0%):', '${_formatCurrency(brokerageFee)}원', isHighlight: true),
-        _buildInfoRow('총 수수료:', '${_formatCurrency(totalFees)}원', isHighlight: true),
-        _buildInfoRow('정산금액:', '${_formatCurrency(settlementAmount)}원', isHighlight: true, color: AppColors.success),
+        _buildInfoRow('결제수수료 (3.3%)', '${_formatCurrency(paymentFee)}원', isHighlight: true),
+        _buildInfoRow('중개수수료 (1.0%)', '${_formatCurrency(brokerageFee)}원', isHighlight: true),
+        _buildInfoRow('총 수수료', '${_formatCurrency(totalFees)}원', isHighlight: true),
+        _buildInfoRow('정산금액', '${_formatCurrency(settlementAmount)}원', isHighlight: true, color: AppColors.success),
       ],
     );
   }
@@ -207,27 +207,38 @@ class OrderDetailDialog extends StatelessWidget {
 
   Widget _buildInfoRow(String label, String value, {bool isHighlight = false, Color? color}) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: AppSizes.sm),
-      child: Row(
+      padding: EdgeInsets.only(bottom: AppSizes.lg),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 120.w,
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 18.sp,
-                color: AppColors.textSecondary,
-                fontWeight: isHighlight ? FontWeight.w600 : FontWeight.normal,
-              ),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
             ),
           ),
-          Expanded(
+          SizedBox(height: AppSizes.sm),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(AppSizes.md),
+            decoration: BoxDecoration(
+              color: isHighlight 
+                  ? (color == AppColors.success ? AppColors.success.withOpacity(0.05) : Colors.grey[50])
+                  : AppColors.background,
+              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+              border: Border.all(
+                color: isHighlight && color == AppColors.success
+                    ? AppColors.success.withOpacity(0.3)
+                    : AppColors.border.withOpacity(0.3),
+              ),
+            ),
             child: Text(
               value,
               style: TextStyle(
-                fontSize: 18.sp,
-                color: color ?? (isHighlight ? AppColors.textPrimary : AppColors.textPrimary),
+                fontSize: 20.sp,
+                color: color ?? AppColors.textPrimary,
                 fontWeight: isHighlight ? FontWeight.w600 : FontWeight.normal,
               ),
             ),

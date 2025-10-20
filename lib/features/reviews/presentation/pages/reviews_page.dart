@@ -565,7 +565,8 @@ class _ReviewsPageState extends State<ReviewsPage> {
             ],
           ),
           content: SizedBox(
-            width: 600.w,
+            width: MediaQuery.of(context).size.width * 0.6,
+            height: MediaQuery.of(context).size.height * 0.7,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -705,26 +706,31 @@ class _ReviewsPageState extends State<ReviewsPage> {
 
   Widget _buildDetailRow(String label, String value) {
     return Padding(
-      padding: EdgeInsets.only(bottom: AppSizes.sm),
-      child: Row(
+      padding: EdgeInsets.only(bottom: AppSizes.lg),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 100.w,
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: AppColors.textSecondary,
-                fontWeight: FontWeight.w500,
-              ),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
             ),
           ),
-          Expanded(
+          SizedBox(height: AppSizes.sm),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(AppSizes.md),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+              border: Border.all(color: AppColors.border.withOpacity(0.3)),
+            ),
             child: Text(
               value,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 20.sp,
                 color: AppColors.textPrimary,
               ),
             ),

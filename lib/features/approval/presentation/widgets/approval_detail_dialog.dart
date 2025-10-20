@@ -33,9 +33,9 @@ class _ApprovalDetailDialogState extends State<ApprovalDetailDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
-      child: Container(
+      child:       Container(
         width: 800.w,
-        height: 700.h,
+        height: MediaQuery.of(context).size.height * 0.9,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(AppSizes.borderRadius),
@@ -397,27 +397,31 @@ class _ApprovalDetailDialogState extends State<ApprovalDetailDialog> {
 
   Widget _buildInfoRow(String label, String value) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: AppSizes.xs),
-      child: Row(
+      padding: EdgeInsets.only(bottom: AppSizes.lg),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 100.w,
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: AppColors.textSecondary,
-                fontWeight: FontWeight.w500,
-              ),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
             ),
           ),
-          SizedBox(width: AppSizes.md),
-          Expanded(
+          SizedBox(height: AppSizes.sm),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(AppSizes.md),
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+              border: Border.all(color: AppColors.border.withOpacity(0.3)),
+            ),
             child: Text(
               value,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 20.sp,
                 color: AppColors.textPrimary,
               ),
             ),
