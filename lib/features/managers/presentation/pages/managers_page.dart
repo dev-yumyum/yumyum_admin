@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:csv/csv.dart';
+import 'package:universal_html/html.dart' as html;
+import 'dart:convert';
 
 import '../../../../shared/widgets/crm_layout.dart';
 import '../../../../core/constants/app_constants.dart';
@@ -229,13 +232,28 @@ class _ManagersPageState extends State<ManagersPage> {
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: AppSizes.sm, vertical: AppSizes.md),
-          child: Text(
-            '구성원 목록 (${_admins.length}명)',
-            style: TextStyle(
-              fontSize: 22.sp,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '구성원 목록 (${_admins.length}명)',
+                style: TextStyle(
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: _downloadExcel,
+                icon: Icon(MdiIcons.download, size: 18.sp),
+                label: Text('엑셀 다운로드'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.success,
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                ),
+              ),
+            ],
           ),
         ),
         Expanded(
@@ -698,5 +716,61 @@ class _ManagersPageState extends State<ManagersPage> {
         ],
       ),
     );
+  }
+
+  void _downloadExcel() {
+    try {
+      List<List<dynamic>> rows = [];
+      
+      rows.add([
+        '관리자 ID',
+        '이름',
+        '이메일',
+        '연락처',
+        '부서',
+        '직책',
+        '권한',
+        '상태',
+        '등록일',
+      ]);
+      
+      for (var admin in _admins) {
+        rows.add([
+          admin.adminId,
+          admin.name,
+          admin.email,
+          admin.phone,
+          admin.department,
+          admin.position,
+          admin.displayRole,
+          admin.status == 'ACTIVE' ? '활성' : admin.status == 'INACTIVE' ? '비활성' : '정지',
+          '${admin.createdAt.year}-${admin.createdAt.month.toString().padLeft(2, '0')}-${admin.createdAt.day.toString().padLeft(2, '0')}',
+        ]);
+      }
+      
+      String csv = const ListToCsvConverter().convert(rows);
+      
+      final bytes = utf8.encode('\uFEFF$csv');
+      final blob = html.Blob([bytes]);
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      html.AnchorElement(href: url)
+        ..setAttribute('download', '관리자_목록_${DateTime.now().millisecondsSinceEpoch}.csv')
+        ..click();
+      html.Url.revokeObjectUrl(url);
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('엑셀 파일이 다운로드되었습니다.'),
+          backgroundColor: AppColors.success,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('다운로드 중 오류가 발생했습니다: $e'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
   }
 }

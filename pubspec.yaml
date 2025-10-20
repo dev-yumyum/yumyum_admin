@@ -67,6 +67,10 @@ dependencies:
   # 웹 전용 최적화
   web: ^1.1.0
   js: ^0.7.1
+  
+  # CSV 내보내기
+  csv: ^6.0.0
+  universal_html: ^2.2.4
 
 dev_dependencies:
   flutter_test:
