@@ -254,39 +254,48 @@ class _SalesPageState extends State<SalesPage> with SingleTickerProviderStateMix
   Widget _buildStatusCard(String title, String value, String subtitle, Color color, IconData icon) {
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(AppSizes.lg),
+        padding: EdgeInsets.all(AppSizes.md),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    color: AppColors.textSecondary,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    SizedBox(height: AppSizes.xs),
+                    Text(
+                      value,
+                      style: TextStyle(
+                        fontSize: 34.sp,
+                        fontWeight: FontWeight.bold,
+                        color: color,
+                      ),
+                    ),
+                    SizedBox(height: AppSizes.xs),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        color: AppColors.textTertiary,
+                      ),
+                    ),
+                  ],
                 ),
-                const Spacer(),
-                Icon(icon, size: AppSizes.iconMd, color: color),
+                Icon(
+                  icon,
+                  size: AppSizes.iconLg,
+                  color: color.withOpacity(0.7),
+                ),
               ],
-            ),
-            SizedBox(height: AppSizes.md),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 36.sp,
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
-            ),
-            SizedBox(height: AppSizes.xs),
-            Text(
-              subtitle,
-              style: TextStyle(
-                fontSize: 20.sp, // 16.sp -> 20.sp (가독성 개선)
-                color: AppColors.textSecondary,
-              ),
             ),
           ],
         ),

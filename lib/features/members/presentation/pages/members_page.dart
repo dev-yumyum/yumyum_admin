@@ -217,6 +217,58 @@ class _MembersPageState extends State<MembersPage> {
 
   Widget _buildStatCard(String title, int count, String subtitle, Color color, IconData icon, {Color? backgroundColor}) {
     return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppSizes.md),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    SizedBox(height: AppSizes.xs),
+                    Text(
+                      count.toString(),
+                      style: TextStyle(
+                        fontSize: 34.sp,
+                        fontWeight: FontWeight.bold,
+                        color: color,
+                      ),
+                    ),
+                    SizedBox(height: AppSizes.xs),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        color: AppColors.textTertiary,
+                      ),
+                    ),
+                  ],
+                ),
+                Icon(
+                  icon,
+                  size: AppSizes.iconLg,
+                  color: color.withOpacity(0.7),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatCard_old(String title, int count, String subtitle, Color color, IconData icon, {Color? backgroundColor}) {
+    return Card(
       color: backgroundColor,
       child: Padding(
         padding: EdgeInsets.all(AppSizes.lg),
