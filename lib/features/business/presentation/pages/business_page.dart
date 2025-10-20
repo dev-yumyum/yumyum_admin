@@ -146,59 +146,53 @@ class _BusinessPageState extends State<BusinessPage> {
     Color color,
     IconData icon,
   ) {
-    return Container(
-      padding: EdgeInsets.all(AppSizes.lg),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-        border: Border.all(color: color.withOpacity(0.3)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Icon(
-                icon,
-                size: 32.sp,
-                color: color,
-              ),
-              Text(
-                value,
-                style: TextStyle(
-                  fontSize: 32.sp,
-                  fontWeight: FontWeight.bold,
-                  color: color,
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(AppSizes.md),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    SizedBox(height: AppSizes.xs),
+                    Text(
+                      value,
+                      style: TextStyle(
+                        fontSize: 34.sp,
+                        fontWeight: FontWeight.bold,
+                        color: color,
+                      ),
+                    ),
+                    SizedBox(height: AppSizes.xs),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        color: AppColors.textTertiary,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: AppSizes.md),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+                Icon(
+                  icon,
+                  size: AppSizes.iconLg,
+                  color: color.withOpacity(0.7),
+                ),
+              ],
             ),
-          ),
-          SizedBox(height: AppSizes.xs),
-          Text(
-            subtitle,
-            style: TextStyle(
-              fontSize: 14.sp,
-              color: AppColors.textSecondary,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -208,37 +208,48 @@ class _SettlementsPageState extends State<SettlementsPage> with TickerProviderSt
   Widget _buildStatusCard(String title, String value, String subtitle, Color color, IconData icon) {
     return Card(
       child: Padding(
-        padding: EdgeInsets.all(AppSizes.lg),
+        padding: EdgeInsets.all(AppSizes.md),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Icon(icon, size: AppSizes.iconMd, color: color),
-                SizedBox(width: AppSizes.sm),
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textSecondary,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    SizedBox(height: AppSizes.xs),
+                    Text(
+                      value,
+                      style: TextStyle(
+                        fontSize: 34.sp,
+                        fontWeight: FontWeight.bold,
+                        color: color,
+                      ),
+                    ),
+                    SizedBox(height: AppSizes.xs),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        color: AppColors.textTertiary,
+                      ),
+                    ),
+                  ],
+                ),
+                Icon(
+                  icon,
+                  size: AppSizes.iconLg,
+                  color: color.withOpacity(0.7),
                 ),
               ],
-            ),
-            SizedBox(height: AppSizes.sm),
-            Text(
-              value,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            SizedBox(height: AppSizes.xs),
-            Text(
-              subtitle,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppColors.textSecondary,
-              ),
             ),
           ],
         ),
