@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:data_table_2/data_table_2.dart';
 
@@ -64,28 +65,31 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
   Widget build(BuildContext context) {
     return CrmLayout(
       currentRoute: '/nickname-management',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 상단 필터 및 검색
-          _buildFilterSection(),
-          const SizedBox(height: 24),
-          
-          // 닉네임 목록 테이블
-          Expanded(
-            child: _buildNicknameTable(),
-          ),
-        ],
+      child: Padding(
+        padding: EdgeInsets.all(24.r),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 상단 필터 및 검색
+            _buildFilterSection(),
+            SizedBox(height: 24.h),
+            
+            // 닉네임 목록 테이블
+            Expanded(
+              child: _buildNicknameTable(),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildFilterSection() {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(24.r),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -114,13 +118,13 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
                       },
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                   ),
                   onSubmitted: (_) => _onSearch(),
                 ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: 16.w),
               
               // 검색 버튼
               ElevatedButton.icon(
@@ -130,25 +134,25 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
                 ),
               ),
             ],
           ),
           
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           
           // 상태 필터
           Row(
             children: [
-              const Text(
+              Text(
                 '상태 필터:',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: 16.w),
               _buildStatusFilter(),
             ],
           ),
@@ -215,24 +219,24 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
       children: [
         Row(
           children: [
-            const Text(
+            Text(
               '닉네임 목록',
               style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
+                fontSize: 22.sp,
+                fontWeight: FontWeight.bold,
               ),
             ),
             const Spacer(),
             Text(
               '총 ${mockData.length}개',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 14.sp,
                 color: Colors.grey[600],
               ),
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
         Expanded(
           child: ListView.builder(
             itemCount: mockData.length,
@@ -247,10 +251,10 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
 
   Widget _buildNicknameCard(Map<String, String> data) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: 12.h),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: Colors.grey.withOpacity(0.15),
           width: 1,
@@ -267,27 +271,27 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
         color: Colors.transparent,
         child: InkWell(
           onTap: () => _showEditDialog(data),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(20.r),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(10),
+                      padding: EdgeInsets.all(10.r),
                       decoration: BoxDecoration(
                         color: Colors.grey.withOpacity(0.08),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(10.r),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.person,
-                        size: 22,
+                        size: 22.sp,
                         color: Colors.grey,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: 12.w),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -296,20 +300,20 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
                             children: [
                               Text(
                                 data['nickname']!,
-                                style: const TextStyle(
-                                  fontSize: 18,
+                                style: TextStyle(
+                                  fontSize: 18.sp,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const SizedBox(width: 8),
+                              SizedBox(width: 8.w),
                               NicknameStatusChip(status: data['status']!),
                             ],
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: 4.h),
                           Text(
                             data['userId']!,
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 14.sp,
                               color: Colors.grey[600],
                             ),
                           ),
@@ -320,13 +324,13 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.edit, size: 20),
+                          icon: Icon(Icons.edit, size: 20.sp),
                           onPressed: () => _showEditDialog(data),
                           tooltip: '수정',
                           color: Colors.grey[700],
                         ),
                         IconButton(
-                          icon: const Icon(Icons.block, size: 20),
+                          icon: Icon(Icons.block, size: 20.sp),
                           onPressed: () => _showBanDialog(data),
                           tooltip: '차단',
                           color: Colors.red,
@@ -335,15 +339,15 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: 12.h),
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.calendar_today,
-                      size: 16,
+                      size: 16.sp,
                       color: Colors.grey,
                     ),
-                    const SizedBox(width: 6),
+                    SizedBox(width: 6.w),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -351,17 +355,17 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
                           Text(
                             '생성일',
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 13.sp,
                               color: Colors.grey[600],
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          const SizedBox(height: 2),
+                          SizedBox(height: 2.h),
                           Text(
                             data['createdAt']!,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
+                            style: TextStyle(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ],
