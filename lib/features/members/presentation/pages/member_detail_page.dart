@@ -56,18 +56,18 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
       child: _isLoading 
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: EdgeInsets.all(AppSizes.lg),
+              padding: EdgeInsets.all(16.r),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildHeader(),
-                  SizedBox(height: AppSizes.lg),
+                  SizedBox(height: 12.h),
                   _buildProfileHeader(),
-                  SizedBox(height: AppSizes.lg),
+                  SizedBox(height: 16.h),
                   _buildBasicInfoSection(),
-                  SizedBox(height: AppSizes.lg),
+                  SizedBox(height: 16.h),
                   _buildJoinInfoSection(),
-                  SizedBox(height: AppSizes.lg),
+                  SizedBox(height: 16.h),
                   _buildPointSection(),
                 ],
               ),
@@ -82,16 +82,16 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
           onPressed: () => context.pop(),
           icon: Icon(
             MdiIcons.arrowLeft,
-            size: 24.r,
+            size: 20.r,
             color: AppColors.textPrimary,
           ),
           tooltip: '뒤로가기',
         ),
-        SizedBox(width: AppSizes.sm),
+        SizedBox(width: 8.w),
         Text(
           '고객 상세',
           style: TextStyle(
-            fontSize: 24.sp,
+            fontSize: 20.sp,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
           ),
@@ -105,8 +105,8 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
   Widget _buildStatusBadge() {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: AppSizes.sm,
-        vertical: AppSizes.xs,
+        horizontal: 10.w,
+        vertical: 4.h,
       ),
       decoration: BoxDecoration(
         color: AppColors.success.withOpacity(0.1),
@@ -115,7 +115,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
       child: Text(
         '활성 회원',
         style: TextStyle(
-          fontSize: 14.sp,
+          fontSize: 12.sp,
           fontWeight: FontWeight.w600,
           color: AppColors.success,
         ),
@@ -129,18 +129,18 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
     return Row(
       children: [
         CircleAvatar(
-          radius: 40.r,
+          radius: 30.r,
           backgroundColor: AppColors.primary,
           child: Text(
             _member!.memberName?.substring(0, 1) ?? '김',
             style: TextStyle(
-              fontSize: 32.sp,
+              fontSize: 22.sp,
               fontWeight: FontWeight.bold,
               color: Colors.white,
             ),
           ),
         ),
-        SizedBox(width: AppSizes.lg),
+        SizedBox(width: 12.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,16 +148,16 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
               Text(
                 _member!.memberName ?? '김민수',
                 style: TextStyle(
-                  fontSize: 32.sp, // 28.sp -> 32.sp (프로필 이름 가독성 개선)
+                  fontSize: 22.sp,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
                 ),
               ),
-              SizedBox(height: AppSizes.xs),
+              SizedBox(height: 4.h),
               Text(
                 _member!.memberId,
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 13.sp,
                   color: AppColors.textSecondary,
                 ),
               ),
@@ -173,9 +173,9 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
     return Row(
       children: [
         _buildStatCard('47', '총 주문'),
-        SizedBox(width: AppSizes.lg),
+        SizedBox(width: 8.w),
         _buildStatCard('342,500원', '누적 결제'),
-        SizedBox(width: AppSizes.lg),
+        SizedBox(width: 8.w),
         _buildStatCard('2,450P', '보유 포인트'),
       ],
     );
@@ -188,16 +188,16 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
         Text(
           value,
           style: TextStyle(
-            fontSize: 28.sp, // 24.sp -> 28.sp (통계 값 가독성 개선)
+            fontSize: 20.sp,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
           ),
         ),
-        SizedBox(height: AppSizes.xs),
+        SizedBox(height: 2.h),
         Text(
           label,
           style: TextStyle(
-            fontSize: 18.sp, // 12.sp -> 18.sp (가독성 개선)
+            fontSize: 13.sp,
             color: AppColors.textSecondary,
           ),
         ),
@@ -214,12 +214,12 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
         Text(
           '기본 정보',
           style: TextStyle(
-            fontSize: 24.sp,
+            fontSize: 18.sp,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
           ),
         ),
-        SizedBox(height: AppSizes.lg),
+        SizedBox(height: 12.h),
         _buildInfoField('고유번호', _member!.memberId),
         _buildInfoField('연락처', _member!.phone ?? '010-1234-5678'),
         _buildInfoField('이메일', _member!.email ?? 'minsu.kim@example.com'),
@@ -238,12 +238,12 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
         Text(
           '가입 정보',
           style: TextStyle(
-            fontSize: 24.sp,
+            fontSize: 18.sp,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
           ),
         ),
-        SizedBox(height: AppSizes.lg),
+        SizedBox(height: 12.h),
         _buildInfoField('가입일', _member!.registrationDate),
         _buildInfoField('최근접속', _member!.lastLoginDate ?? '-'),
         _buildInfoField('가입유형', _member!.registrationType == 'EMAIL' ? '이메일' : _member!.registrationType ?? '-'),

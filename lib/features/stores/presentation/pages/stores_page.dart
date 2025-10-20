@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:csv/csv.dart';
+import 'package:universal_html/html.dart' as html;
+import 'dart:convert';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../shared/widgets/crm_layout.dart';
@@ -173,13 +176,28 @@ class _StoresPageState extends State<StoresPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '매장 목록 (${filteredStores.length}개)',
-          style: TextStyle(
-            fontSize: 24.sp,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '매장 목록 (${filteredStores.length}개)',
+              style: TextStyle(
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed: () => _downloadExcel(filteredStores),
+              icon: Icon(MdiIcons.download, size: 18.sp),
+              label: Text('엑셀 다운로드'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.success,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+              ),
+            ),
+          ],
         ),
         SizedBox(height: AppSizes.md),
         Expanded(
@@ -192,6 +210,58 @@ class _StoresPageState extends State<StoresPage> {
         ),
       ],
     );
+  }
+
+  void _downloadExcel(List<StoreModel> stores) {
+    try {
+      List<List<dynamic>> rows = [];
+      
+      rows.add([
+        '매장ID',
+        '매장명',
+        '주소',
+        '전화번호',
+        '사업자명',
+        '상태',
+        '등록일',
+      ]);
+      
+      for (var store in stores) {
+        rows.add([
+          store.id,
+          store.storeName,
+          store.storeAddress,
+          store.storePhone ?? '-',
+          store.businessName ?? '-',
+          store.status == 'OPEN' ? '영업중' : store.status == 'CLOSED' ? '휴업' : '폐업',
+          store.registrationDate,
+        ]);
+      }
+      
+      String csv = const ListToCsvConverter().convert(rows);
+      
+      final bytes = utf8.encode('\uFEFF$csv');
+      final blob = html.Blob([bytes]);
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      html.AnchorElement(href: url)
+        ..setAttribute('download', '매장_목록_${DateTime.now().millisecondsSinceEpoch}.csv')
+        ..click();
+      html.Url.revokeObjectUrl(url);
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('엑셀 파일이 다운로드되었습니다.'),
+          backgroundColor: AppColors.success,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('다운로드 중 오류가 발생했습니다: $e'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
   }
 
   Widget _buildStoreCard(StoreModel store) {

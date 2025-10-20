@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:csv/csv.dart';
+import 'package:universal_html/html.dart' as html;
+import 'dart:convert';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../shared/widgets/crm_layout.dart';
@@ -146,13 +149,28 @@ class _BusinessPageState extends State<BusinessPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '사업자 목록 (${filteredBusinesses.length}개)',
-          style: TextStyle(
-            fontSize: 24.sp,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textPrimary,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '사업자 목록 (${filteredBusinesses.length}개)',
+              style: TextStyle(
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed: () => _downloadExcel(filteredBusinesses),
+              icon: Icon(MdiIcons.download, size: 18.sp),
+              label: Text('엑셀 다운로드'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.success,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+              ),
+            ),
+          ],
         ),
         SizedBox(height: AppSizes.md),
         Expanded(
@@ -165,6 +183,64 @@ class _BusinessPageState extends State<BusinessPage> {
         ),
       ],
     );
+  }
+
+  void _downloadExcel(List<BusinessModel> businesses) {
+    try {
+      List<List<dynamic>> rows = [];
+      
+      rows.add([
+        '사업자번호',
+        '사업자명',
+        '대표자명',
+        '전화번호',
+        '이메일',
+        '주소',
+        '업태',
+        '종목',
+        '등록일',
+        '상태',
+      ]);
+      
+      for (var business in businesses) {
+        rows.add([
+          business.businessNumber,
+          business.businessName,
+          business.ownerName,
+          business.ownerPhone ?? '-',
+          business.ownerEmail ?? '-',
+          business.businessAddress ?? '-',
+          business.businessType,
+          business.businessItem,
+          business.registrationDate,
+          business.status == 'APPROVED' ? '승인' : business.status == 'PENDING' ? '대기' : '거부',
+        ]);
+      }
+      
+      String csv = const ListToCsvConverter().convert(rows);
+      
+      final bytes = utf8.encode('\uFEFF$csv');
+      final blob = html.Blob([bytes]);
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      html.AnchorElement(href: url)
+        ..setAttribute('download', '사업자_목록_${DateTime.now().millisecondsSinceEpoch}.csv')
+        ..click();
+      html.Url.revokeObjectUrl(url);
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('엑셀 파일이 다운로드되었습니다.'),
+          backgroundColor: AppColors.success,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('다운로드 중 오류가 발생했습니다: $e'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
   }
 
   Widget _buildBusinessCard(BusinessModel business) {
