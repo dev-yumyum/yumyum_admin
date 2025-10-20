@@ -8,6 +8,7 @@
       "version": "1.0.0+1",
       "dependencies": [
         "cached_network_image",
+        "csv",
         "cupertino_icons",
         "data_table_2",
         "dio",
@@ -32,6 +33,7 @@
         "shared_preferences",
         "shared_preferences_web",
         "shimmer",
+        "universal_html",
         "url_strategy",
         "web"
       ],
@@ -136,6 +138,26 @@
         "test_api",
         "vector_math"
       ]
+    },
+    {
+      "name": "universal_html",
+      "version": "2.2.4",
+      "dependencies": [
+        "async",
+        "charcode",
+        "collection",
+        "csslib",
+        "html",
+        "meta",
+        "source_span",
+        "typed_data",
+        "universal_io"
+      ]
+    },
+    {
+      "name": "csv",
+      "version": "6.0.0",
+      "dependencies": []
     },
     {
       "name": "js",
@@ -799,6 +821,51 @@
       ]
     },
     {
+      "name": "universal_io",
+      "version": "2.2.2",
+      "dependencies": [
+        "collection",
+        "meta",
+        "typed_data"
+      ]
+    },
+    {
+      "name": "typed_data",
+      "version": "1.4.0",
+      "dependencies": [
+        "collection"
+      ]
+    },
+    {
+      "name": "source_span",
+      "version": "1.10.1",
+      "dependencies": [
+        "collection",
+        "path",
+        "term_glyph"
+      ]
+    },
+    {
+      "name": "html",
+      "version": "0.15.6",
+      "dependencies": [
+        "csslib",
+        "source_span"
+      ]
+    },
+    {
+      "name": "charcode",
+      "version": "1.4.0",
+      "dependencies": []
+    },
+    {
+      "name": "csslib",
+      "version": "1.0.2",
+      "dependencies": [
+        "source_span"
+      ]
+    },
+    {
       "name": "cross_file",
       "version": "0.3.4+2",
       "dependencies": [
@@ -1031,15 +1098,6 @@
       "dependencies": []
     },
     {
-      "name": "source_span",
-      "version": "1.10.1",
-      "dependencies": [
-        "collection",
-        "path",
-        "term_glyph"
-      ]
-    },
-    {
       "name": "convert",
       "version": "3.1.2",
       "dependencies": [
@@ -1082,13 +1140,6 @@
       "dependencies": [
         "meta",
         "path"
-      ]
-    },
-    {
-      "name": "typed_data",
-      "version": "1.4.0",
-      "dependencies": [
-        "collection"
       ]
     },
     {
