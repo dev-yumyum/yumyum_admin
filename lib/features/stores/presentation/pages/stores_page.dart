@@ -39,6 +39,8 @@ class _StoresPageState extends State<StoresPage> {
           children: [
             _buildHeader(),
             SizedBox(height: AppSizes.lg),
+            _buildStatsCards(),
+            SizedBox(height: AppSizes.lg),
             _buildFilters(),
             SizedBox(height: AppSizes.lg),
             Expanded(
@@ -83,6 +85,122 @@ class _StoresPageState extends State<StoresPage> {
           label: const Text('매장 등록'),
         ),
       ],
+    );
+  }
+
+  Widget _buildStatsCards() {
+    final stores = _getSampleStores();
+    final totalCount = stores.length;
+    final activeCount = stores.where((s) => s.status == 'ACTIVE').length;
+    final pendingCount = stores.where((s) => s.status == 'PENDING').length;
+    final inactiveCount = stores.where((s) => s.status == 'INACTIVE').length;
+
+    return Row(
+      children: [
+        Expanded(
+          child: _buildStatCard(
+            '총 매장',
+            totalCount.toString(),
+            '등록된 매장',
+            AppColors.primary,
+            MdiIcons.store,
+          ),
+        ),
+        SizedBox(width: AppSizes.lg),
+        Expanded(
+          child: _buildStatCard(
+            '운영중',
+            activeCount.toString(),
+            '정상 운영중',
+            AppColors.success,
+            MdiIcons.checkCircle,
+          ),
+        ),
+        SizedBox(width: AppSizes.lg),
+        Expanded(
+          child: _buildStatCard(
+            '승인대기',
+            pendingCount.toString(),
+            '승인 대기중',
+            AppColors.warning,
+            MdiIcons.clockAlert,
+          ),
+        ),
+        SizedBox(width: AppSizes.lg),
+        Expanded(
+          child: _buildStatCard(
+            '운영중지',
+            inactiveCount.toString(),
+            '운영 중지',
+            AppColors.error,
+            MdiIcons.closeCircle,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatCard(
+    String title,
+    String value,
+    String subtitle,
+    Color color,
+    IconData icon,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(AppSizes.lg),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+        border: Border.all(color: color.withOpacity(0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(
+                icon,
+                size: 32.sp,
+                color: color,
+              ),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 32.sp,
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: AppSizes.md),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          SizedBox(height: AppSizes.xs),
+          Text(
+            subtitle,
+            style: TextStyle(
+              fontSize: 14.sp,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

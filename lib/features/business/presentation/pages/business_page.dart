@@ -38,6 +38,8 @@ class _BusinessPageState extends State<BusinessPage> {
           children: [
             _buildHeader(),
             SizedBox(height: AppSizes.lg),
+            _buildStatsCards(),
+            SizedBox(height: AppSizes.lg),
             _buildFilters(),
             SizedBox(height: AppSizes.lg),
             Expanded(
@@ -82,6 +84,122 @@ class _BusinessPageState extends State<BusinessPage> {
           label: const Text('사업자 등록'),
         ),
       ],
+    );
+  }
+
+  Widget _buildStatsCards() {
+    final businesses = _getSampleBusinesses();
+    final totalCount = businesses.length;
+    final approvedCount = businesses.where((b) => b.status == 'APPROVED').length;
+    final pendingCount = businesses.where((b) => b.status == 'PENDING').length;
+    final rejectedCount = businesses.where((b) => b.status == 'REJECTED').length;
+
+    return Row(
+      children: [
+        Expanded(
+          child: _buildStatCard(
+            '총 사업자',
+            totalCount.toString(),
+            '등록된 사업자',
+            AppColors.primary,
+            MdiIcons.domain,
+          ),
+        ),
+        SizedBox(width: AppSizes.lg),
+        Expanded(
+          child: _buildStatCard(
+            '승인완료',
+            approvedCount.toString(),
+            '운영중인 사업자',
+            AppColors.success,
+            MdiIcons.checkCircle,
+          ),
+        ),
+        SizedBox(width: AppSizes.lg),
+        Expanded(
+          child: _buildStatCard(
+            '승인대기',
+            pendingCount.toString(),
+            '승인 대기중',
+            AppColors.warning,
+            MdiIcons.clockAlert,
+          ),
+        ),
+        SizedBox(width: AppSizes.lg),
+        Expanded(
+          child: _buildStatCard(
+            '반려',
+            rejectedCount.toString(),
+            '반려된 사업자',
+            AppColors.error,
+            MdiIcons.closeCircle,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatCard(
+    String title,
+    String value,
+    String subtitle,
+    Color color,
+    IconData icon,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(AppSizes.lg),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+        border: Border.all(color: color.withOpacity(0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(
+                icon,
+                size: 32.sp,
+                color: color,
+              ),
+              Text(
+                value,
+                style: TextStyle(
+                  fontSize: 32.sp,
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: AppSizes.md),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          SizedBox(height: AppSizes.xs),
+          Text(
+            subtitle,
+            style: TextStyle(
+              fontSize: 14.sp,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
