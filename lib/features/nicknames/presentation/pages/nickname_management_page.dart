@@ -355,7 +355,7 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
                           Text(
                             '생성일',
                             style: TextStyle(
-                              fontSize: 12.sp,
+                              fontSize: 13.sp,
                               color: Colors.grey[600],
                               fontWeight: FontWeight.w500,
                             ),
@@ -364,7 +364,7 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
                           Text(
                             data['createdAt']!,
                             style: TextStyle(
-                              fontSize: 14.sp,
+                              fontSize: 13.sp,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
