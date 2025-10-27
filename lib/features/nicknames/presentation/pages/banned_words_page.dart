@@ -144,7 +144,7 @@ class _BannedWordsPageState extends ConsumerState<BannedWordsPage> {
               const Text(
                 '타입:',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -154,7 +154,7 @@ class _BannedWordsPageState extends ConsumerState<BannedWordsPage> {
               const Text(
                 '심각도:',
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -264,7 +264,7 @@ class _BannedWordsPageState extends ConsumerState<BannedWordsPage> {
                 const Text(
                   '금칙어 목록',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 24,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -283,7 +283,7 @@ class _BannedWordsPageState extends ConsumerState<BannedWordsPage> {
                 Text(
                   '총 0개',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 20,
                     color: Colors.grey[600],
                   ),
                 ),

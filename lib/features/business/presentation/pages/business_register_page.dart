@@ -103,7 +103,7 @@ class _BusinessRegisterPageState extends State<BusinessRegisterPage> {
               Text(
                 '사업자 등록',
                 style: TextStyle(
-                  fontSize: 28.sp,
+                  fontSize: 36.sp,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textPrimary,
                 ),

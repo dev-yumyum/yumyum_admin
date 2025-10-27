@@ -148,7 +148,7 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
               Text(
                 '상태 필터:',
                 style: TextStyle(
-                  fontSize: 14.sp,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -222,7 +222,7 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
             Text(
               '닉네임 목록',
               style: TextStyle(
-                fontSize: 22.sp,
+                fontSize: 24.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -230,7 +230,7 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
             Text(
               '총 ${mockData.length}개',
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 20.sp,
                 color: Colors.grey[600],
               ),
             ),
@@ -355,7 +355,7 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
                           Text(
                             '생성일',
                             style: TextStyle(
-                              fontSize: 13.sp,
+                              fontSize: 12.sp,
                               color: Colors.grey[600],
                               fontWeight: FontWeight.w500,
                             ),
@@ -364,7 +364,7 @@ class _NicknameManagementPageState extends ConsumerState<NicknameManagementPage>
                           Text(
                             data['createdAt']!,
                             style: TextStyle(
-                              fontSize: 13.sp,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
