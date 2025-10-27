@@ -280,7 +280,7 @@ class _ManagerDetailPageState extends State<ManagerDetailPage> {
                                 ),
                                 SizedBox(height: AppSizes.xs),
                                 Text(
-                                  _admin!.adminId,
+                                  _admin!.email,
                                   style: TextStyle(
                                     fontSize: 16.sp,
                                     color: AppColors.textSecondary,
@@ -298,7 +298,6 @@ class _ManagerDetailPageState extends State<ManagerDetailPage> {
                       // 상세 정보
                       _buildInfoSection('기본 정보', [
                         _buildInfoRow('이름', _admin!.name),
-                        _buildInfoRow('아이디', _admin!.adminId),
                         _buildInfoRow('이메일', _admin!.email),
                         _buildInfoRow('연락처', _admin!.phone ?? '-'),
                       ]),
