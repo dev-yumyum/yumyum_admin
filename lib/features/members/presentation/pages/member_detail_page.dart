@@ -91,7 +91,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
         Text(
           '고객 상세',
           style: TextStyle(
-            fontSize: 20.sp,
+            fontSize: 24.sp,
             fontWeight: FontWeight.bold,
             color: AppColors.textPrimary,
           ),
@@ -115,7 +115,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
       child: Text(
         '활성 회원',
         style: TextStyle(
-          fontSize: 12.sp,
+          fontSize: 16.sp,
           fontWeight: FontWeight.w600,
           color: AppColors.success,
         ),
