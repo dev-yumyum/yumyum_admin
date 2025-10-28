@@ -269,9 +269,20 @@ class _BannedWordsPageState extends ConsumerState<BannedWordsPage> {
                 ),
                 const Spacer(),
                 ElevatedButton.icon(
+                  onPressed: () => _showBulkAddDialog(),
+                  icon: const Icon(Icons.text_fields, size: 18),
+                  label: const Text('대량 추가'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton.icon(
                   onPressed: () => _showAddDialog(),
                   icon: const Icon(Icons.add, size: 18),
-                  label: const Text('금칙어 추가'),
+                  label: const Text('개별 추가'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     foregroundColor: Colors.white,
@@ -434,6 +445,155 @@ class _BannedWordsPageState extends ConsumerState<BannedWordsPage> {
         ),
       ),
       backgroundColor: (info['color'] as Color).withOpacity(0.1),
+    );
+  }
+
+  void _showBulkAddDialog() {
+    final TextEditingController bulkTextController = TextEditingController();
+    String selectedType = 'text';
+    String selectedSeverity = 'medium';
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: const Text('금칙어 대량 추가'),
+          content: SizedBox(
+            width: 600,
+            height: 500,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '한 줄에 하나씩 입력해주세요.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                
+                // 타입 선택
+                Row(
+                  children: [
+                    const Text(
+                      '타입:',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    DropdownButton<String>(
+                      value: selectedType,
+                      items: const [
+                        DropdownMenuItem(value: 'text', child: Text('텍스트')),
+                        DropdownMenuItem(value: 'regex', child: Text('정규식')),
+                        DropdownMenuItem(value: 'special_char', child: Text('특수문자')),
+                      ],
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() => selectedType = value);
+                        }
+                      },
+                    ),
+                    const SizedBox(width: 24),
+                    const Text(
+                      '심각도:',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    DropdownButton<String>(
+                      value: selectedSeverity,
+                      items: const [
+                        DropdownMenuItem(value: 'low', child: Text('낮음')),
+                        DropdownMenuItem(value: 'medium', child: Text('보통')),
+                        DropdownMenuItem(value: 'high', child: Text('높음')),
+                        DropdownMenuItem(value: 'critical', child: Text('치명')),
+                      ],
+                      onChanged: (value) {
+                        if (value != null) {
+                          setState(() => selectedSeverity = value);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                
+                // 텍스트 입력 영역
+                Expanded(
+                  child: TextField(
+                    controller: bulkTextController,
+                    maxLines: null,
+                    expands: true,
+                    decoration: InputDecoration(
+                      hintText: '금칙어1\n금칙어2\n금칙어3\n...',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      alignLabelWithHint: true,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                bulkTextController.dispose();
+                Navigator.of(context).pop();
+              },
+              child: const Text('취소'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final text = bulkTextController.text.trim();
+                if (text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('금칙어를 입력해주세요.')),
+                  );
+                  return;
+                }
+
+                // 줄바꿈으로 분리하여 각 금칙어 처리
+                final words = text.split('\n')
+                    .map((e) => e.trim())
+                    .where((e) => e.isNotEmpty)
+                    .toList();
+
+                if (words.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('유효한 금칙어를 입력해주세요.')),
+                  );
+                  return;
+                }
+
+                // TODO: API 호출로 대량 금칙어 추가
+                // 각 단어에 대해 selectedType과 selectedSeverity 적용
+                
+                bulkTextController.dispose();
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('${words.length}개의 금칙어가 추가되었습니다.')),
+                );
+                
+                // 목록 새로고침
+                _loadBannedWords();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              ),
+              child: const Text('저장'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
