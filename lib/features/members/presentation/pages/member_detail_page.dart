@@ -260,7 +260,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
           Text(
             label,
             style: TextStyle(
-              fontSize: 18.sp,
+              fontSize: 12.sp,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
             ),
@@ -277,7 +277,7 @@ class _MemberDetailPageState extends State<MemberDetailPage> {
             child: Text(
               value,
               style: TextStyle(
-                fontSize: 20.sp,
+                fontSize: 14.sp,
                 color: AppColors.textPrimary,
               ),
             ),

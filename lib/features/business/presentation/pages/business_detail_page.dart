@@ -746,7 +746,7 @@ class _BusinessDetailPageState extends State<BusinessDetailPage> {
             child: Text(
               label,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w500,
                 color: AppColors.textSecondary,
               ),
