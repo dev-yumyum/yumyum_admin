@@ -22,6 +22,7 @@ import '../../features/managers/presentation/pages/managers_page.dart';
 import '../../features/managers/presentation/pages/manager_detail_page.dart';
 import '../../features/nicknames/presentation/pages/nickname_management_page.dart';
 import '../../features/nicknames/presentation/pages/banned_words_page.dart';
+import '../../features/food_category/presentation/pages/food_category_page.dart';
 
 GoRouter createRouter() {
   return GoRouter(
@@ -167,6 +168,12 @@ GoRouter createRouter() {
       GoRoute(
         path: '/banned-words',
         builder: (context, state) => const BannedWordsPage(),
+      ),
+      
+      // 푸드 카테고리
+      GoRoute(
+        path: '/food-category',
+        builder: (context, state) => const FoodCategoryPage(),
       ),
     ],
   );

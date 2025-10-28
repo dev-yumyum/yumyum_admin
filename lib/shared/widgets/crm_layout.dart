@@ -247,14 +247,26 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
         route: RouteNames.manager,
       ),
       _MenuItem(
-        icon: MdiIcons.account,
-        title: '닉네임 관리',
-        route: '/nickname-management',
-      ),
-      _MenuItem(
-        icon: MdiIcons.shieldAlert,
-        title: '금칙어 관리',
-        route: '/banned-words',
+        icon: MdiIcons.cog,
+        title: '서비스관리',
+        route: '/service',
+        subItems: [
+          _MenuItem(
+            icon: MdiIcons.food,
+            title: '푸드 카테고리',
+            route: '/food-category',
+          ),
+          _MenuItem(
+            icon: MdiIcons.account,
+            title: '닉네임 관리',
+            route: '/nickname-management',
+          ),
+          _MenuItem(
+            icon: MdiIcons.shieldAlert,
+            title: '금칙어 관리',
+            route: '/banned-words',
+          ),
+        ],
       ),
     ];
 
@@ -263,13 +275,11 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
       itemCount: menuItems.length,
       itemBuilder: (context, index) {
         final item = menuItems[index];
-        final isActive = widget.currentRoute.startsWith(item.route);
-
-        return _buildMenuItem(
-          icon: item.icon,
-          title: item.title,
-          route: item.route,
-          isActive: isActive,
+        return _MenuItemWidget(
+          item: item,
+          currentRoute: widget.currentRoute,
+          isCollapsed: _isCollapsed,
+          isMobile: _isMobile,
         );
       },
     );
@@ -558,9 +568,180 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
         return '닉네임 관리';
       case '/banned-words':
         return '금칙어 관리';
+      case '/food-category':
+        return '푸드 카테고리';
       default:
         return AppStrings.appName;
     }
+  }
+}
+
+class _MenuItemWidget extends StatefulWidget {
+  final _MenuItem item;
+  final String currentRoute;
+  final bool isCollapsed;
+  final bool isMobile;
+
+  const _MenuItemWidget({
+    required this.item,
+    required this.currentRoute,
+    required this.isCollapsed,
+    required this.isMobile,
+  });
+
+  @override
+  State<_MenuItemWidget> createState() => _MenuItemWidgetState();
+}
+
+class _MenuItemWidgetState extends State<_MenuItemWidget> {
+  bool _isExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // 현재 라우트가 하위 메뉴 중 하나와 일치하면 자동으로 확장
+    if (widget.item.subItems != null) {
+      _isExpanded = widget.item.subItems!.any((subItem) => 
+        widget.currentRoute.startsWith(subItem.route)
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bool hasSubItems = widget.item.subItems != null && widget.item.subItems!.isNotEmpty;
+    final bool isActive = widget.currentRoute.startsWith(widget.item.route) ||
+        (hasSubItems && widget.item.subItems!.any((subItem) => 
+          widget.currentRoute.startsWith(subItem.route)));
+
+    return Column(
+      children: [
+        _buildMainMenuItem(hasSubItems, isActive),
+        if (hasSubItems && _isExpanded && !widget.isCollapsed)
+          ...widget.item.subItems!.map((subItem) => _buildSubMenuItem(subItem)),
+      ],
+    );
+  }
+
+  Widget _buildMainMenuItem(bool hasSubItems, bool isActive) {
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: AppSizes.sm,
+        vertical: AppSizes.xs,
+      ),
+      decoration: BoxDecoration(
+        color: isActive ? AppColors.primary.withOpacity(0.08) : Colors.transparent,
+        borderRadius: BorderRadius.circular(10.r),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            if (hasSubItems) {
+              setState(() {
+                _isExpanded = !_isExpanded;
+              });
+            } else {
+              context.go(widget.item.route);
+              if (widget.isMobile) {
+                Navigator.of(context).pop();
+              }
+            }
+          },
+          borderRadius: BorderRadius.circular(10.r),
+          hoverColor: kIsWeb ? AppColors.primary.withOpacity(0.05) : null,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSizes.md,
+              vertical: 10.h,
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  widget.item.icon,
+                  size: 20.sp,
+                  color: isActive ? AppColors.primary : AppColors.textSecondary,
+                ),
+                if (!widget.isCollapsed) ...[
+                  SizedBox(width: AppSizes.md),
+                  Expanded(
+                    child: Text(
+                      widget.item.title,
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+                        color: isActive ? AppColors.primary : AppColors.textPrimary,
+                      ),
+                    ),
+                  ),
+                  if (hasSubItems)
+                    Icon(
+                      _isExpanded ? MdiIcons.chevronUp : MdiIcons.chevronDown,
+                      size: 18.sp,
+                      color: isActive ? AppColors.primary : AppColors.textSecondary,
+                    ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSubMenuItem(_MenuItem subItem) {
+    final bool isActive = widget.currentRoute.startsWith(subItem.route);
+
+    return Container(
+      margin: EdgeInsets.only(
+        left: AppSizes.xl,
+        right: AppSizes.sm,
+        bottom: AppSizes.xs,
+      ),
+      decoration: BoxDecoration(
+        color: isActive ? AppColors.primary.withOpacity(0.08) : Colors.transparent,
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            context.go(subItem.route);
+            if (widget.isMobile) {
+              Navigator.of(context).pop();
+            }
+          },
+          borderRadius: BorderRadius.circular(8.r),
+          hoverColor: kIsWeb ? AppColors.primary.withOpacity(0.05) : null,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSizes.md,
+              vertical: 8.h,
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  subItem.icon,
+                  size: 18.sp,
+                  color: isActive ? AppColors.primary : AppColors.textSecondary,
+                ),
+                SizedBox(width: AppSizes.sm),
+                Expanded(
+                  child: Text(
+                    subItem.title,
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+                      color: isActive ? AppColors.primary : AppColors.textPrimary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -568,10 +749,12 @@ class _MenuItem {
   final IconData icon;
   final String title;
   final String route;
+  final List<_MenuItem>? subItems;
 
   const _MenuItem({
     required this.icon,
     required this.title,
     required this.route,
+    this.subItems,
   });
 }
