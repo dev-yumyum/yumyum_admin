@@ -451,14 +451,14 @@ class _ReviewsPageState extends State<ReviewsPage> {
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 12.sp,
+                  fontSize: 13.sp,
                   color: AppColors.textSecondary,
                 ),
               ),
               Text(
                 value,
                 style: TextStyle(
-                  fontSize: 14.sp,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w500,
                   color: AppColors.textPrimary,
                 ),
