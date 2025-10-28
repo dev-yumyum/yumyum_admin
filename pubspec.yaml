@@ -61,9 +61,6 @@ dependencies:
   responsive_framework: ^1.5.1
   flutter_screenutil: ^5.9.3
   
-  # 테이블 (웹 성능 최적화)
-  data_table_2: ^2.5.15
-  
   # 웹 전용 최적화
   web: ^1.1.0
   js: ^0.7.1

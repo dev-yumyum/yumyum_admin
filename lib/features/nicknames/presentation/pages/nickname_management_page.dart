@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:data_table_2/data_table_2.dart';
 
 import '../../../../core/providers/api_providers.dart';
 import '../../../../shared/widgets/crm_layout.dart';

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:data_table_2/data_table_2.dart';
 
 import '../../../../core/providers/api_providers.dart';
 import '../../../../shared/widgets/crm_layout.dart';
@@ -293,41 +292,36 @@ class _BannedWordsPageState extends ConsumerState<BannedWordsPage> {
           
           // 데이터 테이블
           Expanded(
-            child: DataTable2(
-              columnSpacing: 12,
-              horizontalMargin: 12,
-              minWidth: 1000,
-              columns: const [
-                DataColumn2(
-                  label: Text('금칙어'),
-                  size: ColumnSize.L,
-                ),
-                DataColumn2(
-                  label: Text('타입'),
-                  size: ColumnSize.S,
-                ),
-                DataColumn2(
-                  label: Text('심각도'),
-                  size: ColumnSize.S,
-                ),
-                DataColumn2(
-                  label: Text('사용횟수'),
-                  size: ColumnSize.S,
-                ),
-                DataColumn2(
-                  label: Text('상태'),
-                  size: ColumnSize.S,
-                ),
-                DataColumn2(
-                  label: Text('생성일'),
-                  size: ColumnSize.M,
-                ),
-                DataColumn2(
-                  label: Text('관리'),
-                  size: ColumnSize.S,
-                ),
-              ],
-              rows: _buildTableRows(),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columnSpacing: 12,
+                horizontalMargin: 12,
+                columns: const [
+                  DataColumn(
+                    label: Text('금칙어'),
+                  ),
+                  DataColumn(
+                    label: Text('타입'),
+                  ),
+                  DataColumn(
+                    label: Text('심각도'),
+                  ),
+                  DataColumn(
+                    label: Text('사용횟수'),
+                  ),
+                  DataColumn(
+                    label: Text('상태'),
+                  ),
+                  DataColumn(
+                    label: Text('생성일'),
+                  ),
+                  DataColumn(
+                    label: Text('관리'),
+                  ),
+                ],
+                rows: _buildTableRows(),
+              ),
             ),
           ),
         ],
