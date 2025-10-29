@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'dart:html' as html;
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../shared/widgets/crm_layout.dart';
@@ -40,6 +41,7 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
         'isActive': true,
         'description': '한국 전통 음식',
         'itemCount': 245,
+        'imageUrl': null,
       },
       {
         'id': '2',
@@ -49,6 +51,7 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
         'isActive': true,
         'description': '중국 음식',
         'itemCount': 189,
+        'imageUrl': null,
       },
       {
         'id': '3',
@@ -58,6 +61,7 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
         'isActive': true,
         'description': '일본 음식',
         'itemCount': 156,
+        'imageUrl': null,
       },
       {
         'id': '4',
@@ -67,6 +71,7 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
         'isActive': true,
         'description': '서양 음식',
         'itemCount': 134,
+        'imageUrl': null,
       },
       {
         'id': '5',
@@ -76,6 +81,7 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
         'isActive': true,
         'description': '치킨 전문',
         'itemCount': 98,
+        'imageUrl': null,
       },
       {
         'id': '6',
@@ -85,6 +91,7 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
         'isActive': true,
         'description': '피자 전문',
         'itemCount': 87,
+        'imageUrl': null,
       },
       {
         'id': '7',
@@ -94,6 +101,7 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
         'isActive': true,
         'description': '카페 및 디저트',
         'itemCount': 213,
+        'imageUrl': null,
       },
       {
         'id': '8',
@@ -103,8 +111,11 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
         'isActive': false,
         'description': '분식 전문',
         'itemCount': 45,
+        'imageUrl': null,
       },
     ];
+    // 순서대로 정렬
+    _categories.sort((a, b) => a['order'].compareTo(b['order']));
     _filteredCategories = _categories;
   }
 
@@ -125,17 +136,20 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
     showDialog(
       context: context,
       builder: (context) => _CategoryDialog(
-        onSave: (name, description) {
+        onSave: (name, description, order, imageUrl) {
           setState(() {
             _categories.add({
               'id': DateTime.now().millisecondsSinceEpoch.toString(),
               'name': name,
               'icon': 'food',
-              'order': _categories.length + 1,
+              'order': order,
               'isActive': true,
               'description': description,
               'itemCount': 0,
+              'imageUrl': imageUrl,
             });
+            // 순서대로 재정렬
+            _categories.sort((a, b) => a['order'].compareTo(b['order']));
             _filteredCategories = _categories;
           });
           ScaffoldMessenger.of(context).showSnackBar(
@@ -154,10 +168,15 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
       context: context,
       builder: (context) => _CategoryDialog(
         category: category,
-        onSave: (name, description) {
+        onSave: (name, description, order, imageUrl) {
           setState(() {
             category['name'] = name;
             category['description'] = description;
+            category['order'] = order;
+            category['imageUrl'] = imageUrl;
+            // 순서대로 재정렬
+            _categories.sort((a, b) => a['order'].compareTo(b['order']));
+            _filteredCategories = _categories;
           });
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -311,10 +330,46 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
             children: [
               Row(
                 children: [
-                  Icon(
-                    MdiIcons.food,
-                    size: 32.r,
-                    color: category['isActive'] ? AppColors.primary : Colors.grey,
+                  // 이미지 또는 아이콘
+                  if (category['imageUrl'] != null)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8.r),
+                      child: Image.network(
+                        category['imageUrl']!,
+                        width: 32.r,
+                        height: 32.r,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            MdiIcons.food,
+                            size: 32.r,
+                            color: category['isActive'] ? AppColors.primary : Colors.grey,
+                          );
+                        },
+                      ),
+                    )
+                  else
+                    Icon(
+                      MdiIcons.food,
+                      size: 32.r,
+                      color: category['isActive'] ? AppColors.primary : Colors.grey,
+                    ),
+                  SizedBox(width: 8.w),
+                  // 순서 표시
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(4.r),
+                    ),
+                    child: Text(
+                      '${category['order']}',
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                      ),
+                    ),
                   ),
                   const Spacer(),
                   PopupMenuButton<String>(
@@ -415,7 +470,7 @@ class _FoodCategoryPageState extends State<FoodCategoryPage> {
 
 class _CategoryDialog extends StatefulWidget {
   final Map<String, dynamic>? category;
-  final Function(String name, String description) onSave;
+  final Function(String name, String description, int order, String? imageUrl) onSave;
 
   const _CategoryDialog({
     this.category,
@@ -429,20 +484,51 @@ class _CategoryDialog extends StatefulWidget {
 class _CategoryDialogState extends State<_CategoryDialog> {
   late TextEditingController _nameController;
   late TextEditingController _descriptionController;
+  late TextEditingController _orderController;
   final _formKey = GlobalKey<FormState>();
+  String? _imageUrl;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.category?['name'] ?? '');
     _descriptionController = TextEditingController(text: widget.category?['description'] ?? '');
+    _orderController = TextEditingController(text: (widget.category?['order'] ?? 1).toString());
+    _imageUrl = widget.category?['imageUrl'];
   }
 
   @override
   void dispose() {
     _nameController.dispose();
     _descriptionController.dispose();
+    _orderController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    final input = html.FileUploadInputElement()..accept = 'image/*';
+    input.click();
+
+    input.onChange.listen((event) {
+      final file = input.files?.first;
+      if (file != null) {
+        final reader = html.FileReader();
+        reader.readAsDataUrl(file);
+        reader.onLoadEnd.listen((event) {
+          setState(() {
+            _imageUrl = reader.result as String?;
+          });
+        });
+        
+        // TODO: 실제 서버 업로드 시 바이트 데이터 필요하면 구현
+        // final bytesReader = html.FileReader();
+        // bytesReader.readAsArrayBuffer(file);
+        // bytesReader.onLoadEnd.listen((event) {
+        //   final bytes = bytesReader.result as Uint8List?;
+        //   // 서버에 업로드
+        // });
+      }
+    });
   }
 
   @override
@@ -458,33 +544,165 @@ class _CategoryDialogState extends State<_CategoryDialog> {
       content: Form(
         key: _formKey,
         child: SizedBox(
-          width: 400.w,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: '카테고리명',
-                  hintText: '예: 한식, 중식, 일식',
+          width: 500.w,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 카테고리명
+                TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: '카테고리명',
+                    hintText: '예: 한식, 중식, 일식',
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '카테고리명을 입력해주세요.';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '카테고리명을 입력해주세요.';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: AppSizes.md),
-              TextFormField(
-                controller: _descriptionController,
-                decoration: const InputDecoration(
-                  labelText: '설명',
-                  hintText: '카테고리 설명을 입력하세요',
+                SizedBox(height: AppSizes.md),
+                
+                // 순서
+                TextFormField(
+                  controller: _orderController,
+                  decoration: const InputDecoration(
+                    labelText: '노출 순서',
+                    hintText: '숫자로 입력 (낮을수록 먼저 표시)',
+                    helperText: '앱에서 카테고리가 표시되는 순서입니다.',
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '순서를 입력해주세요.';
+                    }
+                    if (int.tryParse(value) == null) {
+                      return '숫자만 입력 가능합니다.';
+                    }
+                    return null;
+                  },
                 ),
-                maxLines: 3,
-              ),
-            ],
+                SizedBox(height: AppSizes.md),
+                
+                // 설명
+                TextFormField(
+                  controller: _descriptionController,
+                  decoration: const InputDecoration(
+                    labelText: '설명',
+                    hintText: '카테고리 설명을 입력하세요',
+                  ),
+                  maxLines: 3,
+                ),
+                SizedBox(height: AppSizes.lg),
+                
+                // 이미지 업로드
+                Text(
+                  '카테고리 이미지',
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                SizedBox(height: AppSizes.sm),
+                
+                // 이미지 미리보기 및 업로드 버튼
+                Container(
+                  width: double.infinity,
+                  height: 200.h,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey[300]!),
+                    borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                    color: Colors.grey[50],
+                  ),
+                  child: _imageUrl != null
+                      ? Stack(
+                          children: [
+                            Center(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                                child: Image.network(
+                                  _imageUrl!,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              top: 8.h,
+                              right: 8.w,
+                              child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _imageUrl = null;
+                                  });
+                                },
+                                icon: Container(
+                                  padding: EdgeInsets.all(4.r),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.white,
+                                    size: 20.sp,
+                                  ),
+                                ),
+                                tooltip: '이미지 제거',
+                              ),
+                            ),
+                          ],
+                        )
+                      : InkWell(
+                          onTap: _pickImage,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                MdiIcons.imageOutline,
+                                size: 48.r,
+                                color: Colors.grey[400],
+                              ),
+                              SizedBox(height: AppSizes.sm),
+                              Text(
+                                '이미지를 선택하세요',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                              SizedBox(height: AppSizes.xs),
+                              Text(
+                                'PNG, JPG, JPEG (최대 5MB)',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: Colors.grey[500],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                ),
+                if (_imageUrl != null)
+                  Padding(
+                    padding: EdgeInsets.only(top: AppSizes.sm),
+                    child: ElevatedButton.icon(
+                      onPressed: _pickImage,
+                      icon: Icon(MdiIcons.imageEdit, size: AppSizes.iconSm),
+                      label: const Text('이미지 변경'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[700],
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -499,6 +717,8 @@ class _CategoryDialogState extends State<_CategoryDialog> {
               widget.onSave(
                 _nameController.text,
                 _descriptionController.text,
+                int.parse(_orderController.text),
+                _imageUrl,
               );
               Navigator.of(context).pop();
             }
