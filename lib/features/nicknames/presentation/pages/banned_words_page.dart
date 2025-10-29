@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../../../core/providers/api_providers.dart';
 import '../../../../shared/widgets/crm_layout.dart';
-import '../../../../core/models/pagination_model.dart';
 import '../widgets/banned_word_severity_chip.dart';
 import '../widgets/banned_word_dialog.dart';
 
@@ -19,8 +17,6 @@ class _BannedWordsPageState extends ConsumerState<BannedWordsPage> {
   final TextEditingController _searchController = TextEditingController();
   String _selectedType = 'all';
   String _selectedSeverity = 'all';
-  int _currentPage = 1;
-  final int _pageSize = 20;
 
   @override
   void initState() {
@@ -39,23 +35,10 @@ class _BannedWordsPageState extends ConsumerState<BannedWordsPage> {
   }
 
   void _onSearch() {
-    setState(() {
-      _currentPage = 1;
-    });
     _loadBannedWords();
   }
 
   void _onFilterChanged() {
-    setState(() {
-      _currentPage = 1;
-    });
-    _loadBannedWords();
-  }
-
-  void _onPageChanged(int page) {
-    setState(() {
-      _currentPage = page;
-    });
     _loadBannedWords();
   }
 
@@ -373,9 +356,16 @@ class _BannedWordsPageState extends ConsumerState<BannedWordsPage> {
       return DataRow(
         cells: [
           DataCell(
-            Text(
-              data['word']! as String,
-              style: const TextStyle(fontWeight: FontWeight.w500),
+            InkWell(
+              onTap: () => context.push('/banned-words/detail?id=1'),
+              child: Text(
+                data['word']! as String,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
             ),
           ),
           DataCell(_buildTypeChip(data['type']! as String)),
@@ -402,6 +392,11 @@ class _BannedWordsPageState extends ConsumerState<BannedWordsPage> {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                IconButton(
+                  icon: const Icon(Icons.visibility, size: 18),
+                  onPressed: () => context.push('/banned-words/detail?id=1'),
+                  tooltip: '상세보기',
+                ),
                 IconButton(
                   icon: const Icon(Icons.edit, size: 18),
                   onPressed: () => _showEditDialog(data),
