@@ -106,12 +106,9 @@
     }
   </style>
 
-  <script>
-    // The value below is injected by flutter build, do not touch.
-    const serviceWorkerVersion = null;
-  </script>
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
+  <script src="flutter_bootstrap.js" async></script>
 </head>
 <body>
   <!-- 로딩 스크린 -->
@@ -129,14 +126,6 @@
   <div id="app"></div>
 
   <script>
-    // 웹 성능 최적화를 위한 설정
-    const config = {
-      // CanvasKit을 사용하여 성능 향상 (웹 최적화)
-      renderer: "canvaskit",
-      // 자동 감지를 통한 최적화
-      canvasKitBaseUrl: "/canvaskit/",
-    };
-
     // 로딩 화면 제거 함수
     function removeLoading() {
       const loading = document.getElementById('loading');
@@ -148,22 +137,9 @@
       }
     }
 
-    // Flutter 앱 로드
-    window.addEventListener('load', function(ev) {
-      // Download main.dart.js
-      _flutter.loader.loadEntrypoint({
-        serviceWorker: {
-          serviceWorkerVersion: serviceWorkerVersion,
-        },
-        onEntrypointLoaded: function(engineInitializer) {
-          engineInitializer.initializeEngine(config).then(function(appRunner) {
-            // 앱 실행 후 로딩 화면 제거
-            appRunner.runApp();
-            // 약간의 지연 후 로딩 화면 제거 (부드러운 전환)
-            setTimeout(removeLoading, 1000);
-          });
-        }
-      });
+    // Flutter 앱 로드 완료 후 로딩 화면 제거
+    window.addEventListener('flutter-first-frame', function() {
+      setTimeout(removeLoading, 500);
     });
 
     // 에러 처리
@@ -172,16 +148,14 @@
       removeLoading();
     });
 
-    // 웹 성능 모니터링
-    if ('performance' in window) {
-      window.addEventListener('load', function() {
-        setTimeout(function() {
-          const perfData = performance.timing;
-          const loadTime = perfData.loadEventEnd - perfData.navigationStart;
-          console.log('페이지 로드 시간:', loadTime + 'ms');
-        }, 0);
-      });
-    }
+    // 타임아웃 처리 (30초 후에도 로딩 중이면 강제 제거)
+    setTimeout(function() {
+      const loading = document.getElementById('loading');
+      if (loading && loading.parentNode) {
+        console.warn('Flutter 앱 로드 타임아웃');
+        removeLoading();
+      }
+    }, 30000);
   </script>
 </body>
 </html>
