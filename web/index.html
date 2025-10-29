@@ -108,7 +108,6 @@
 
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
-  <script src="flutter_bootstrap.js" async></script>
 </head>
 <body>
   <!-- 로딩 스크린 -->
@@ -122,9 +121,6 @@
     </div>
   </div>
 
-  <!-- Flutter 앱 컨테이너 -->
-  <div id="app"></div>
-
   <script>
     // 로딩 화면 제거 함수
     function removeLoading() {
@@ -137,7 +133,23 @@
       }
     }
 
-    // Flutter 앱 로드 완료 후 로딩 화면 제거
+    // Flutter 초기화
+    window.addEventListener('load', function(ev) {
+      _flutter.loader.load({
+        serviceWorkerSettings: {
+          serviceWorkerVersion: {{flutter_service_worker_version}},
+        },
+        onEntrypointLoaded: async function(engineInitializer) {
+          let appRunner = await engineInitializer.initializeEngine();
+          await appRunner.runApp();
+          
+          // 앱 로드 완료 후 로딩 화면 제거
+          setTimeout(removeLoading, 1000);
+        }
+      });
+    });
+
+    // Flutter 첫 프레임 렌더링 완료 이벤트
     window.addEventListener('flutter-first-frame', function() {
       setTimeout(removeLoading, 500);
     });
@@ -148,7 +160,7 @@
       removeLoading();
     });
 
-    // 타임아웃 처리 (30초 후에도 로딩 중이면 강제 제거)
+    // 타임아웃 처리 (30초)
     setTimeout(function() {
       const loading = document.getElementById('loading');
       if (loading && loading.parentNode) {
