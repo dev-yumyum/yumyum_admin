@@ -266,6 +266,11 @@ class _CrmLayoutState extends State<CrmLayout> with TickerProviderStateMixin {
             title: '금칙어 관리',
             route: '/banned-words',
           ),
+          _MenuItem(
+            icon: MdiIcons.bellAlert,
+            title: '안내메시지 관리',
+            route: '/notification-management',
+          ),
         ],
       ),
     ];

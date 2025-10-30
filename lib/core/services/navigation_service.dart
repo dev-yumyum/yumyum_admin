@@ -24,6 +24,7 @@ import '../../features/nicknames/presentation/pages/nickname_management_page.dar
 import '../../features/nicknames/presentation/pages/banned_words_page.dart';
 import '../../features/nicknames/presentation/pages/banned_word_detail_page.dart';
 import '../../features/food_category/presentation/pages/food_category_page.dart';
+import '../../features/notifications/presentation/pages/notification_management_page.dart';
 
 GoRouter createRouter() {
   return GoRouter(
@@ -182,6 +183,12 @@ GoRouter createRouter() {
       GoRoute(
         path: '/food-category',
         builder: (context, state) => const FoodCategoryPage(),
+      ),
+      
+      // 안내메시지 관리
+      GoRoute(
+        path: '/notification-management',
+        builder: (context, state) => const NotificationManagementPage(),
       ),
     ],
   );
